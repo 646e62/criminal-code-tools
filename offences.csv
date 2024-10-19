@@ -243,3 +243,90 @@ cc167,immoral theatrical performance,summary,None,summary
 cc168,mailing obscene matter,indictable,None,2y
 cc168,mailing obscene matter,summary,None,summary
 cc170,parent or guardian procuring sexual activity,indictable,1y,14y
+cc171,householder permitting sexual activity,indictable,1y,14y
+cc171.1,making sexually explicit material available to child,indictable,6m,14y
+cc171.1,making sexually explicit material available to child,summary,90d,729d
+cc172,corrupting children,indictable,None,2y
+cc172,corrupting children,summary,None,summary
+cc172.1,luring a child,indictable,1y,14y
+cc172.1,luring a child,summary,6m,729d
+cc172.2,agreement or arrangement — sexual offence against child,indictable,1y,14y
+cc172.2,agreement or arrangement — sexual offence against child,summary,6m,729d
+cc173(1),indecent acts,indictable,None,2y
+cc173(1),indecent acts,summary,None,summary
+cc173(2),exposure,indictable,90,2y
+cc173(2),exposure,summary,30,6m
+cc174,nudity,summary,None,summary
+cc175,cause disturbance,summary,None,summary
+cc176,obstructing or violence to or arrest of officiating clergyman,indictable,None,2y
+cc176,obstructing or violence to or arrest of officiating clergyman,summary,None,summary
+cc177,trespassing at night,summary,None,summary
+cc180,common nuisance,indictable,None,2y
+cc180,common nuisance,summary,None,summary
+cc182,dead body,indictable,None,5y
+cc182,dead body,summary,None,summary
+cc184,interception,indictable,None,5y
+cc184,interception,summary,None,summary
+cc184.5,interception of radio-based telephone,indictable,None,5y
+cc184.5,interception of radio-based telephone,summary,None,summary
+cc191,possession — private communication interception device,indictable,None,2y
+cc191,possession — private communication interception device,summary,None,summary
+cc193,disclosure of information,indictable,None,2y
+cc193,disclosure of information,summary,None,summary
+cc193.1,disclosure of information received from interception of radio-based telephone communications,indictable,None,2y
+cc193.1,disclosure of information received from interception of radio-based telephone communications,summary,None,summary
+cc201(1),keeping gaming or betting house,indictable,None,2y
+cc201(1),keeping gaming or betting house,summary,None,summary
+cc201(2),person found in or owner permitting use,summary,None,summary
+cc202,betting pool-selling book-making — first offence,indictable,None,2y
+cc202,betting pool-selling book-making — second offence,indictable,14d,2y
+cc202,betting pool-selling book-making — subsequent offence,indictable,3m,2y
+cc203,placing bets on behalf of others — first offence,indictable,None,2y
+cc203,placing bets on behalf of others — second offence,indictable,14d,2y
+cc203,placing bets on behalf of others — subsequent offence,indictable,3m,2y
+cc204,contravention — horse racing regulations,indictable,None,2y
+cc204,contravention — horse racing regulations,summary,None,summary
+cc206,offence in relation to lotteries and games of chance,indictable,None,2y
+cc206(1),offence in relation to lotteries and games of chance,summary,None,summary
+cc206(4),ticket sales in relation to lotteries and games of chance,summary,None,summary
+cc207(3)(a),offence — permitted lotteries — unauthorized management or operation,indictable,None,2y
+cc207(3)(a),offence — permitted lotteries — unauthorized management or operation,summary,None,summary
+cc207(3)(b),offence — permitted lotteries — unauthorized participation,summary,None,summary
+cc207.1(3)(a),offence — lottery scheme on an international cruise ship — unauthorized management or operation,indictable,None,2y
+cc207.1(3)(a),offence — lottery scheme on an international cruise ship — unauthorized management or operation,summary,None,summary
+cc207.1(3)(b),offence — lottery scheme on an international cruise ship — unauthorized participation,summary,None,summary
+cc209,cheating at play,indictable,None,2y
+cc209,cheating at play,summary,None,summary
+cc213(1),stopping or impeding traffic — sexual services for consideration,summary,None,summary
+cc213(1.1),communicating to provide sexual services for consideration,summary,None,summary
+cc215,offence — duty of persons to provide necessaries,indictable,None,5y
+cc215,offence — duty of persons to provide necessaries,summary,None,summary
+cc218,abandoning child,indictable,None,5y
+cc218,abandoning child,summary,None,summary
+cc220,criminal negligence causing death — firearm,indictable,4y,life
+cc220,criminal negligence causing death — other,indictable,None,life
+cc221,criminal negligence causing bodily harm,indictable,None,10y
+cc221,criminal negligence causing bodily harm,summary,None,summary
+cc229,murder — first degree,indictable,life,life
+cc229,murder — second degree,indictable,life,life
+cc236,manslaughter — firearm,indictable,4y,life
+cc236,manslaughter,indictable,None,life
+cc237,infanticide,indictable,None,5y
+cc237,infanticide,summary,None,summary
+cc238,killing unborn child in act of birth,indictable,None,life
+cc239,attempt to commit murder — restricted or prohibited firearm — first offence,indictable,5y,life
+cc239,attempt to commit murder — restricted or prohibited firearm — subsequent offence,indictable,7y,life
+cc239,attempt to commit murder — firearm,indictable,4y,life
+cc239,attempt to commit murder,indictable,None,life
+cc240,accessory after the fact to murder,indictable,None,life
+cc240.1,removal without informed consent — trafficking in human organs,indictable,None,14y
+cc241,counselling or aiding suicide,indictable,None,14y
+cc241.3,failure to comply with safeguards — medical assistance in dying,indictable,None,5y
+cc241.3,failure to comply with safeguards — medical assistance in dying,summary,None,summary
+cc241.31(4),failure to comply — filing information — medical assistance in dying,indictable,None,2y
+cc241.31(4),failure to comply — filing information — medical assistance in dying,summary,None,summary
+cc241.31(5),failure to comply — regulations — medical assistance in dying,indictable,None,2y
+cc241.31(5),failure to comply — regulations — medical assistance in dying,summary,None,summary
+cc241.4,forgery — medical assistance in dying,indictable,None,5y
+cc241.4,forgery — medical assistance in dying,summary,None,summary
+cc242,neglect to obtain assistance in childbirth,indictable,None,5y
