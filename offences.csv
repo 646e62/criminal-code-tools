@@ -29,7 +29,7 @@ cc65(2),riot — concealed identity,summary,None,summary
 cc66(1),unlawful assembly,summary,None,summary
 cc66(2),unlawful assembly — concealed identity,indictable,None,5y
 cc66(2),unlawful assembly — concealed identity,summary,None,summary
-cc68,defying a proclamation,indictable,life,life
+cc68,defying a proclamation,indictable,None,life
 cc69,failing to suppress a riot,indictable,None,2y
 cc69,failing to suppress a riot,summary,None,summary
 cc70,contravening an order in council,indictable,None,5y
@@ -41,25 +41,205 @@ cc72(2),forcible detainer,summary,None,summary
 cc74,piracy,indictable,life,life
 cc75,piratical acts,indictable,None,14y
 cc76,hijacking,indictable,life,life
-cc77,endangering safety of aircraft or airport,indictable,life,life
+cc77,endangering safety of aircraft or airport,indictable,None,life
 cc78,offensive weapons and explosive substances,indictable,None,14y
-cc78.1(1),seizing control of ship or fixed platform,indictable,life,life
-cc78.1(2),endangering safety of ship or fixed platform,indictable,life,life
-cc78.1(3),false communication,indictable,life,life
-cc78.1(4),threats causing death or injury,indictable,life,life
-cc80(a),breach of duty re explosive causing death,indictable,life,life
+cc78.1(1),seizing control of ship or fixed platform,indictable,None,life
+cc78.1(2),endangering safety of ship or fixed platform,indictable,None,life
+cc78.1(3),false communication,indictable,None,life
+cc78.1(4),threats causing death or injury,indictable,None,life
+cc80(a),breach of duty re explosive causing death,indictable,None,life
 cc80(b),breach of duty re explosive causing bodily harm,indictable,None,14y
-cc81(1)(a),using explosives likely to cause serious harm,indictable,life,life
-cc81(1)(b),handling explosives with harmful intent,indictable,life,life
+cc81(1)(a),using explosives likely to cause serious harm,indictable,None,life
+cc81(1)(b),handling explosives with harmful intent,indictable,None,life
 cc81(1)(c),handling explosives with intent to damage property,indictable,None,14y
 cc81(1)(d),making or possessing explosives with harmful intent,indictable,None,14y
 cc82(1),possessing explosives,indictable,None,5y
 cc82(1),possessing explosives,summary,None,summary
 cc82(2),possessing explosives — criminal organization,indictable,None,14y
-cc82.3,possessing radioactive materials or devices,indictable,life,life
-cc82.4,using radioactive materials or devices,indictable,life,life
-cc82.5,commit indictable offence — radioactive materials,indictable,life,life
+cc82.3,possessing radioactive materials or devices,indictable,None,life
+cc82.4,using radioactive materials or devices,indictable,None,life
+cc82.5,commit indictable offence — radioactive materials,indictable,None,life
 cc82.6,threatening to commit a radioactive materials offence,indictable,None,14y
 cc83,prize fighting,summary,None,summary
 cc83.02,collecting property for terrorist activities,indictable,None,10y
-cc83.03,providing 
+cc83.03(1),providing property or services for terrorist purposes,indictable,None,10y
+cc83.03(2),providing property or services for use by a terrorist group,indictable,None,10y
+cc83.08,dealing with terrorist property,indictable,None,10y
+cc83.08,dealing with terrorist property,summary,None,729d-100000$-729d&100000$
+cc83.1,failure to disclose terrorist property,indictable,None,10y
+cc83.1,failure to disclose terrorist property,summary,None,729d-100000$-729d&100000$
+cc83.11,failure to audit for listed entities,indictable,None,10y
+cc83.11,failure to audit for listed entities,summary,None,729d-100000$-729d&100000$
+cc83.18,participaty in terrorist group activity,indictable,None,10y
+cc83.181,leaving canada to participate in terrorist group activity,indictable,None,10y
+cc83.19,facilitating terrorist activity,indictable,None,14y
+cc83.191,leaving canada to facilitate terrorist activity,indictable,None,14y
+cc83.2,commit indictable offence — benefit terrorist group,indictable,None,life
+cc83.201,leave canada to commit offence for terrorist group,indictable,None,life
+cc83.202,leaving canada to commit offence that is terrorist activity,indictable,None,14y
+cc83.22,instructing to carry out terrorist activity,indictable,None,life
+cc83.221,counselling commission of terrorism offence,indictable,None,5y
+cc83.23(1)(a),concealing person who carried out terrorist activity — commit offence punishable by life,indictable,None,14y
+cc83.23(1)(b),concealing person who carried out terrorist activity — other,indictable,None,10y
+cc83.23(2),concealing person who is likely to carry out terrorist activity,indictable,None,10y
+cc83.231(1),hoax — terrorist activity,indictable,None,5y
+cc83.231(1),hoax — terrorist activity,summary,None,summary
+cc83.231(3),hoax causing bodily harm — terrorist activity,indictable,None,10y
+cc83.231(3),hoax causing bodily harm — terrorist activity,summary,None,summary
+cc83.231(4),hoax causing death — terrorist activity,indictable,None,life
+cc85(1),using firearm in commission of offence,indictable,None,14y
+cc85(2),using imitation firearm in commission of offence,indictable,None,14y
+cc86(1),careless use of firearm,indictable,None,2y
+cc86(1),careless use of firearm,summary,None,summary
+cc86(2),contravention of storage regulations — firearm,indictable,None,2y
+cc86(2),contravention of storage regulations — firearm,summary,None,summary
+cc87,pointing a firearm,indictable,None,5y
+cc87,poiting a firearm,summary,None,summary
+cc88,possesion of weapon for dangerous purpose,indictable,None,10y
+cc88,possession of weapon for dangerous purpose,summary,None,summary
+cc89,carrying weapon while attending public meeting,summary,None,summary
+cc90,carrying concealed weapon,indictable,None,5y
+cc90,carrying concealed weapon,summary,None,summary
+cc91(1),unauthorized possession of firearm,indictable,None,5y
+cc91(1),unauthorized possession of firearm,summary,None,summary
+cc91(2),unauthorized possession of prohibited weapon or restricted weapon,indictable,None,5y
+cc91(2),unauthorized possession of prohibited weapon or restricted weapon,summary,None,summary
+cc92(1),possession of firearm knowing its possession is unauthorized,indictable,None,10y
+cc92(2),possession of prohibited weapon device or ammunition knowing its possession is unauthorized,indictable,None,10y
+cc93,possession at unauthorized place,indictable,None,5y
+cc93,possession at unauthorized place,summary,None,summary
+cc94,unauthorized possession in motor vehicle,indictable,None,10y
+cc94,unauthorized possession in motor vehicle,summary,None,summary
+cc95,possession of prohibited or restricted firearm with ammunition,indictable,None,14y
+cc95,possession of prohibited or restricted firearm with ammunition,summary,None,summary
+cc96,possession of weapon obtained by commission of offence,indictable,None,14y
+cc96,possession of weapon obtained by commission of offence,summary,None,summary
+cc98,breaking and entering to steal firearm,indictable,None,life
+cc98.1,robbery to steal firearm,indictable,None,life
+cc99(2),weapons trafficking — firearm — first offence,indictable,3y,14y
+cc99(2),weapons trafficking — firearm — subsequent offence,indictable,5y,14y
+cc99(3),weapons trafficking — other,indictable,None,14y
+cc100,possession for purpose of weapons trafficking — firearm — first offence,indictable,3y,14y
+cc100,possession for purpose of weapons trafficking — firearm — subsequent offence,indictable,5y,14y
+cc101,transfer without authority,indictable,None,5y
+cc101,transfer without authority,summary,None,summary
+cc102,making automatic firearm,indictable,1y,10y
+cc102,making automatic firearm,summary,None,summary
+cc102.1(1),possession of computer data — firearm manufacture,indictable,None,10y
+cc102.1(1),possession of computer data — firearm manufacture,summary,None,summary
+cc102.1(2),distribution of computer data — firearm manufacture,indictable,None,10y
+cc102.1(2),distribution of computer data — firearm manufacture,summary,None,summary
+cc103(2),importing or exporting knowing it is unauthorized — firearm — first offence,indictable,3y,14y
+cc103(2),importing or exporting knowing it is unauthorized — firearm — subsequent offence,indictable,5y,14y
+cc103(3),importing or exporting knowing it is unauthorized — other,indictable,None,14y
+cc104,importing or exporting knowing it is unauthorized — firearm,indictable,None,5y
+cc104,importing or exporting knowing it is unauthorized — firearm,summary,None,summary
+cc104.1,altering cartridge magazine,indictable,None,5y
+cc104.1,altering cartridge magazine,summary,None,summary
+cc105,losing or finding — firearm,indictable,None,5y
+cc105,losing or finding firearm,summary,None,summary
+cc106,destroying — firearm,indictable,None,5y
+cc106,destroying firearm,summary,None,summary
+cc107,false statements — firearm,indictable,None,5y
+cc107,false statements firearm,summary,None,summary
+cc108,tampering with serial number,indictable,None,5y
+cc108,tampering with serial number,summary,None,summary
+cc117.01,possession contrary to order,indictable,None,10y
+cc117.01,possession contrary to order,summary,None,summary
+cc119,bribery of judicial officers,indictable,None,14y
+cc120,bribery of officers,indictable,None,14y
+cc121,frauds on the government,indictable,None,5y
+cc121,frauds on the government,summary,None,summary
+cc121.1,selling tobacco products and raw leaf tobacco,indictable,None,5y
+cc121.1,selling tobacco products and raw leaf tobacco,summary,None,summary
+cc122,breach of trust by public officer,indictable,None,5y
+cc122,breach of trust by public officer,summary,None,summary
+cc123,municipal corruption,indictable,None,5y
+cc123(1),municipal corruption,summary,None,summary
+cc123(2),influencing municipal official,indictable,None,5y
+cc123(2),influencing municipal official,summary,None,summary
+cc124,selling or purchasing office,indictable,None,5y
+cc124,selling or purchasing office,summary,None,summary
+cc125,influencing or negotiating appointments or dealing in offices,indictable,None,5y
+cc125,influencing or negotiating appointments or dealing in offices,summary,None,summary
+cc126,disobeying a statute,indictable,None,2y
+cc126,disobeying a statute,summary,None,summary
+cc127,disobeying order of court,indictable,None,2y
+cc127,disobeying order of court,summary,None,summary
+cc128,misconduct of officers executing process,indictable,None,2y
+cc128,misconduct of officers executing process,summary,None,summary
+cc129,offences relating to public or peace officer,indictable,None,2y
+cc129,offences relating to public or peace officer,summary,None,summary
+cc130,personating peace officer,indictable,None,5y
+cc130,personating peace officer,summary,None,summary
+cc131,perjury,indictable,None,14y
+cc136,witness giving contradictory evidence,indictable,None,14y
+cc137,fabricating evidence,indictable,None,14y
+cc138,offences relating to affidavits,indictable,None,14y
+cc139(1),obstructing justice — surety indemnity,indictable,None,2y
+cc139(1),obstructing justice — surety indemnity,summary,None,summary
+cc139(2),obstructing justice — other,indictable,None,10y
+cc139(2),obstructing justice — other,summary,None,summary
+cc140,public mischief,indictable,None,5y
+cc140,public mischief,summary,None,summary
+cc141,compounding indictable offence,indictable,None,2y
+cc141,compounding indictable offence,summary,None,summary
+cc142,corruptly taking reward for recovery of goods,indictable,None,5y
+cc142,corruptly taking reward for recovery of goods,summary,None,summary
+cc144,prison breach,indictable,None,10y
+cc144,prison breach,summary,None,summary
+cc145(1),escape and being at large without excuse,indictable,None,2y
+cc145(1),escape and being at large without excuse,summary,None,summary
+cc145(2),failure to attend court or surrender,indictable,None,2y
+cc145(2),failure to attend court or surrender,summary,None,summary
+cc145(3),failure to comply with appearance notice or summons,indictable,None,2y
+cc145(3),failure to comply with appearance notice or summons,summary,None,summary
+cc145(4),failure to comply with undertaking,indictable,None,2y
+cc145(4),failure to comply with undertaking,summary,None,summary
+cc145(5),failure to comply with order,indictable,None,2y
+cc145(5),failure to comply with order,summary,None,summary
+cc146,permitting or assisting escape,indictable,None,14y
+cc146,permitting or assisting escape,summary,None,summary
+cc147,rescue or permitting escape,indictable,None,5y
+cc147,rescue or permitting escape,summary,None,summary
+cc148,assisting prisoner of war to escape,indictable,None,5y
+cc148,assisting prisoner of war to escape,summary,None,summary
+cc151,sexual interference,indictable,1y,14y
+cc151,sexual interference,summary,90d,729d
+cc152,invitation to sexual touching,indictable,1y,14y
+cc152,invitation to sexual touching,summary,90d,729d
+cc153,sexual exploitation,indictable,1y,14y
+cc153,sexual exploitation,summary,90d,729d
+cc153.1,sexual exploitation of person with disability,indictable,None,10y
+cc153.1,sexual exploitation of person with disability,summary,None,summary
+cc155,incest — under 16,indictable,5y,14y
+cc155,incest — other,indictable,None,14y
+cc160(1),bestiality,indictable,None,10y
+cc160(1),bestiality,summary,None,summary
+cc160(2),compelling the commission of bestiality,indictable,None,10y
+cc160(2),compelling the commission of bestiality,summary,None,summary
+cc160(3),bestiality in presence of or by child,indictable,1y,14y
+cc160(3),bestiality in presence of or by child,summary,6m,summary
+cc161(4),failure to comply with 161 order,indictable,None,4y
+cc161(4),failure to comply with 161 order,summary,None,summary
+cc162(1),voyeurism,indictable,None,5y
+cc162(1),voyeurism,summary,None,summary
+cc162(4),printing publication of voyeuristic recordings,indictable,None,5y
+cc162(4),printing publication of voyeuristic recordings,summary,None,summary
+cc162.1,publication of an intimate image without consent,indictable,None,5y
+cc162.1,publication of an intimate image without consent,summary,None,summary
+cc162.2(4),failure to comply with prohibition order,indictable,None,4y
+cc162.2(4),failure to comply with prohibition order,summary,None,summary
+cc163,obscene materials,indictable,None,2y
+cc163,obscene materials,summary,None,summary
+cc163.1(2),making child pornography,indictable,1y,14y
+cc163.1(3),distribution of child pornography,indictable,1y,14y
+cc163.1(4),possession of child pornography,indictable,1y,10y
+cc163.1(4),possession of child pornography,summary,6m,729d
+cc163.1(4.1),accessing child pornography,indictable,1y,10y
+cc163.1(4.1),accessing child pornography,summary,6m,729d
+cc167,immoral theatrical performance,indictable,None,2y
+cc167,immoral theatrical performance,summary,None,summary
+cc168,mailing obscene matter,indictable,None,2y
+cc168,mailing obscene matter,summary,None,summary
+cc170,parent or guardian procuring sexual activity,indictable,1y,14y
