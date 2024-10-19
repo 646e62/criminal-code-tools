@@ -1,0 +1,65 @@
+section,offence_name,class,minimum,maximum
+cc46(1),high treason,indictable,life,life
+cc46(2),treason,indictable,life,life
+cc50(1)(a),assisting alien enemy to leave canada,indictable,None,14y
+cc50(1)(b),omitting to prevent treason,indictable,None,14y
+cc51,intimidating parliament or legislature,indictable,None,14y
+cc52,sabotage,indictable,None,10y
+cc52,sabotage,summary,None,summary
+cc52.1,sabotage — essential infrastructure,indictable,None,10y
+cc52.1,sabotage — essential infrastructure,summary,None,summary
+cc52.2,sabotage — device,indictable,None,10y
+cc53,inciting to mutiny,indictable,None,14y
+cc54,assisting deserter,summary,None,summary
+cc56,deserting — RCMP,summary,None,summary
+cc56.1,identity documents,indictable,None,5y
+cc56.1,identity documents,summary,None,summary
+cc57(1),passport — forgery,indictable,None,14y
+cc57(2),passport — false statement,indictable,None,2y
+cc57(2),passport — false statement,summary,None,summary
+cc57(3),possess forged passport,indictable,None,5y
+cc58,citizenship fraud,indictable,None,2y
+cc61,sedition,indictable,None,14y
+cc62,promoting military disloyalty,indictable,None,5y
+cc62,promoting military disloyalty,summary,None,summary
+cc65(1),riot,indictable,None,2y
+cc65(1),riot,summary,None,summary
+cc65(2),riot — concealed identity,indictable,None,10y
+cc65(2),riot — concealed identity,summary,None,summary
+cc66(1),unlawful assembly,summary,None,summary
+cc66(2),unlawful assembly — concealed identity,indictable,None,5y
+cc66(2),unlawful assembly — concealed identity,summary,None,summary
+cc68,defying a proclamation,indictable,life,life
+cc69,failing to suppress a riot,indictable,None,2y
+cc69,failing to suppress a riot,summary,None,summary
+cc70,contravening an order in council,indictable,None,5y
+cc70,contravening an order in council,summary,None,summary
+cc72(1),forcible entry,indictable,None,2y
+cc72(1),forcible entry,summary,None,summary
+cc72(2),forcible detainer,indictable,None,2y
+cc72(2),forcible detainer,summary,None,summary
+cc74,piracy,indictable,life,life
+cc75,piratical acts,indictable,None,14y
+cc76,hijacking,indictable,life,life
+cc77,endangering safety of aircraft or airport,indictable,life,life
+cc78,offensive weapons and explosive substances,indictable,None,14y
+cc78.1(1),seizing control of ship or fixed platform,indictable,life,life
+cc78.1(2),endangering safety of ship or fixed platform,indictable,life,life
+cc78.1(3),false communication,indictable,life,life
+cc78.1(4),threats causing death or injury,indictable,life,life
+cc80(a),breach of duty re explosive causing death,indictable,life,life
+cc80(b),breach of duty re explosive causing bodily harm,indictable,None,14y
+cc81(1)(a),using explosives likely to cause serious harm,indictable,life,life
+cc81(1)(b),handling explosives with harmful intent,indictable,life,life
+cc81(1)(c),handling explosives with intent to damage property,indictable,None,14y
+cc81(1)(d),making or possessing explosives with harmful intent,indictable,None,14y
+cc82(1),possessing explosives,indictable,None,5y
+cc82(1),possessing explosives,summary,None,summary
+cc82(2),possessing explosives — criminal organization,indictable,None,14y
+cc82.3,possessing radioactive materials or devices,indictable,life,life
+cc82.4,using radioactive materials or devices,indictable,life,life
+cc82.5,commit indictable offence — radioactive materials,indictable,life,life
+cc82.6,threatening to commit a radioactive materials offence,indictable,None,14y
+cc83,prize fighting,summary,None,summary
+cc83.02,collecting property for terrorist activities,indictable,None,10y
+cc83.03,providing 
