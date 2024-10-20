@@ -9,20 +9,20 @@ cc52.1,sabotage — essential infrastructure,hybrid,None,10y,None,summary
 cc52.2,sabotage — device,indictable,None,10y,None,None
 cc53,inciting to mutiny,indictable,None,14y,None,None
 cc54,assisting deserter,summary,None,None,None,summary
-cc56,deserting — RCMP,summary,None,None,None,summary
+cc56,offences in relation to members of rcmp,summary,None,None,None,summary
 cc56.1,identity documents,hybrid,None,5y,None,summary
-cc57(1),passport — forgery,indictable,None,14y,None,None
-cc57(2),passport — false statement,hybrid,None,2y,None,summary
-cc57(3),possess forged passport,indictable,None,5y,None,None
-cc58,citizenship fraud,indictable,None,2y,None,None
+cc57(1),forgery of or uttering forged passport,indictable,None,14y,None,None
+cc57(2),false statement in relation to passport,hybrid,None,2y,None,summary
+cc57(3),possession of forged passport,hybrid,None,5y,None,summary
+cc58,fraudulent use of certificate of citizenship,hybrid,None,2y,None,summary
 cc61,sedition,indictable,None,14y,None,None
-cc62,promoting military disloyalty,hybrid,None,5y,None,summary
+cc62,offences in relation to military forces,hybrid,None,5y,None,summary
 cc65(1),riot,hybrid,None,2y,None,summary
-cc65(2),riot — concealed identity,hybrid,None,10y,None,summary
+cc65(2),riot — concealment of identity,hybrid,None,10y,None,summary
 cc66(1),unlawful assembly,summary,None,None,None,summary
-cc66(2),unlawful assembly — concealed identity,hybrid,None,5y,None,summary
-cc68,defying a proclamation,indictable,None,life,None,None
-cc69,failing to suppress a riot,hybrid,None,2y,None,summary
+cc66(2),unlawful assembly — concealment of identity,hybrid,None,5y,None,summary
+cc68,offences related to proclamation,indictable,None,life,None,None
+cc69,neglect by peace officer,hybrid,None,2y,None,summary
 cc70,contravening an order in council,hybrid,None,5y,None,summary
 cc72(1),forcible entry,hybrid,None,2y,None,summary
 cc72(2),forcible detainer,hybrid,None,2y,None,summary
@@ -35,8 +35,8 @@ cc78.1(1),seizing control of ship or fixed platform,indictable,None,life,None,No
 cc78.1(2),endangering safety of ship or fixed platform,indictable,None,life,None,None
 cc78.1(3),false communication,indictable,None,life,None,None
 cc78.1(4),threats causing death or injury,indictable,None,life,None,None
-cc80(a),breach of duty re explosive causing death,indictable,None,life,None,None
-cc80(b),breach of duty re explosive causing bodily harm,indictable,None,14y,None,None
+cc80(a),breach of duty re explosive — causing death,indictable,None,life,None,None
+cc80(b),breach of duty re explosive — causing bodily harm,indictable,None,14y,None,None
 cc81(1)(a),using explosives likely to cause serious harm,indictable,None,life,None,None
 cc81(1)(b),handling explosives with harmful intent,indictable,None,life,None,None
 cc81(1)(c),handling explosives with intent to damage property,indictable,None,14y,None,None
@@ -51,6 +51,7 @@ cc83,prize fighting,summary,None,None,None,summary
 cc83.02,collecting property for terrorist activities,indictable,None,10y,None,None
 cc83.03(1),providing property or services for terrorist purposes,indictable,None,10y,None,None
 cc83.03(2),providing property or services for use by a terrorist group,indictable,None,10y,None,None
+cc83.04,using or possessing property for terrorist purposes,indictable,None,10y,None,None
 cc83.08,dealing with terrorist property,hybrid,None,10y,None,729d-100000$-729d&100000$
 cc83.1,failure to disclose terrorist property,hybrid,None,10y,None,729d-100000$-729d&100000$
 cc83.11,failure to audit for listed entities,hybrid,None,10y,None,729d-100000$-729d&100000$
@@ -61,14 +62,16 @@ cc83.191,leaving canada to facilitate terrorist activity,indictable,None,14y,Non
 cc83.2,commit indictable offence — benefit terrorist group,indictable,None,life,None,None
 cc83.201,leave canada to commit offence for terrorist group,indictable,None,life,None,None
 cc83.202,leaving canada to commit offence that is terrorist activity,indictable,None,14y,None,None
+cc83.21,instructing to carry out activity for terrorist group,indictable,None,life,None,None
 cc83.22,instructing to carry out terrorist activity,indictable,None,life,None,None
 cc83.221,counselling commission of terrorism offence,indictable,None,5y,None,None
 cc83.23(1)(a),concealing person who carried out terrorist activity — commit offence punishable by life,indictable,None,14y,None,None
 cc83.23(1)(b),concealing person who carried out terrorist activity — other,indictable,None,10y,None,None
 cc83.23(2),concealing person who is likely to carry out terrorist activity,indictable,None,10y,None,None
-cc83.231(1),hoax — terrorist activity,hybrid,None,5y,None,summary
+cc83.231(2),hoax — terrorist activity,hybrid,None,5y,None,summary
 cc83.231(3),hoax causing bodily harm — terrorist activity,hybrid,None,10y,None,summary
 cc83.231(4),hoax causing death — terrorist activity,indictable,None,life,None,None
+cc83.27,terrorist activity,indictable,None,life,None,None
 cc85(1),using firearm in commission of offence,indictable,None,14y,None,None
 cc85(2),using imitation firearm in commission of offence,indictable,None,14y,None,None
 cc86(1),careless use of firearm,hybrid,None,2y,None,summary
@@ -90,12 +93,12 @@ cc98.1,robbery to steal firearm,indictable,None,life,None,None
 cc99(2),weapons trafficking — firearm — first offence,indictable,3y,14y,None,None
 cc99(2),weapons trafficking — firearm — subsequent offence,indictable,5y,14y,None,None
 cc99(3),weapons trafficking — other,indictable,None,14y,None,None
-cc100,possession for purpose of weapons trafficking — firearm — first offence,indictable,3y,14y,None,None
-cc100,possession for purpose of weapons trafficking — firearm — subsequent offence,indictable,5y,14y,None,None
+cc100(2),possession for purpose of weapons trafficking — firearm — first offence,indictable,3y,14y,None,None
+cc100(2),possession for purpose of weapons trafficking — firearm — subsequent offence,indictable,5y,14y,None,None
+cc100(3),possession for purpose of weapons trafficking — other,indictable,None,14y,None,None
 cc101,transfer without authority,hybrid,None,5y,None,summary
 cc102,making automatic firearm,hybrid,1y,10y,None,summary
-cc102.1(1),possession of computer data — firearm manufacture,hybrid,None,10y,None,summary
-cc102.1(2),distribution of computer data — firearm manufacture,hybrid,None,10y,None,summary
+cc102.1,possession or distribution of computer data — firearm manufacture,hybrid,None,10y,None,summary
 cc103(2),importing or exporting knowing it is unauthorized — firearm — first offence,indictable,3y,14y,None,None
 cc103(2),importing or exporting knowing it is unauthorized — firearm — subsequent offence,indictable,5y,14y,None,None
 cc103(3),importing or exporting knowing it is unauthorized — other,indictable,None,14y,None,None
@@ -121,7 +124,7 @@ cc127,disobeying order of court,hybrid,None,2y,None,summary
 cc128,misconduct of officers executing process,hybrid,None,2y,None,summary
 cc129,offences relating to public or peace officer,hybrid,None,2y,None,summary
 cc130,personating peace officer,hybrid,None,5y,None,summary
-cc131,perjury,indictable,None,14y,None,None
+cc132,perjury,indictable,None,14y,None,None
 cc136,witness giving contradictory evidence,indictable,None,14y,None,None
 cc137,fabricating evidence,indictable,None,14y,None,None
 cc138,offences relating to affidavits,indictable,None,14y,None,None
@@ -188,8 +191,7 @@ cc203,placing bets on behalf of others — first offence,indictable,None,2y,None
 cc203,placing bets on behalf of others — second offence,indictable,14d,2y,None,None
 cc203,placing bets on behalf of others — subsequent offence,indictable,3m,2y,None,None
 cc204,contravention — horse racing regulations,hybrid,None,2y,None,summary
-cc206,offence in relation to lotteries and games of chance,indictable,None,2y,None,None
-cc206(1),offence in relation to lotteries and games of chance,summary,None,None,None,summary
+cc206(1),offence in relation to lotteries and games of chance,hybrid,None,2y,None,None
 cc206(4),ticket sales in relation to lotteries and games of chance,summary,None,None,None,summary
 cc207(3)(a),offence — permitted lotteries — unauthorized management or operation,hybrid,None,2y,None,summary
 cc207(3)(b),offence — permitted lotteries — unauthorized participation,summary,None,None,None,summary
@@ -200,19 +202,19 @@ cc213(1),stopping or impeding traffic — sexual services for consideration,summ
 cc213(1.1),communicating to provide sexual services for consideration,summary,None,None,None,summary
 cc215,offence — duty of persons to provide necessaries,hybrid,None,5y,None,summary
 cc218,abandoning child,hybrid,None,5y,None,summary
-cc220,criminal negligence causing death — firearm,indictable,4y,life,None,None
-cc220,criminal negligence causing death — other,indictable,None,life,None,None
+cc220(a),criminal negligence causing death — firearm,indictable,4y,life,None,None
+cc220(b),criminal negligence causing death — other,indictable,None,life,None,None
 cc221,criminal negligence causing bodily harm,hybrid,None,10y,None,summary
-cc229,murder — first degree,indictable,life,life,None,None
-cc229,murder — second degree,indictable,life,life,None,None
-cc236,manslaughter — firearm,indictable,4y,life,None,None
-cc236,manslaughter,indictable,None,life,None,None
+cc231(2),murder — first degree,indictable,life,life,None,None
+cc231(7),murder — second degree,indictable,life,life,None,None
+cc236(a),manslaughter — firearm,indictable,4y,life,None,None
+cc236(b),manslaughter,indictable,None,life,None,None
 cc237,infanticide,hybrid,None,5y,None,summary
 cc238,killing unborn child in act of birth,indictable,None,life,None,None
-cc239,attempt to commit murder — restricted or prohibited firearm — first offence,indictable,5y,life,None,None
-cc239,attempt to commit murder — restricted or prohibited firearm — subsequent offence,indictable,7y,life,None,None
-cc239,attempt to commit murder — firearm,indictable,4y,life,None,None
-cc239,attempt to commit murder,indictable,None,life,None,None
+cc239(1)(a),attempt to commit murder — restricted or prohibited firearm — first offence,indictable,5y,life,None,None
+cc239(1)(a),attempt to commit murder — restricted or prohibited firearm — subsequent offence,indictable,7y,life,None,None
+cc239(1)(a.1),attempt to commit murder — firearm,indictable,4y,life,None,None
+cc239(1)(b),attempt to commit murder,indictable,None,life,None,None
 cc240,accessory after the fact to murder,indictable,None,life,None,None
 cc240.1,removal without informed consent — trafficking in human organs,indictable,None,14y,None,None
 cc241,counselling or aiding suicide,indictable,None,14y,None,None
@@ -226,11 +228,11 @@ cc244(2)(a),discharging firearm with intent — restricted or prohibited firearm
 cc244(2)(a),discharging firearm with intent — restricted or prohibited firearm — subsequent offence,indictable,7y,life,None,None
 cc244(2)(b),discharging firearm with intent,indictable,None,14y,None,None
 cc244.1,causing bodily harm with intent — air gun or pistol,indictable,None,14y,None,None
-cc244.2,discharging firearm — recklessness — restricted or prohibited firearm — first offence,indictable,5y,14y,None,None
-cc244.2,discharging firearm — recklessness — restricted or prohibited firearm — subsequent offence,indictable,7y,14y,None,None
-cc244.2,discharging firearm — recklessness,indictable,None,14y,None,None
-cc245,administering noxious thing — intent to cause bodily harm or endanger life,indictable,None,14y,None,None
-cc245,administering noxious thing — intent to aggrieve or annoy,indictable,None,2y,None,None
+cc244.2(3)(a),discharging firearm — recklessness — restricted or prohibited firearm — first offence,indictable,5y,14y,None,None
+cc244.2(3)(a),discharging firearm — recklessness — restricted or prohibited firearm — subsequent offence,indictable,7y,14y,None,None
+cc244.2(3)(b),discharging firearm — recklessness,indictable,None,14y,None,None
+cc245(1)(a),administering noxious thing — intent to cause bodily harm or endanger life,indictable,None,14y,None,None
+cc245(1)(b),administering noxious thing — intent to aggrieve or annoy,indictable,None,2y,None,None
 cc246,overcoming resistance to commission of offence,indictable,None,life,None,None
 cc247(1),traps likely to cause bodily harm,hybrid,None,5y,None,summary
 cc247(2),traps likely to cause bodily harm — causing bodily harm,hybrid,None,10y,None,summary
@@ -253,45 +255,45 @@ cc270,assaulting a peace officer,hybrid,None,5y,None,summary
 cc270.01,assaulting a peace officer with a weapon or causing bodily harm,hybrid,None,10y,None,summary
 cc270.02,aggravated assault of a peace officer,indictable,None,14y,None,None
 cc270.1,disarming a peace officer,hybrid,None,5y,None,summary
-cc271,sexual assault,hybrid,None,10y,None,18m
-cc271,sexual assault — complainant under 16,hybrid,1y,14y,6m,729d
-cc272,sexual assault with a weapon threats to a third party or causing bodily harm — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,14y,None,None
-cc272,sexual assault with a weapon threats to a third party or causing bodily harm — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,14y,None,None
-cc272,sexual assault with a weapon threats to a third party or causing bodily harm — firearm,indictable,4y,14y,None,None
-cc272,sexual assault with a weapon threats to a third party or causing bodily harm — complainant under 16,indictable,5y,14y,None,None
-cc272,sexual assault with a weapon threats to a third party or causing bodily harm,indictable,None,14y,None,None
-cc273,aggravated sexual assault — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,life,None,None
-cc273,aggravated sexual assault — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,life,None,None
-cc273,aggravated sexual assault — firearm,indictable,4y,life,None,None
-cc273,aggravated sexual assault — complainant under 16,indictable,5y,life,None,None
-cc273,aggravated sexual assault,indictable,None,life,None,None
+cc271(a),sexual assault,hybrid,None,10y,None,18m
+cc271(b),sexual assault — complainant under 16,hybrid,1y,14y,6m,729d
+cc272(2)(a),sexual assault with a weapon threats to a third party or causing bodily harm — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,14y,None,None
+cc272(2)(a),sexual assault with a weapon threats to a third party or causing bodily harm — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,14y,None,None
+cc272(2)(a.1),sexual assault with a weapon threats to a third party or causing bodily harm — firearm,indictable,4y,14y,None,None
+cc272(2)(a.2),sexual assault with a weapon threats to a third party or causing bodily harm — complainant under 16,indictable,5y,14y,None,None
+cc272(2)(b),sexual assault with a weapon threats to a third party or causing bodily harm,indictable,None,14y,None,None
+cc273(2)(a),aggravated sexual assault — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,life,None,None
+cc273(2)(a),aggravated sexual assault — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,life,None,None
+cc273(2)(a.1),aggravated sexual assault — firearm,indictable,4y,life,None,None
+cc273(2)(a.2),aggravated sexual assault — complainant under 16,indictable,5y,life,None,None
+cc273(2)(b),aggravated sexual assault,indictable,None,life,None,None
 cc273.3,removal of child from canada — sexual offences,hybrid,None,5y,None,summary
-cc279(1),kidnapping — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,life,None,None
-cc279(1),kidnapping — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,life,None,None
-cc279(1),kidnapping — firearm,indictable,4y,life,None,None
-cc279(1),kidnapping — complainant under 16,indictable,5y,life,None,None
-cc279(1),kidnapping,indictable,None,life,None,None
+cc279(1.1)(a),kidnapping — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,life,None,None
+cc279(1.1)(a),kidnapping — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,life,None,None
+cc279(1.1)(a.1),kidnapping — firearm,indictable,4y,life,None,None
+cc279(1.1)(a.2),kidnapping — complainant under 16,indictable,5y,life,None,None
+cc279(1.1)(b),kidnapping,indictable,None,life,None,None
 cc279(2),forcible confinement,hybrid,None,10y,None,summary
-cc279.01,trafficking in persons — additional violent offence,indictable,5y,life,None,None
-cc279.01,trafficking in persons,indictable,None,14y,None,None
-cc279.011,trafficking of a person under the age of eighteen years — additional violent offence,indictable,6y,life,None,None
-cc279.011,trafficking of a person under the age of eighteen years,indictable,5y,14y,None,None
+cc279.01(1)(a),trafficking in persons — additional violent offence,indictable,5y,life,None,None
+cc279.01(1)(b),trafficking in persons,indictable,None,14y,None,None
+cc279.011(1)(a),trafficking of a person under the age of eighteen years — additional violent offence,indictable,6y,life,None,None
+cc279.011(1)(b),trafficking of a person under the age of eighteen years,indictable,5y,14y,None,None
 cc279.02(1),material benefit — trafficking,hybrid,None,10y,None,summary
 cc279.02(2),material benefit — trafficking of person under 18 years,indictable,2y,14y,None,None
 cc279.03(1),withholding or destroying documents — trafficking,hybrid,None,5y,None,summary
 cc279.03(2),withholding or destroying documents — trafficking of person under 18 years,indictable,1y,14y,None,None
-cc279.1,hostage taking — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,life,None,None
-cc279.1,hostage taking — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,life,None,None
-cc279.1,hostage taking — firearm,indictable,4y,life,None,None
-cc279.1,hostage taking,indictable,None,life,None,None
+cc279.1(2)(a),hostage taking — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,life,None,None
+cc279.1(2)(a),hostage taking — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,life,None,None
+cc279.1(2)(a.1),hostage taking — firearm,indictable,4y,life,None,None
+cc279.1(2)(b),hostage taking,indictable,None,life,None,None
 cc280,abduction of person under age of 16,hybrid,None,5y,None,summary
 cc281,abduction of person under age of 14,hybrid,None,10y,None,summary
 cc282,abduction in contravention of custody or parenting order,hybrid,None,10y,None,summary
 cc283,abduction,hybrid,None,10y,None,summary
-cc286.1(1),obtaining sexual services for consideration — public place — first offence,hybrid,2000$,5y,1000$,729d-5000$-729d&5000$
-cc286.1(1),obtaining sexual services for consideration — public place — subsequent offence,hybrid,4000$,5y,2000$,729d-5000$-729d&5000$
-cc286.1(1),obtaining sexual services for consideration — first offence,hybrid,1000$,5y,500$,729d-5000$-729d&5000$
-cc286.1(1),obtaining sexual services for consideration — subsequent offence,hybrid,2000$,5y,1000$,729d-5000$-729d&5000$
+cc286.1(1)(a)(i),obtaining sexual services for consideration — public place — first offence,hybrid,2000$,5y,1000$,729d-5000$-729d&5000$
+cc286.1(1)(a)(i),obtaining sexual services for consideration — public place — subsequent offence,hybrid,4000$,5y,2000$,729d-5000$-729d&5000$
+cc286.1(1)(a)(ii),obtaining sexual services for consideration — first offence,hybrid,1000$,5y,500$,729d-5000$-729d&5000$
+cc286.1(1)(a)(ii),obtaining sexual services for consideration — subsequent offence,hybrid,2000$,5y,1000$,729d-5000$-729d&5000$
 cc286.1(2),obtaining sexual services for consideration from person under 18 years — first offence,indictable,6m,10y,None,None
 cc286.1(2),obtaining sexual services for consideration from person under 18 years — subsequent offence,indictable,1y,10y,None,None
 cc286.2(1),material benefit from sexual services,hybrid,None,10y,None,summary
@@ -299,8 +301,8 @@ cc286.2(2),material benefit from sexual services provided by person under 18 yea
 cc286.3(1),procuring,indictable,None,14ym,None,None
 cc286.3(2),procuring — person under 18 years,indictable,5y,14y,None,None
 cc286.4,advertising sexual services,hybrid,None,5y,None,summary
-cc290,bigamy,hybrid,None,5y,None,summary
-cc291,procuring feigned marriage,hybrid,None,5y,None,summary
+cc291,bigamy,hybrid,None,5y,None,summary
+cc292,procuring feigned marriage,hybrid,None,5y,None,summary
 cc293,polygamy,hybrid,None,5y,None,summary
 cc293.1,forced marriage,hybrid,None,5y,None,summary
 cc293.2,marriage under age of 16 years,hybrid,None,5y,None,summary
@@ -363,8 +365,9 @@ cc333.2(2),distribution of device linked to theft,hybrid,None,10y,None,summary
 cc334(a),theft over $5000,hybrid,None,10y,None,summary
 cc334(b),theft under $5000,hybrid,None,2y,None,summary
 cc335,taking motor vehicle or vessel or found therein without consent,summary,None,None,None,summary
-cc335,criminal breach of trust,indictable,None,14y,None,None
-cc338,fraudulently taking cattle,hybrid,None,10y,None,summary
+cc336,criminal breach of trust,indictable,None,14y,None,None
+cc338(1),fraudulently taking cattle or defacing brand,hybrid,None,5y,None,summary
+cc338(2),theft of cattle,hybrid,None,10y,None,summary
 cc339(1),taking possession of drift timber,hybrid,None,5y,None,summary
 cc339(2),dealer in second-hand goods U2014 — registered lumbering equipment,summary,None,None,None,summary
 cc340,destroying documents of title,hybrid,None,10y,None,summary
@@ -374,17 +377,16 @@ cc342(3),unauthorized use of credit card data,hybrid,None,10y,None,summary
 cc342.01,instruments for copying credit card data or forging or falsifying credit cards,hybrid,None,10y,None,summary
 cc342.1,unauthorized use of computer,hybrid,None,10y,None,summary
 cc342.2,possession of device to obtain unauthorized use of computer system or commit mischief,hybrid,None,2y,None,summary
-cc344,robbery — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,life,None,None
-cc344,robbery — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,life,None,None
-cc344,robbery,indictable,None,life,None,None
+cc344(1)(a)(i),robbery — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,life,None,None
+cc344(1)(a)(ii),robbery — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,life,None,None
+cc344(1)(b),robbery,indictable,None,life,None,None
 cc345,stopping mail with intent,indictable,None,life,None,None
-cc346,extortion — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,life,None,None
-cc346,extortion — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,life,None,None
-cc346,extortion,indictable,None,life,None,None
+cc346(1.1)(a)(i),extortion — restricted or prohibited firearm or criminal organization — first offence,indictable,5y,life,None,None
+cc346(1.1)(a)(ii),extortion — restricted or prohibited firearm or criminal organization — subsequent offence,indictable,7y,life,None,None
+cc346(1.1)(b),extortion,indictable,None,life,None,None
 cc347,criminal interest rate,hybrid,None,5y,None,25000$-729d-729d&25000$
 cc348(1)(d),breaking and entering with intent committing offence or breaking out — dwelling-house,indictable,None,life,None,None
-cc348(1)(e),breaking and entering with intent committing offence or breaking out — non-dwelling-house,indictable,None,10y,None,None
-cc348(1)(e),breaking and entering with intent committing offence or breaking out — non-dwelling-house,summary,None,None,summary,None
+cc348(1)(e),breaking and entering with intent committing offence or breaking out — non-dwelling-house,hybrid,None,10y,summary,None
 cc349,being unlawfully in dwelling-house,hybrid,None,10y,None,summary
 cc351(1),possession of break-in instrument,hybrid,None,10y,None,summary
 cc351(2),disguise with intent,hybrid,None,10y,None,summary
@@ -397,8 +399,8 @@ cc355.5(a),possessing or trafficking in property obtained by crime — over $500
 cc355.5(b),possessing or trafficking in property obtained by crime — under $5000,hybrid,None,5y,None,summary
 cc356,theft from mail,hybrid,None,10y,None,summary
 cc357,bringing into canada property obtained by crime,hybrid,None,10y,None,summary
-cc362(2),false pretence or false statement — theft over $5000,hybrid,None,10y,None,summary
-cc362(2),false pretence or false statement — theft under $5000,hybrid,None,2y,None,summary
+cc362(2)(a),false pretence or false statement — theft over $5000,hybrid,None,10y,None,summary
+cc362(2)(b),false pretence or false statement — theft under $5000,hybrid,None,2y,None,summary
 cc362(3),false pretence or false statemetn — other,hybrid,None,10y,None,summary
 cc363,obtaining execution of valuable security by fraud,hybrid,None,5y,None,summary
 cc364,fraudulently obtaining food beverage or accommodation,summary,None,None,None,summary
@@ -416,9 +418,10 @@ cc376(2),counterfeiting mark,indictable,None,14y,None,None
 cc377,damaging documents,hybrid,None,5y,None,summary
 cc378,offences in relation to registers,hybrid,None,5y,None,summary
 cc380(1)(a),fraud — over $5000,indictable,None,14y,None,None
-cc380(1)(a),fraud — under $5000,hybrid,None,2y,None,summary
+cc380(1)(b),fraud — under $5000,hybrid,None,2y,None,summary
 cc380(1.1),fraud — over $1000000,indictable,2y,14y,None,None
 cc380(2),fraud — affecting public market,indictable,None,14y,None,None
+cc380.2,failure to comply with prohibition order,hybrid,None,2y,None,summary
 cc381,using mails to defraud,hybrid,None,2y,None,summary
 cc382,fraudulent manipulation of stock exchange transactions,hybrid,None,10y,None,summary
 cc382.1(1),prohibited insider trading,hybrid,None,10y,None,summary
@@ -433,12 +436,14 @@ cc389,fraudlent disposal of goods on which money advanced,hybrid,None,2y,None,su
 cc390,fraudulent receipts under bank act,hybrid,None,2y,None,summary
 cc391,trade secret,hybrid,None,14y,None,summary
 cc392,disposal of property to defraud creditors,hybrid,None,2y,None,summary
-cc393(1),fraud in relation to fares,hybrid,None,2y,None,summary
+cc393(1),commit fraud in relation to fares,hybrid,None,2y,None,summary
+cc393(2),enduce fraud in relation to fares,hybrid,None,2y,None,summary
 cc393(3),fraudulently obtaining transportation,summary,None,None,None,summary
 cc394,fraud in relation to valuable minerals,hybrid,None,5y,None,summary
 cc394.1,possession of stolen or fraudulently obtained valuable minerals,hybrid,None,5y,None,summary
 cc396,offences in relation to mines,hybrid,None,10y,None,summary
-cc397,falsification of books and documents,hybrid,None,5y,None,summary
+cc397(1),falsification of books and documents,hybrid,None,5y,None,summary
+cc397(2),being privy to falsification of books and documents,hybrid,None,5y,None,summary
 cc398,falsifying employment record,summary,None,None,None,summary
 cc399,false return by public officer,hybrid,None,5y,None,summary
 cc400,false prospectus,hybrid,None,10y,None,summary
@@ -467,6 +472,7 @@ cc424.1,threat against united nations or associated personnel,hybrid,None,10y,No
 cc425,offences by employers,summary,None,None,None,summary
 cc425.1,threats and retaliation against employees,hybrid,None,5y,None,summary
 cc426,secret commissions,hybrid,None,5y,None,summary
+cc430(2),mischief — endangering life,indictable,None,life,None,None
 cc430(3),mischief — over $5000,hybrid,None,10y,None,summary
 cc430(4),mischief — under $5000,hybrid,None,2y,None,summary
 cc430(4.1),mischief — religious property educational institutions,hybrid,None,10y,None,summary
@@ -478,7 +484,7 @@ cc430(5),mischief — computer data,hybrid,None,10y,None,summary
 cc430(5.1),mischief — omitting to prevent mischief to data,hybrid,None,10y,None,summary
 cc431,attack on premises residence or transport of internationally protected person,indictable,None,14y,None,None
 cc431.1,attack on premises residence or transport of united nations or associated personnel,indictable,None,14y,None,None
-cc431.2(2),explosive or other lethal device,indictable,None,life,None,None
+cc431.2,explosive or other lethal device,indictable,None,life,None,None
 cc432(1),unauthorized recording of a movie,hybrid,None,2y,None,summary
 cc432(2),unauthorized recording for purpose of sale,hybrid,None,5y,None,summary
 cc433,arson — disregard for human life,indictable,None,life,None,None
@@ -496,8 +502,8 @@ cc441,occupant injuring building,hybrid,None,5y,None,summary
 cc442,interfering with boundary lines,summary,None,None,None,summary
 cc443,interfering with international boundary marks,hybrid,None,5y,None,summary
 cc445,injuring or endangering other animals,hybrid,None,5y,None,10000$-729d-729d&10000$
-cc445.01,killing or injuring certain animals,hybrid,None,5y,None,10000$-729d-729d&10000$
-cc445.01,killing or injuring certain animals — law enforcement animal killed,indictable,6m,5y,None,None
+cc445.01(2)(a),killing or injuring certain animals — law enforcement animal killed,indictable,6m,5y,None,None
+cc445.01(2)(b),killing or injuring certain animals,hybrid,None,5y,None,10000$-729d-729d&10000$
 cc445.1,causing unnecessary suffering — animals,hybrid,None,5y,None,10000$-729d-729d&10000$
 cc445.2,owning or breeding cetaceans,summary,None,None,None,200000$
 cc446,causing damage or injury — animals,hybrid,None,2y,None,summary
@@ -514,8 +520,8 @@ cc457,likeness of bank notes,summary,None,None,None,summary
 cc458,making having or dealing in instruments for counterfeiting,indictable,None,14y,None,None
 cc459,conveying instruments for coining out of mint,indictable,None,14y,None,None
 cc460,advertising and dealing in counterfeit money,hybrid,None,5y,None,summary
-cc462(1),laundering proceeds of crime,hybrid,None,10y,None,summary
-cc462(2.1),laundering proceeds of crime — criminal organization,indictable,None,14y,None,None
+cc462.31(1),laundering proceeds of crime,hybrid,None,10y,None,summary
+cc462.31(2.1),laundering proceeds of crime — criminal organization,indictable,None,14y,None,None
 cc463(a),attempts accessories — punishable by life,indictable,None,14y,None,None
 cc463(b),attempts accessories — punishable by 14y or less,indictable,None,7y,None,None
 cc463(c),attemps accessories — summary conviction,summary,None,None,None,summary
@@ -549,6 +555,7 @@ cc648,failure to comply with publication ban — jury evidence,summary,None,None
 cc649,disclosure of jury proceedings,summary,None,None,None,summary
 cc672.37,improper application for federal employment,summary,None,None,None,summary
 672.501,failure to comply with order restricting publication — sexual offences,summary,None,None,None,summary
+cc708,contempt,summary,None,None,None,100$-90d-90d&100$
 cc732.11,improper use or disclosure of bodily substances seized — probatin order,summary,None,None,None,summary
 cc733.1,failure to comply with probation order,hybrid,None,4y,None,summary
 cc742.31,improper use or disclosure of bodily substances seized — conditional sentence,summary,None,None,None,summary
