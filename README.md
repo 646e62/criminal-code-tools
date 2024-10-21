@@ -2,8 +2,8 @@
 Sentence calculation tools for Criminal Code, RSC 1985, c C-46
 
 ```python
-from main import parse_offence
-parse_offence("cc266")
+> from main import parse_offence
+> parse_offence("cc266")
 {'section': 'cc266',
  'description': 'assault',
  'mode': 'hybrid',
