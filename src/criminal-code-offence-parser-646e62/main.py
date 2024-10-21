@@ -1,5 +1,5 @@
 import csv
-from .constants import (
+from constants import (
     PRIMARY_DESIGNATED_DNA_OFFENCES,
     SECONDARY_DESIGNATED_DNA_OFFENCES,
     EXCLUDED_CSO_OFFENCES,
@@ -8,7 +8,7 @@ from .constants import (
 )
 
 # Open the CSV file
-with open("./data/cc-offences-2024-9-16.csv") as csvfile:
+with open("data/cc-offences-2024-9-16.csv") as csvfile:
     csvreader = csv.reader(csvfile)
     data = list(csvreader)
 
@@ -136,6 +136,29 @@ def cso_available(
         return "Yes"
 
 
+def check_inadmissibility(section, mode, indictable_maximum):
+    """
+    Checks to see whether the offence renders the defendant liable for IRPA
+    consequences.
+    """
+    inadmissibilty_list = []
+
+    if section in TERRORISM_OFFENCES:
+        inadmissibilty_list.append(("permanent resident", "irpa34(1)", "security"))
+        inadmissibilty_list.append(("foreign national", "irpa34(1)", "security"))
+    if section == "cc240.1":
+        inadmissibilty_list.append(("permanent resident", "irpa35(1)(c.1)", "human or international rights violations"))
+        inadmissibilty_list.append(("foreign national", "irpa35(1)(c.1)", "human or international rights violations"))
+    
+    if indictable_maximum >= 10:
+        inadmissibilty_list.append(("permanent resident", "irpa36(1)", "serious criminality"))
+        inadmissibilty_list.append(("foreign national", "irpa36(1)", "serious criminality"))
+
+    if mode == "hybrid" or mode == "indictable":
+        inadmissibilty_list.append(("foreign national", "irpa36(2)", "criminality"))
+
+    return inadmissibilty_list
+
 def parse_offence(offence, mode="summary"):
     """
     Parse the offence data for a given offence.
@@ -173,6 +196,9 @@ def parse_offence(offence, mode="summary"):
             )
             parsed_offence["dna_designation"] = check_dna_designation(
                 row, mode, indictable_maximum_quantum
+            )
+            parsed_offence["inadmissibility"] = check_inadmissibility(
+                row[0], mode, int(indictable_maximum_quantum["amount"])
             )
 
             return parsed_offence
