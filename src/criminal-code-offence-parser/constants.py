@@ -51,3 +51,14 @@ SECONDARY_DESIGNATED_DNA_OFFENCES = [
     "cc436.1", "cc438(1)", "cc439", "cc441", "cc443", "cc451", "cc460", "cc465(1)(b)(i)",
     "cc465(1)(b)(ii)", "cc753.3", 
 ]
+
+# cc515(4.1)
+VIOLENCE_USED_THREATENED_ATTEMPTED_OFFENCES = [
+    "cc46(1)", "cc46(2)", "cc65(1)", "cc65(2)", "cc74", "cc75", "cc76", "cc78.1(4)",
+    "cc87", "cc88", 
+]
+
+SECTION_469_OFFENCES = [
+    "cc46(1)", "cc46(2)", "cc51", "cc53", "cc61", "cc74", "cc75", "cc231(2)", "cc231(7)", 
+    "cc119",
+]
