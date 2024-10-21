@@ -8,7 +8,7 @@ from .constants import (
 )
 
 # Open the CSV file
-with open("offences-v3.csv") as csvfile:
+with open("./data/cc-offences-2024-9-16.csv") as csvfile:
     csvreader = csv.reader(csvfile)
     data = list(csvreader)
 
