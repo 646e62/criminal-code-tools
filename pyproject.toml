@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "criminal_code_offence_parser_646e62"
+name = "criminal_code_offence_parser"
 version = "0.0.2"
 authors = [
   { name="Daniel Booy", email="daniel@danielbooy.com" },
@@ -12,7 +12,6 @@ description = "A small example package"
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
-    "Criminal Code of Canada :: Python :: GPL License",
 ]
 
 [project.urls]
