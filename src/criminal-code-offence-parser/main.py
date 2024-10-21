@@ -8,7 +8,7 @@ from constants import (
 )
 
 # Open the CSV file
-with open("data/cc-offences-2024-9-16.csv") as csvfile:
+with open("data/cc-offences-2024-09-16.csv") as csvfile:
     csvreader = csv.reader(csvfile)
     data = list(csvreader)
 
@@ -42,26 +42,23 @@ def check_dna_designation(offence, mode, quantum):
     Check if the offence is a designated DNA offence.
     """
 
-    designated_offence = {
-        "primary": False,
-        "secondary": False,
-    }
-
-    quantum_int = int(quantum["amount"])
+    try:
+        quantum_int = int(quantum["amount"])
+    except:
+        quantum_int = 0
 
     if offence[0] in PRIMARY_DESIGNATED_DNA_OFFENCES:
-        designated_offence["primary"] = True
+        return "primary"
     elif offence[0] in SECONDARY_DESIGNATED_DNA_OFFENCES:
-        designated_offence["secondary"] = True
-
+        return "secondary"
     elif (
         (mode == "indictable" or mode == "hybrid")
         and quantum["unit"] == "years"
         and quantum_int >= 5
     ):
-        designated_offence["secondary"] = True
-
-    return designated_offence
+        return "secondary"
+    else:
+        return None
 
 
 def parse_quantum(quantum):
@@ -89,7 +86,7 @@ def parse_quantum(quantum):
     return parsed_quantum
 
 
-def cso_available(
+def check_cso_availablity(
     section, summary_minimum, indictable_minimum, indictable_maximum, mode
 ):
     """
@@ -104,36 +101,72 @@ def cso_available(
       - Prosecuted by indictment
     """
 
-    indictable_maximum = indictable_maximum["amount"]
+    try:
+        indictable_maximum = int(indictable_maximum["amount"])
+    except:
+        indictable_maximum = 0
+    cso_available = {
+    }
 
     if summary_minimum["amount"] or indictable_minimum["amount"]:
-        return "No"
+        cso_available["section"] = "cc742.1(b)"
+        cso_available["status"] = "unavailable"
+        cso_available["reason"] = "mandatory minimum term of imprisonment"
+        
+        return cso_available
+
     elif section in EXCLUDED_CSO_OFFENCES:
-        return "No"
+        cso_available["section"] = "cc742.1(c)"
+        cso_available["status"] = "unavailable"
+        cso_available["reason"] = "enumerated excluded offence"
+        
+        return cso_available
+    
     elif (
         section in TERRORISM_OFFENCES
         and indictable_maximum >= 10
         and mode == "indictable"
     ):
-        return "No"
+        cso_available["section"] = "cc742.1(d)"
+        cso_available["status"] = "unavailable"
+        cso_available["reason"] = "serious indictable terrorism offence"
+
+        return cso_available
+    
     elif (
         section in TERRORISM_OFFENCES and indictable_maximum >= 10 and mode == "hybrid"
     ):
-        return "Summary: Yes, Indictment: No"
+        cso_available["section"] = "cc742.1(d)"
+        cso_available["status"] = "available (summary conviction only)"
+        cso_available["reason"] = "serious indictable terrorism offence"
+
+        return cso_available
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
         and indictable_maximum >= 10
         and mode == "indictable"
     ):
-        return "No"
+        cso_available["section"] = "cc742.1(d)"
+        cso_available["status"] = "unavailable"
+        cso_available["reason"] = "serious indictable criminal organization offence"
+
+        return cso_available
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
         and indictable_maximum >= 10
         and mode == "hybrid"
     ):
-        return "No"
+        cso_available["section"] = "cc742.1(d)"
+        cso_available["status"] = "available (summary conviction only)"
+        cso_available["reason"] = "serious indictable criminal organization offence"
+
+        return cso_available
     else:
-        return "Yes"
+        cso_available["section"] = "cc742.1"
+        cso_available["status"] = "available"
+        cso_available["reason"] = None
+
+        return cso_available
 
 
 def check_inadmissibility(section, mode, indictable_maximum):
@@ -143,21 +176,32 @@ def check_inadmissibility(section, mode, indictable_maximum):
     """
     inadmissibilty_list = []
 
+    try:
+        indictable_maximum = int(indictable_maximum)
+    except:
+        indictable_maximum = 0
+
     if section in TERRORISM_OFFENCES:
-        inadmissibilty_list.append(("permanent resident", "irpa34(1)", "security"))
-        inadmissibilty_list.append(("foreign national", "irpa34(1)", "security"))
-    if section == "cc240.1":
-        inadmissibilty_list.append(("permanent resident", "irpa35(1)(c.1)", "human or international rights violations"))
-        inadmissibilty_list.append(("foreign national", "irpa35(1)(c.1)", "human or international rights violations"))
+        inadmissibilty_list.append({"section": "irpa34(1)", "status": "permanent resident", "reason": "security"})
     
+    if section == "cc240.1":
+        inadmissibilty_list.append({"section": "irpa35(1)(c.1)", "status": "permanent resident", "reason": "human or international rights violations"})
+        inadmissibilty_list.append({"section": "irpa35(1)(c.1)", "status": "foreign national", "reason": "human or international rights violations"})
+
     if indictable_maximum >= 10:
-        inadmissibilty_list.append(("permanent resident", "irpa36(1)", "serious criminality"))
-        inadmissibilty_list.append(("foreign national", "irpa36(1)", "serious criminality"))
+        inadmissibilty_list.append({"section": "irpa36(1)", "status": "permanent resident", "reason": "serious criminality"})
+        inadmissibilty_list.append({"section": "irpa36(1)", "status": "foreign national", "reason": "serious criminality"})
 
     if mode == "hybrid" or mode == "indictable":
-        inadmissibilty_list.append(("foreign national", "irpa36(2)", "criminality"))
+        inadmissibilty_list.append({"section": "irpa36(2)", "status": "foreign national", "reason": "criminality"})
 
     return inadmissibilty_list
+
+def check_mandatory_weapons_prohibition_recognizance(section):
+    pass
+
+def reverse_onus():
+    pass
 
 def parse_offence(offence, mode="summary"):
     """
@@ -187,7 +231,7 @@ def parse_offence(offence, mode="summary"):
             parsed_offence["indictable_minimum"] = indictable_minimum_quantum
             parsed_offence["indictable_maximum"] = indictable_maximum_quantum
             parsed_offence["prelim_available"] = prelim_available
-            parsed_offence["cso_available"] = cso_available(
+            parsed_offence["cso_available"] = check_cso_availablity(
                 row[0],
                 summary_minimum_quantum,
                 indictable_minimum_quantum,
@@ -198,7 +242,7 @@ def parse_offence(offence, mode="summary"):
                 row, mode, indictable_maximum_quantum
             )
             parsed_offence["inadmissibility"] = check_inadmissibility(
-                row[0], mode, int(indictable_maximum_quantum["amount"])
+                row[0], mode, indictable_maximum_quantum["amount"]
             )
 
             return parsed_offence

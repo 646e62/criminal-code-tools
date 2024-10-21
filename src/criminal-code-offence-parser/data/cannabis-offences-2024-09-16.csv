@@ -1,0 +1,10 @@
+section,offence_name,minimum_indictable,maximum_indictable,minimum_sc,maximum_sc
+cannabis8,cannabis possession,None,1824d,None,5000$&6m
+cannabis9(5)(b)(i),cannabis distribution,None,14y,None,5000$&6m
+cannabis9(5)(b)(ii),cannabis distribution — recipient under 18,None,14y,None,15000$&18m
+cannabis10(5)(b)(i),selling cannabis,None,14y,None,5000$&6m
+cannabis10(5)(b)(ii),selling cannabis — recipient under 18,None,14y,None,15000$&18m
+cannabis11,cannabis importing and exporting,None,14y,None,5000$&6m
+cannabis12,cannabis production,None,14y,None,5000$&6m
+cannabis13,cannabis possession for use in production or distribution of illicit cannabis,None,7y,None,5000$&6m
+cannabis14,use of young person,,14y,None,15000$&18m
