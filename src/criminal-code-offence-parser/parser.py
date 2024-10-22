@@ -7,6 +7,7 @@ from constants import (
     SECTION_469_OFFENCES,
 )
 
+
 def check_offence_type(offence):
     """
     Check the type of offence for a given offence.
@@ -99,23 +100,22 @@ def check_cso_availablity(
         indictable_maximum = int(indictable_maximum["amount"])
     except:
         indictable_maximum = 0
-    cso_available = {
-    }
+    cso_available = {}
 
     if summary_minimum["amount"] or indictable_minimum["amount"]:
         cso_available["section"] = "cc742.1(b)"
         cso_available["status"] = "unavailable"
         cso_available["reason"] = "mandatory minimum term of imprisonment"
-        
+
         return cso_available
 
     elif section in EXCLUDED_CSO_OFFENCES:
         cso_available["section"] = "cc742.1(c)"
         cso_available["status"] = "unavailable"
         cso_available["reason"] = "enumerated excluded offence"
-        
+
         return cso_available
-    
+
     elif (
         section in TERRORISM_OFFENCES
         and indictable_maximum >= 10
@@ -126,7 +126,7 @@ def check_cso_availablity(
         cso_available["reason"] = "serious indictable terrorism offence"
 
         return cso_available
-    
+
     elif (
         section in TERRORISM_OFFENCES and indictable_maximum >= 10 and mode == "hybrid"
     ):
@@ -176,20 +176,57 @@ def check_inadmissibility(section, mode, indictable_maximum):
         indictable_maximum = 0
 
     if section in TERRORISM_OFFENCES:
-        inadmissibilty_list.append({"section": "irpa34(1)", "status": "permanent resident", "reason": "security"})
-    
+        inadmissibilty_list.append(
+            {
+                "section": "irpa34(1)",
+                "status": "permanent resident",
+                "reason": "security",
+            }
+        )
+
     if section == "cc240.1":
-        inadmissibilty_list.append({"section": "irpa35(1)(c.1)", "status": "permanent resident", "reason": "human or international rights violations"})
-        inadmissibilty_list.append({"section": "irpa35(1)(c.1)", "status": "foreign national", "reason": "human or international rights violations"})
+        inadmissibilty_list.append(
+            {
+                "section": "irpa35(1)(c.1)",
+                "status": "permanent resident",
+                "reason": "human or international rights violations",
+            }
+        )
+        inadmissibilty_list.append(
+            {
+                "section": "irpa35(1)(c.1)",
+                "status": "foreign national",
+                "reason": "human or international rights violations",
+            }
+        )
 
     if indictable_maximum >= 10:
-        inadmissibilty_list.append({"section": "irpa36(1)", "status": "permanent resident", "reason": "serious criminality"})
-        inadmissibilty_list.append({"section": "irpa36(1)", "status": "foreign national", "reason": "serious criminality"})
+        inadmissibilty_list.append(
+            {
+                "section": "irpa36(1)",
+                "status": "permanent resident",
+                "reason": "serious criminality",
+            }
+        )
+        inadmissibilty_list.append(
+            {
+                "section": "irpa36(1)",
+                "status": "foreign national",
+                "reason": "serious criminality",
+            }
+        )
 
     if mode == "hybrid" or mode == "indictable":
-        inadmissibilty_list.append({"section": "irpa36(2)", "status": "foreign national", "reason": "criminality"})
+        inadmissibilty_list.append(
+            {
+                "section": "irpa36(2)",
+                "status": "foreign national",
+                "reason": "criminality",
+            }
+        )
 
     return inadmissibilty_list
+
 
 def check_section_469_offence(section):
     if section in SECTION_469_OFFENCES:
@@ -197,8 +234,18 @@ def check_section_469_offence(section):
     else:
         return False
 
-def check_mandatory_weapons_prohibition_recognizance(section):
+
+def check_section_515_mandatory_weapons_prohibition(section):
     pass
 
+
 def reverse_onus():
+    pass
+
+def check_discharge_available(section, summary_minimum, indictable_minimum):
+    """
+    Discharges are available when the following conditions obtain:
+    - The offence does not have a mandatory minimum of any kind
+    - The offence is not punishable by 14y or greater
+    """
     pass
