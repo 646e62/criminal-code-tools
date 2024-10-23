@@ -8,6 +8,7 @@ from parser import (
     check_cso_availablity,
     check_inadmissibility,
     check_dna_designation,
+    check_discharge_available,
 )
 
 # Open the CSV file
@@ -48,7 +49,6 @@ def parse_offence(offence, mode="summary"):
             parsed_offence["indictable_maximum"] = indictable_maximum_quantum
 
             # Procedural rights
-            parsed_offence["section_469_offence"] = section_469_offence
             parsed_offence["prelim_available"] = prelim_available
 
             # Sentencing options
@@ -58,6 +58,12 @@ def parse_offence(offence, mode="summary"):
                 indictable_minimum_quantum,
                 indictable_maximum_quantum,
                 mode,
+            )
+
+            parsed_offence["discharge_available"] = check_discharge_available(
+                summary_minimum_quantum, 
+                indictable_minimum_quantum, 
+                indictable_maximum_quantum,
             )
 
             # Collateral consequences
