@@ -59,11 +59,16 @@ def check_prelim_available(offence):
     else:
         return False
 
+
 def reverse_onus():
     pass
 
 
 def check_section_469_offence(section):
+    """
+    
+    """
+
     if section in SECTION_469_OFFENCES:
         return True
     else:
@@ -77,6 +82,7 @@ def check_discharge_available(section, summary_minimum, indictable_minimum):
     - The offence does not have a mandatory minimum of any kind
     - The offence is not punishable by 14y or greater
     """
+
     pass
 
 
@@ -95,18 +101,46 @@ def check_cso_availablity(
       - Prosecuted by indictment
     """
 
+    # Convert None values to a comparable integer
     try:
         indictable_maximum = int(indictable_maximum["amount"])
     except:
         indictable_maximum = 0
+
     cso_available = {}
 
-    if summary_minimum["amount"] or indictable_minimum["amount"]:
-        cso_available["section"] = "cc742.1(b)"
-        cso_available["status"] = "unavailable"
-        cso_available["reason"] = "mandatory minimum term of imprisonment"
+    if summary_minimum["amount"]:
+        punishment = parse_quantum(summary_minimum["amount"])
 
-        return cso_available
+        if punishment["unit"] == "d" or punishment["unit"] == "m" or punishment["unit"] == "y":  
+            cso_available["section"] = "cc742.1(b)"
+            cso_available["status"] = "unavailable"
+            cso_available["reason"] = "mandatory minimum term of imprisonment"
+
+            return cso_available
+        
+        else:
+            cso_available["section"] = "cc742.1"
+            cso_available["status"] = "available"
+            cso_available["reason"] = None
+
+            return cso_available
+
+
+    elif indictable_minimum["amount"]:
+        punishment = parse_quantum(indictable_minimum["amount"])
+
+        if punishment["unit"] == "d" or punishment["unit"] == "m" or punishment["unit"] == "y":
+            cso_available["section"] = "cc742.1(b)"
+            cso_available["status"] = "unavailable"
+            cso_available["reason"] = "mandatory minimum term of imprisonment"
+
+            return cso_available
+        
+        else:
+            cso_available["section"] = "cc742.1"
+            cso_available["status"] = "available"
+            cso_available["reason"] = None
 
     elif section in EXCLUDED_CSO_OFFENCES:
         cso_available["section"] = "cc742.1(c)"
@@ -134,6 +168,7 @@ def check_cso_availablity(
         cso_available["reason"] = "serious indictable terrorism offence"
 
         return cso_available
+    
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
         and indictable_maximum >= 10
@@ -144,6 +179,7 @@ def check_cso_availablity(
         cso_available["reason"] = "serious indictable criminal organization offence"
 
         return cso_available
+    
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
         and indictable_maximum >= 10
@@ -154,6 +190,7 @@ def check_cso_availablity(
         cso_available["reason"] = "serious indictable criminal organization offence"
 
         return cso_available
+    
     else:
         cso_available["section"] = "cc742.1"
         cso_available["status"] = "available"
@@ -226,6 +263,7 @@ def check_inadmissibility(section, mode, indictable_maximum):
         )
 
     return inadmissibilty_list
+
 
 # Ancillary orders
 def check_dna_designation(offence, mode, quantum):
