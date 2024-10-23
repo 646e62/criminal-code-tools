@@ -7,7 +7,7 @@ from constants import (
     SECTION_469_OFFENCES,
 )
 
-
+# Basic metadata
 def check_offence_type(offence):
     """
     Check the type of offence for a given offence.
@@ -21,6 +21,34 @@ def check_offence_type(offence):
         return "hybrid"
 
 
+def parse_quantum(quantum):
+    """
+    Parse the quantum of the offence.
+    """
+    parsed_quantum = {}
+
+    if quantum == "":
+        parsed_quantum["amount"] = None
+        parsed_quantum["unit"] = None
+        return parsed_quantum
+
+    # 
+    # Update to reflect the maximum fine amount
+    if quantum == "sc":
+        quantum = "729d"
+
+    unit_mappings = {"y": "years", "m": "months", "d": "days", "$": "dollars"}
+    unit = unit_mappings.get(quantum[-1], quantum[-1])
+
+    # Assign all but the last character of the quantum string to the value variable
+    value = quantum[:-1]
+    parsed_quantum["amount"] = value
+    parsed_quantum["unit"] = unit
+
+    return parsed_quantum
+
+
+# Procedural rights
 def check_prelim_available(offence):
     """
     Check if the preliminary inquiry is available for a given offence.
@@ -56,31 +84,7 @@ def check_dna_designation(offence, mode, quantum):
         return None
 
 
-def parse_quantum(quantum):
-    """
-    Parse the quantum of the offence.
-    """
-    parsed_quantum = {}
-
-    if quantum == "":
-        parsed_quantum["amount"] = None
-        parsed_quantum["unit"] = None
-        return parsed_quantum
-
-    if quantum == "sc":
-        quantum = "729d"
-
-    unit_mappings = {"y": "years", "m": "months", "d": "days", "$": "dollars"}
-    unit = unit_mappings.get(quantum[-1], quantum[-1])
-
-    # Assign all but the last character of the quantum string to the value variable
-    value = quantum[:-1]
-    parsed_quantum["amount"] = value
-    parsed_quantum["unit"] = unit
-
-    return parsed_quantum
-
-
+# Sentencing options
 def check_cso_availablity(
     section, summary_minimum, indictable_minimum, indictable_maximum, mode
 ):
@@ -163,6 +167,7 @@ def check_cso_availablity(
         return cso_available
 
 
+# Collateral consequences
 def check_inadmissibility(section, mode, indictable_maximum):
     """
     Checks to see whether the offence renders the defendant liable for IRPA
