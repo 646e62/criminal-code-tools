@@ -84,10 +84,8 @@ def check_discharge_available(summary_minimum, indictable_minimum, indictable_ma
     """
 
     discharge_available = {}
-    print(summary_minimum, indictable_minimum, indictable_maximum)
 
     if summary_minimum["amount"] or indictable_minimum["amount"]:
-        print("check")
         discharge_available["section"] = "cc730(1)"
         discharge_available["status"] = "unavailable"
         discharge_available["reason"] = "mandatory minimum sentence"
@@ -124,15 +122,11 @@ def check_cso_availablity(
       - Prosecuted by indictment
     """
 
-    print(section,summary_minimum,indictable_minimum,indictable_maximum,mode)
-
     # Convert None values to a comparable integer
     try:
         indictable_maximum["amount"] = int(indictable_maximum["amount"])
     except:
         indictable_maximum["amount"] = 0
-
-    print(section,summary_minimum,indictable_minimum,indictable_maximum,mode)
 
     cso_available = {}
 
@@ -154,7 +148,6 @@ def check_cso_availablity(
 
 
     elif indictable_minimum["amount"]:
-        print("check")
 
         if indictable_minimum["unit"] == "days" or indictable_minimum["unit"] == "months" or indictable_minimum["unit"] == "years":
             cso_available["section"] = "cc742.1(b)"
