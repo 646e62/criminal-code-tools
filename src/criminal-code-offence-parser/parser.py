@@ -83,6 +83,9 @@ def check_discharge_available(section, summary_minimum, indictable_minimum):
     - The offence is not punishable by 14y or greater
     """
 
+    if summary_minimum or indictable_minimum:
+        return False
+
     pass
 
 
@@ -101,18 +104,21 @@ def check_cso_availablity(
       - Prosecuted by indictment
     """
 
+    print(section,summary_minimum,indictable_minimum,indictable_maximum,mode)
+
     # Convert None values to a comparable integer
     try:
-        indictable_maximum = int(indictable_maximum["amount"])
+        indictable_maximum["amount"] = int(indictable_maximum["amount"])
     except:
-        indictable_maximum = 0
+        indictable_maximum["amount"] = 0
+
+    print(section,summary_minimum,indictable_minimum,indictable_maximum,mode)
 
     cso_available = {}
 
     if summary_minimum["amount"]:
-        punishment = parse_quantum(summary_minimum["amount"])
 
-        if punishment["unit"] == "d" or punishment["unit"] == "m" or punishment["unit"] == "y":  
+        if summary_minimum["unit"] == "days" or summary_minimum["unit"] == "months" or summary_minimum["unit"] == "years":  
             cso_available["section"] = "cc742.1(b)"
             cso_available["status"] = "unavailable"
             cso_available["reason"] = "mandatory minimum term of imprisonment"
@@ -128,9 +134,9 @@ def check_cso_availablity(
 
 
     elif indictable_minimum["amount"]:
-        punishment = parse_quantum(indictable_minimum["amount"])
+        print("check")
 
-        if punishment["unit"] == "d" or punishment["unit"] == "m" or punishment["unit"] == "y":
+        if indictable_minimum["unit"] == "days" or indictable_minimum["unit"] == "months" or indictable_minimum["unit"] == "years":
             cso_available["section"] = "cc742.1(b)"
             cso_available["status"] = "unavailable"
             cso_available["reason"] = "mandatory minimum term of imprisonment"
