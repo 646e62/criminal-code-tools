@@ -76,17 +76,37 @@ def check_section_469_offence(section):
 
 
 # Sentencing options
-def check_discharge_available(section, summary_minimum, indictable_minimum):
+def check_discharge_available(summary_minimum, indictable_minimum, indictable_maximum):
     """
     Discharges are available when the following conditions obtain:
     - The offence does not have a mandatory minimum of any kind
     - The offence is not punishable by 14y or greater
     """
 
-    if summary_minimum or indictable_minimum:
-        return False
+    discharge_available = {}
+    print(summary_minimum, indictable_minimum, indictable_maximum)
 
-    pass
+    if summary_minimum["amount"] or indictable_minimum["amount"]:
+        print("check")
+        discharge_available["section"] = "cc730(1)"
+        discharge_available["status"] = "unavailable"
+        discharge_available["reason"] = "mandatory minimum sentence"
+
+        return discharge_available
+
+    elif indictable_maximum["amount"] >= 14:
+        discharge_available["section"] = "cc730(1)"
+        discharge_available["status"] = "unavailable"
+        discharge_available["reason"] = "maximum term of 14y or greater"
+
+        return discharge_available
+    
+    else:
+        discharge_available["section"] = "cc730(1)"
+        discharge_available["status"] = "available"
+        discharge_available["reason"] = None
+
+        return discharge_available
 
 
 def check_cso_availablity(
