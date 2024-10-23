@@ -48,7 +48,7 @@ def parse_quantum(quantum):
     return parsed_quantum
 
 
-# Procedural rights
+# Procedure
 def check_prelim_available(offence):
     """
     Check if the preliminary inquiry is available for a given offence.
@@ -59,32 +59,27 @@ def check_prelim_available(offence):
     else:
         return False
 
+def reverse_onus():
+    pass
 
-def check_dna_designation(offence, mode, quantum):
-    """
-    Check if the offence is a designated DNA offence.
-    """
 
-    try:
-        quantum_int = int(quantum["amount"])
-    except:
-        quantum_int = 0
-
-    if offence[0] in PRIMARY_DESIGNATED_DNA_OFFENCES:
-        return "primary"
-    elif offence[0] in SECONDARY_DESIGNATED_DNA_OFFENCES:
-        return "secondary"
-    elif (
-        (mode == "indictable" or mode == "hybrid")
-        and quantum["unit"] == "years"
-        and quantum_int >= 5
-    ):
-        return "secondary"
+def check_section_469_offence(section):
+    if section in SECTION_469_OFFENCES:
+        return True
     else:
-        return None
+        return False
 
 
 # Sentencing options
+def check_discharge_available(section, summary_minimum, indictable_minimum):
+    """
+    Discharges are available when the following conditions obtain:
+    - The offence does not have a mandatory minimum of any kind
+    - The offence is not punishable by 14y or greater
+    """
+    pass
+
+
 def check_cso_availablity(
     section, summary_minimum, indictable_minimum, indictable_maximum, mode
 ):
@@ -232,25 +227,31 @@ def check_inadmissibility(section, mode, indictable_maximum):
 
     return inadmissibilty_list
 
+# Ancillary orders
+def check_dna_designation(offence, mode, quantum):
+    """
+    Check if the offence is a designated DNA offence.
+    """
 
-def check_section_469_offence(section):
-    if section in SECTION_469_OFFENCES:
-        return True
+    try:
+        quantum_int = int(quantum["amount"])
+    except:
+        quantum_int = 0
+
+    if offence[0] in PRIMARY_DESIGNATED_DNA_OFFENCES:
+        return "primary"
+    elif offence[0] in SECONDARY_DESIGNATED_DNA_OFFENCES:
+        return "secondary"
+    elif (
+        (mode == "indictable" or mode == "hybrid")
+        and quantum["unit"] == "years"
+        and quantum_int >= 5
+    ):
+        return "secondary"
     else:
-        return False
-
+        return None
+    
 
 def check_section_515_mandatory_weapons_prohibition(section):
     pass
 
-
-def reverse_onus():
-    pass
-
-def check_discharge_available(section, summary_minimum, indictable_minimum):
-    """
-    Discharges are available when the following conditions obtain:
-    - The offence does not have a mandatory minimum of any kind
-    - The offence is not punishable by 14y or greater
-    """
-    pass
