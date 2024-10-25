@@ -54,7 +54,7 @@ def check_prelim_available(offence):
     Check if the preliminary inquiry is available for a given offence.
     """
 
-    if offence[3] == "14y" or offence[3] == "999y":
+    if offence[3] == "14y" or offence[3] == "255y":
         return True
     else:
         return False
