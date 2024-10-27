@@ -5,6 +5,10 @@ from constants import (
     TERRORISM_OFFENCES,
     CRIMINAL_ORGANIZATION_OFFENCES,
     SECTION_469_OFFENCES,
+    PRIMARY_SOIRA_OFFENCES_CURRENT,
+    SECONDARY_SOIRA_OFFENCES,
+    SOIRA_OFFENCES_ATTEMPTS,
+    SOIRA_OFFENCES_CONSPIRACY,
 )
 
 # Basic metadata
@@ -408,9 +412,103 @@ def check_dna_designation(offence, mode, quantum):
         return None
     
 
+def check_soira(section, mode, indictable_maximum):
+    """
+    SOIRA orders are available when an offender is convicted of one or more of 
+    the designated offences. The duration of the order depends on several 
+    factors, including:
+    - The mode the offence was prosecuted in;
+    - The maximum term of imprisonment;
+    - Whether the offender was convicted of multiple designated offences in the
+    same proceeding; and
+    - The offender's prior criminal record.
+
+    
+    """
+
+    soira_list = []
+    
+    # Check to see whether the offence is a designated SOIRA offence
+    if section in PRIMARY_SOIRA_OFFENCES_CURRENT:
+        soira_list.append(
+            {
+                "section": [
+                    "cc490.011[primary offence](a)",
+                    ],
+                "status": "primary",
+                "reason": "primary designated offence",
+            }
+        )
+
+    elif section in SECONDARY_SOIRA_OFFENCES:
+        soira_list.append(
+            {
+                "section": [
+                    "cc490.011[secondary offence](a)",
+                    ],
+                "status": "secondary",
+                "reason": "secondary designated offence",
+            }
+        )
+    elif section in SOIRA_OFFENCES_ATTEMPTS:
+        soira_list.append(
+            {
+                "section": [
+                    "cc490.011[primary offence](f)", 
+                    "cc490.011[secondary offence](b)",
+                    ],
+                "status": "secondary",
+                "reason": "attempted designated offence",
+            }
+        )
+    elif section in SOIRA_OFFENCES_CONSPIRACY:
+        soira_list.append(
+            {
+                "section": [
+                    "cc490.011[primary offence](f)", 
+                    "cc490.011[secondary offence](b)",
+                    ],
+                "status": "secondary",
+                "reason": "conspiracy to commit designated offence",
+            }
+        )
+    else:
+        return None
+    
+    # Determine the duration of the SOIRA order
+    # cc490.011(2)
+    if mode == "summary":
+        soira_list[0]["section"].append("cc490.011(2)(a)")
+        soira_list[0]["duration"] = {
+            "amount": 10,
+            "unit": "years",
+        }
+
+    elif int(indictable_maximum["amount"] == 2 or int(indictable_maximum["amount"]) == 5):
+        soira_list[0]["section"].append("cc490.011(2)(a)")
+        soira_list[0]["duration"] = {
+            "amount": 10,
+            "unit": "years",
+        }
+
+    elif int(indictable_maximum["amount"]) == 10 or int(indictable_maximum["amount"]) == 14:
+        soira_list[0]["section"].append("cc490.011(2)(b)")
+        soira_list[0]["duration"] = {
+            "amount": 20,
+            "unit": "years",
+        }
+
+    elif int(indictable_maximum["amount"]) == 255:
+        soira_list[0]["section"].append("cc490.011(2)(c)")
+        soira_list[0]["duration"] = {
+            "amount": 255,
+            "unit": "years",
+        }
+    
+    # cc490.13(3) & (5) are implementable once we have data for an offender's
+    # criminal record
+
+    return soira_list
+
 def check_section_515_mandatory_weapons_prohibition(section):
-    pass
-
-
-def check_soira(section, indictable_maximum):
     pass

@@ -11,6 +11,7 @@ from parser import (
     check_discharge_available,
     check_intermittent_available,
     check_suspended_sentence_available,
+    check_soira,
 )
 
 # Open the CSV file
@@ -76,10 +77,16 @@ def parse_offence(offence, mode="summary"):
                 indictable_maximum_quantum,
             )
 
-            # Collateral consequences
+            # Ancillary orders
             parsed_offence["dna_designation"] = check_dna_designation(
                 row, mode, indictable_maximum_quantum
             )
+
+            parsed_offence["soira"] = check_soira(
+                row[0], mode, indictable_maximum_quantum
+            )
+
+            # Collateral consequences
             parsed_offence["inadmissibility"] = check_inadmissibility(
                 row[0], mode, indictable_maximum_quantum["amount"]
             )

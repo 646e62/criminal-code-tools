@@ -67,6 +67,9 @@ SECTION_469_OFFENCES = [
     "cc119",
 ]
 
+# SOIRA offences
+# Will need to be updated when older versions of the Criminal Code are added
+
 PRIMARY_SOIRA_OFFENCES_CURRENT = [
     "cc151", "cc152", "cc153", "cc153.1", "cc155", "cc160(1)", "cc160(2)", 
     "cc160(3)", "cc163.1", "cc170", "cc171", "cc171.1", "cc172.1", "cc172.2", 
