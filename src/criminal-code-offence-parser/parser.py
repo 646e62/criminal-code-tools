@@ -48,6 +48,30 @@ def parse_quantum(quantum):
     return parsed_quantum
 
 
+def convert_quantum_to_days(quantum):
+    """
+    Convert the quantum of the offence to days.
+    """
+    try:
+        quantum_int = int(quantum["amount"])
+    except:
+        quantum_int = 0
+
+    if quantum["unit"] == "years":
+        quantum["amount"] = quantum_int * 365
+        quantum["unit"] = "days"
+        return quantum
+    
+    elif quantum["unit"] == "months":
+        quantum["amount"] = quantum_int * 30
+        quantum["unit"] = "days"
+        return quantum
+    elif quantum["unit"] == "days":
+        return quantum
+    else:
+        return None
+
+
 # Procedure
 def check_prelim_available(offence):
     """
@@ -86,22 +110,22 @@ def check_discharge_available(summary_minimum, indictable_minimum, indictable_ma
     discharge_available = {}
 
     if summary_minimum["amount"] or indictable_minimum["amount"]:
-        discharge_available["section"] = "cc730(1)"
         discharge_available["status"] = "unavailable"
+        discharge_available["section"] = "cc730(1)"
         discharge_available["reason"] = "mandatory minimum sentence"
 
         return discharge_available
 
     elif indictable_maximum["amount"] >= 14:
-        discharge_available["section"] = "cc730(1)"
         discharge_available["status"] = "unavailable"
+        discharge_available["section"] = "cc730(1)"
         discharge_available["reason"] = "maximum term of 14y or greater"
 
         return discharge_available
     
     else:
-        discharge_available["section"] = "cc730(1)"
         discharge_available["status"] = "available"
+        discharge_available["section"] = "cc730(1)"
         discharge_available["reason"] = None
 
         return discharge_available
@@ -133,15 +157,15 @@ def check_cso_availablity(
     if summary_minimum["amount"]:
 
         if summary_minimum["unit"] == "days" or summary_minimum["unit"] == "months" or summary_minimum["unit"] == "years":  
-            cso_available["section"] = "cc742.1(b)"
             cso_available["status"] = "unavailable"
+            cso_available["section"] = "cc742.1(b)"
             cso_available["reason"] = "mandatory minimum term of imprisonment"
 
             return cso_available
         
         else:
-            cso_available["section"] = "cc742.1"
             cso_available["status"] = "available"
+            cso_available["section"] = "cc742.1"
             cso_available["reason"] = None
 
             return cso_available
@@ -150,20 +174,20 @@ def check_cso_availablity(
     elif indictable_minimum["amount"]:
 
         if indictable_minimum["unit"] == "days" or indictable_minimum["unit"] == "months" or indictable_minimum["unit"] == "years":
-            cso_available["section"] = "cc742.1(b)"
             cso_available["status"] = "unavailable"
+            cso_available["section"] = "cc742.1(b)"
             cso_available["reason"] = "mandatory minimum term of imprisonment"
 
             return cso_available
         
         else:
-            cso_available["section"] = "cc742.1"
             cso_available["status"] = "available"
+            cso_available["section"] = "cc742.1"
             cso_available["reason"] = None
 
     elif section in EXCLUDED_CSO_OFFENCES:
-        cso_available["section"] = "cc742.1(c)"
         cso_available["status"] = "unavailable"
+        cso_available["section"] = "cc742.1(c)"
         cso_available["reason"] = "enumerated excluded offence"
 
         return cso_available
@@ -173,8 +197,8 @@ def check_cso_availablity(
         and indictable_maximum >= 10
         and mode == "indictable"
     ):
-        cso_available["section"] = "cc742.1(d)"
         cso_available["status"] = "unavailable"
+        cso_available["section"] = "cc742.1(d)"
         cso_available["reason"] = "serious indictable terrorism offence"
 
         return cso_available
@@ -182,8 +206,8 @@ def check_cso_availablity(
     elif (
         section in TERRORISM_OFFENCES and indictable_maximum >= 10 and mode == "hybrid"
     ):
-        cso_available["section"] = "cc742.1(d)"
         cso_available["status"] = "available (summary conviction only)"
+        cso_available["section"] = "cc742.1(d)"
         cso_available["reason"] = "serious indictable terrorism offence"
 
         return cso_available
@@ -193,8 +217,8 @@ def check_cso_availablity(
         and indictable_maximum >= 10
         and mode == "indictable"
     ):
-        cso_available["section"] = "cc742.1(d)"
         cso_available["status"] = "unavailable"
+        cso_available["section"] = "cc742.1(d)"
         cso_available["reason"] = "serious indictable criminal organization offence"
 
         return cso_available
@@ -204,18 +228,61 @@ def check_cso_availablity(
         and indictable_maximum >= 10
         and mode == "hybrid"
     ):
-        cso_available["section"] = "cc742.1(d)"
         cso_available["status"] = "available (summary conviction only)"
+        cso_available["section"] = "cc742.1(d)"
         cso_available["reason"] = "serious indictable criminal organization offence"
 
         return cso_available
     
     else:
-        cso_available["section"] = "cc742.1"
         cso_available["status"] = "available"
+        cso_available["section"] = "cc742.1"
         cso_available["reason"] = None
 
         return cso_available
+
+# Intermittent sentences
+def check_intermittent_available(summary_minimum, indictable_minimum):
+    """
+    Where facilities are available, the court may order that anyone sentenced
+    to 90 days or less serve their sentence intermittently. The only excluded
+    offences are those with a mandatory minimum term of imprisonment longer 
+    than 90 days.
+    """
+
+    intermittent_available = {}
+
+    if summary_minimum["amount"]:
+        convert_quantum_to_days(summary_minimum)
+        if int(summary_minimum["amount"]) > 90:
+            intermittent_available["status"] = "unavailable"
+            intermittent_available["section"] = "cc732(1)"
+            intermittent_available["reason"] = "mandatory minimum term of imprisonment exceeds 90 days"
+
+            return intermittent_available
+        
+        else:
+            intermittent_available["status"] = "available"
+            intermittent_available["section"] = "cc732(1)"
+            intermittent_available["reason"] = None
+
+            return intermittent_available
+    
+    elif indictable_minimum["amount"]:
+        convert_quantum_to_days(indictable_minimum)
+        if int(indictable_minimum["amount"]) > 90:
+            intermittent_available["status"] = "unavailable"
+            intermittent_available["section"] = "cc732(1)"
+            intermittent_available["reason"] = "mandatory minimum term of imprisonment exceeds 90 days"
+
+            return intermittent_available
+        
+        else:
+            intermittent_available["status"] = "available"
+            intermittent_available["section"] = "cc732(1)"
+            intermittent_available["reason"] = None
+
+            return intermittent_available
 
 
 # Collateral consequences

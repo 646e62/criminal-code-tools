@@ -9,6 +9,7 @@ from parser import (
     check_inadmissibility,
     check_dna_designation,
     check_discharge_available,
+    check_intermittent_available,
 )
 
 # Open the CSV file
@@ -58,6 +59,10 @@ def parse_offence(offence, mode="summary"):
                 indictable_minimum_quantum,
                 indictable_maximum_quantum,
                 mode,
+            )
+
+            parsed_offence["intermittent_available"] = check_intermittent_available(
+                summary_minimum_quantum, indictable_minimum_quantum
             )
 
             parsed_offence["discharge_available"] = check_discharge_available(
