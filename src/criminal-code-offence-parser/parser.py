@@ -411,3 +411,6 @@ def check_dna_designation(offence, mode, quantum):
 def check_section_515_mandatory_weapons_prohibition(section):
     pass
 
+
+def check_soira(section, indictable_maximum):
+    pass
