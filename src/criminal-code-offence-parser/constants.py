@@ -100,3 +100,33 @@ SOIRA_OFFENCES_ATTEMPTS = [
     "cc239(1)(a)", "cc239(1)(a.1)", "cc239(1)(b)", "cc463(a)", "cc463(b)", 
     "cc463(c)", "cc463(d)",
 ]
+
+# Proceeds of crime forfeiture orders
+# cc462.37(2.02)(a)
+PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CRIMINAL_ORGANIZATION = [
+    "cc82(2)", "cc272(2)(a)", "cc279(1.1)(a)", "cc279.1(2)(a)", "cc333.1(4)",
+    "cc344(1)(a)", "cc346(1.1)(a)", "cc462.31(2.1)", "cc467.11", 
+    "cc467.111(a)", "cc467.111(b)", "cc467.12", "cc467.13", 
+]
+
+# cc462.37(2.02)(b)
+PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CDSA = [
+    "cdsa5(3)(a)", "cdsa5(3)(b)", "cdsa5(3)(c)",
+    "cdsa6(3)(a)", "cdsa6(3)(b)", "cdsa6(3)(c)", "cdsa7(1", "cdsa7(2)",
+    "cdsa7(3)", "cdsa7.1(2)(a)", "cdsa7.1(2)(b)",
+]
+
+# cc462.37(2.02)(c)
+PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CANNABIS = [
+    "cannabis9(5)(b)(i)", "cannabis9(5)(b)(ii)", "cannabis10(5)(b)(i)",
+    "cannabis10(5)(b)(ii)", "cannabis10(5)(b)(iii)", "cannabis11(3)(b)(i)",
+    "cannabis11(3)(b)(ii)", "cannabis12(9)(b)(i)", "cannabis12(9)(b)(ii)",
+    "cannabis13(2)(b)(i)", "cannabis13(2)(b)(ii)", "cannabis14(2)(b)(i)",
+    "cannabis14(2)(b)(ii)",
+]
+
+# cc462.37(2.02)(d)
+PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_HUMAN_TRAFFICKING = [
+    "cc279.01(1)(a)", "cc279.01(1)(b)", "cc279.011(1)(a)", "cc279.011(1)(b)",
+    "cc279.02(1)", "cc279.02(2)", "cc279.03(1)", "cc279.03(2)", 
+]

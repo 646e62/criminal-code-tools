@@ -9,6 +9,10 @@ from constants import (
     SECONDARY_SOIRA_OFFENCES,
     SOIRA_OFFENCES_ATTEMPTS,
     SOIRA_OFFENCES_CONSPIRACY,
+    PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CRIMINAL_ORGANIZATION,
+    PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CDSA,
+    PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CANNABIS,
+    PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_HUMAN_TRAFFICKING
 )
 
 # Basic metadata
@@ -198,7 +202,7 @@ def check_cso_availablity(
 
     elif (
         section in TERRORISM_OFFENCES
-        and indictable_maximum >= 10
+        and indictable_maximum["amount"] >= 10
         and mode == "indictable"
     ):
         cso_available["status"] = "unavailable"
@@ -218,7 +222,7 @@ def check_cso_availablity(
     
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
-        and indictable_maximum >= 10
+        and indictable_maximum["amount"] >= 10
         and mode == "indictable"
     ):
         cso_available["status"] = "unavailable"
@@ -229,7 +233,7 @@ def check_cso_availablity(
     
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
-        and indictable_maximum >= 10
+        and indictable_maximum["amount"] >= 10
         and mode == "hybrid"
     ):
         cso_available["status"] = "available (summary conviction only)"
@@ -509,6 +513,82 @@ def check_soira(section, mode, indictable_maximum):
     # criminal record
 
     return soira_list
+
+
+def check_proceeds_of_crime_forfeiture(section, mode):
+
+    proceeds_list = []
+
+    if mode == "summary":
+        proceeds_list.append(
+            {
+                "section": [
+                    "cc462.3[designated offence]",
+                    "cc462.37(1)",
+                    ],
+                "status": "unavailable",
+                "reason": "strictly summary conviction offence",
+            }
+        )
+
+        return proceeds_list
+    
+    elif section in PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CRIMINAL_ORGANIZATION:
+        proceeds_list.append(
+            {
+                "section": [
+                    "cc462.37(2.02)(a)"
+                    ],
+                "status": "available",
+                "reason": "particular circumstances — criminal organization offence",
+            }
+        )
+
+    elif section in PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CDSA:
+        proceeds_list.append(
+            {
+                "section": [
+                    "cc462.37(2.02)(b)"
+                    ],
+                "status": "available",
+                "reason": "particular circumstances — CDSA offence",
+            }
+        )
+
+    elif section in PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CANNABIS:
+        proceeds_list.append(
+            {
+                "section": [
+                    "cc462.37(2.02)(c)"
+                    ],
+                "status": "available",
+                "reason": "particular circumstances — cannabis offence",
+            }
+        )
+
+    elif section in PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_HUMAN_TRAFFICKING:
+        proceeds_list.append(
+            {
+                "section": [
+                    "cc462.37(2.02)(d)"
+                    ],
+                "status": "available",
+                "reason": "particular circumstances — human trafficking offence",
+            }
+        )
+
+    else:
+        proceeds_list.append(
+            {
+                "section": [
+                    "cc462.3[designated offence]",
+                    "cc462.37(1)",],
+                "status": "available",
+                "reason": "offence prosecutable by indictment",
+            }   
+        )
+
+    return proceeds_list
 
 def check_section_515_mandatory_weapons_prohibition(section):
     pass

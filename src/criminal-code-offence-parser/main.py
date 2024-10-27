@@ -12,6 +12,7 @@ from parser import (
     check_intermittent_available,
     check_suspended_sentence_available,
     check_soira,
+    check_proceeds_of_crime_forfeiture
 )
 
 # Open the CSV file
@@ -84,6 +85,10 @@ def parse_offence(offence, mode="summary"):
 
             parsed_offence["soira"] = check_soira(
                 row[0], mode, indictable_maximum_quantum
+            )
+
+            parsed_offence["proceeds_of_crime"] = check_proceeds_of_crime_forfeiture(
+                row[0], mode
             )
 
             # Collateral consequences
