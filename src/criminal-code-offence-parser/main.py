@@ -10,6 +10,7 @@ from parser import (
     check_dna_designation,
     check_discharge_available,
     check_intermittent_available,
+    check_suspended_sentence_available,
 )
 
 # Open the CSV file
@@ -62,6 +63,10 @@ def parse_offence(offence, mode="summary"):
             )
 
             parsed_offence["intermittent_available"] = check_intermittent_available(
+                summary_minimum_quantum, indictable_minimum_quantum
+            )
+
+            parsed_offence["suspended_sentence_available"] = check_suspended_sentence_available(
                 summary_minimum_quantum, indictable_minimum_quantum
             )
 

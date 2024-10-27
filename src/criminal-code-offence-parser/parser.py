@@ -241,7 +241,7 @@ def check_cso_availablity(
 
         return cso_available
 
-# Intermittent sentences
+
 def check_intermittent_available(summary_minimum, indictable_minimum):
     """
     Where facilities are available, the court may order that anyone sentenced
@@ -283,6 +283,38 @@ def check_intermittent_available(summary_minimum, indictable_minimum):
             intermittent_available["reason"] = None
 
             return intermittent_available
+
+
+def check_suspended_sentence_available(summary_minimum, indictable_minimum):
+    """
+    A suspended sentence is available for any offence without a mandatory 
+    minimum and where the offender is sentenced to two years or less. The 
+    latter can be mapped out in a later version of the program, when we start
+    to parse imposed sentences, rather than simply creating an offence grid.
+    """
+
+    suspended_sentence_available = {}
+
+    if summary_minimum["amount"]:
+        suspended_sentence_available["status"] = "unavailable"
+        suspended_sentence_available["section"] = "cc731(1)"
+        suspended_sentence_available["reason"] = "mandatory minimum sentence"
+
+        return suspended_sentence_available
+    
+    elif indictable_minimum["amount"]:
+        suspended_sentence_available["status"] = "unavailable"
+        suspended_sentence_available["section"] = "cc731(1)"
+        suspended_sentence_available["reason"] = "mandatory minimum sentence"
+
+        return suspended_sentence_available
+        
+    else:
+        suspended_sentence_available["status"] = "available"
+        suspended_sentence_available["section"] = "cc731(1)"
+        suspended_sentence_available["reason"] = None
+
+        return suspended_sentence_available
 
 
 # Collateral consequences
