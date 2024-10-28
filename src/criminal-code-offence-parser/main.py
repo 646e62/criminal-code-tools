@@ -9,6 +9,11 @@ from parser import (
     check_inadmissibility,
     check_dna_designation,
     check_discharge_available,
+    check_intermittent_available,
+    check_suspended_sentence_available,
+    check_soira,
+    check_proceeds_of_crime_forfeiture,
+    check_absolute_jurisdiction_offence,
 )
 
 # Open the CSV file
@@ -47,9 +52,13 @@ def parse_offence(offence, mode="summary"):
             parsed_offence["summary_maximum"] = summary_maximum_quantum
             parsed_offence["indictable_minimum"] = indictable_minimum_quantum
             parsed_offence["indictable_maximum"] = indictable_maximum_quantum
+            parsed_offence["absolute_jurisdiction"] = check_absolute_jurisdiction_offence(
+                row[0]
+            )
 
             # Procedural rights
             parsed_offence["prelim_available"] = prelim_available
+            parsed_offence["release_by_superior_court_judge"] = section_469_offence
 
             # Sentencing options
             parsed_offence["cso_available"] = check_cso_availablity(
@@ -59,17 +68,32 @@ def parse_offence(offence, mode="summary"):
                 indictable_maximum_quantum,
                 mode,
             )
-
+            parsed_offence["intermittent_available"] = check_intermittent_available(
+                summary_minimum_quantum, indictable_minimum_quantum
+            )
+            parsed_offence["suspended_sentence_available"] = (
+                check_suspended_sentence_available(
+                    summary_minimum_quantum, indictable_minimum_quantum
+                )
+            )
             parsed_offence["discharge_available"] = check_discharge_available(
-                summary_minimum_quantum, 
-                indictable_minimum_quantum, 
+                summary_minimum_quantum,
+                indictable_minimum_quantum,
                 indictable_maximum_quantum,
             )
 
-            # Collateral consequences
+            # Ancillary orders
             parsed_offence["dna_designation"] = check_dna_designation(
                 row, mode, indictable_maximum_quantum
             )
+            parsed_offence["soira"] = check_soira(
+                row[0], mode, indictable_maximum_quantum
+            )
+            parsed_offence["proceeds_of_crime"] = check_proceeds_of_crime_forfeiture(
+                row[0], mode
+            )
+
+            # Collateral consequences
             parsed_offence["inadmissibility"] = check_inadmissibility(
                 row[0], mode, indictable_maximum_quantum["amount"]
             )
