@@ -12,7 +12,14 @@ from constants import (
     PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CRIMINAL_ORGANIZATION,
     PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CDSA,
     PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CANNABIS,
-    PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_HUMAN_TRAFFICKING
+    PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_HUMAN_TRAFFICKING,
+    ABSOLUTE_JURISDICITON_OFFENCES_FRAUD,
+    ABSOLUTE_JURISDICITON_OFFENCES_ATTEMPTS_CONSPIRACIES,
+    ABSOLUTE_JURISDICITON_OFFENCES_DESIGNATED_OFFENCES,
+    ABSOLUTE_JURISDICITON_OFFENCES_FALSE_PRETENCES,
+    ABSOLUTE_JURISDICITON_OFFENCES_PPOBC,
+    ABSOLUTE_JURISDICITON_OFFENCES_THEFT,
+    ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF
 )
 
 # Basic metadata
@@ -106,6 +113,67 @@ def check_section_469_offence(section):
     else:
         return False
 
+def check_absolute_jurisdiction_offence(section):
+    
+    absolute_jurisdiction_list = []
+
+    if section in ABSOLUTE_JURISDICITON_OFFENCES_THEFT:
+        absolute_jurisdiction_list.append(
+            {
+                "section": "cc553(a)(i)",
+                "reason": "theft (other than cattle theft)",
+            }
+        )
+
+    if section in ABSOLUTE_JURISDICITON_OFFENCES_FALSE_PRETENCES:
+        absolute_jurisdiction_list.append(
+            {
+                "section": "cc553(a)(ii)",
+                "reason": "false pretences",
+            }
+        )
+
+    if section in ABSOLUTE_JURISDICITON_OFFENCES_PPOBC:
+        absolute_jurisdiction_list.append(
+            {
+                "section": "cc553(a)(iii)",
+                "reason": "possession of property obtained by crime",
+            }
+        )
+
+    if section in ABSOLUTE_JURISDICITON_OFFENCES_FRAUD:
+        absolute_jurisdiction_list.append(
+            {
+                "section": "cc553(a)(iv)",
+                "reason": "fraud",
+            }
+        )
+
+    if section in ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF:
+        absolute_jurisdiction_list.append(
+            {
+                "section": "cc553(a)(v)",
+                "reason": "mischief",
+            }
+        )
+
+    if section in ABSOLUTE_JURISDICITON_OFFENCES_ATTEMPTS_CONSPIRACIES:
+        absolute_jurisdiction_list.append(
+            {
+                "section": "cc553(b)",
+                "reason": "attempt or conspiracies in relation to cc554(a) or (c)",
+            }
+        )
+
+    if section in ABSOLUTE_JURISDICITON_OFFENCES_DESIGNATED_OFFENCES:
+        absolute_jurisdiction_list.append(
+            {
+                "section": "cc553(c)",
+                "reason": "designated offences",
+            }
+        )
+
+    return absolute_jurisdiction_list
 
 # Sentencing options
 def check_discharge_available(summary_minimum, indictable_minimum, indictable_maximum):

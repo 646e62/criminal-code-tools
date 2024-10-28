@@ -484,3 +484,127 @@ PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_HUMAN_TRAFFICKING = [
     "cc279.03(1)",
     "cc279.03(2)",
 ]
+
+# Absolute jurisdiction offences
+# cc553(a)(i)
+ABSOLUTE_JURISDICITON_OFFENCES_THEFT = [
+    "cc327",
+    "cc333.1(1)-1",
+    "cc333.1(1)-s",
+    "cc333.1(3)",
+    "cc333.1(4)",
+    "cc334(b)",
+    "cc342(1)",
+    "cc356",
+    "cc362(2)(b)",
+    "cc402.2",
+]
+
+# cc553(a)(ii)
+ABSOLUTE_JURISDICITON_OFFENCES_FALSE_PRETENCES = [
+    "cc362(3)",
+    "cc363",
+]
+
+# cc553(a)(iii)
+ABSOLUTE_JURISDICITON_OFFENCES_PPOBC = [
+    "cc57(3)",
+    "cc96",
+    "cc163.1(4)",
+    "cc339(1)",
+    "cc355(b)",
+    "cc355.5(b)",
+    "cc357",
+    "cc368",
+    "cc394.1",
+    "cc450",
+]
+
+# cc553(a)(iv)
+ABSOLUTE_JURISDICITON_OFFENCES_FRAUD = [
+    "cc58",
+    "cc121",
+    "cc122",
+    "cc209",
+    "cc341",
+    "cc342(3)",
+    "cc342.1",
+    "cc363",
+    "cc364",
+    "cc374",
+    "cc376(1)",
+    "cc380(1)(b)",
+    "cc380(2)",
+    "cc381",
+    "cc382",
+    "cc385",
+    "cc386",
+    "cc387",
+    "cc388",
+    "cc389",
+    "cc390",
+    "cc391",
+    "cc392",
+    "cc393(1)",
+    "cc393(2)",
+    "cc393(3)",
+    "cc394",
+    "cc394.1",
+    "cc396",
+    "cc397(1)",
+    "cc397(2)",
+    "cc398",
+    "cc399",
+    "cc400",
+    "cc401",
+    "cc402.2",
+    "cc403",
+    "cc407",
+    "cc408",
+    "cc410",
+    "cc418(1)",
+    "cc418(2)",
+    "cc435",
+    "cc453",
+    "cc454",
+    "cc460",
+]
+
+# cc553(a)(v)
+ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF = [
+    "cc430(4)",
+]
+
+# cc553(b)
+ABSOLUTE_JURISDICITON_OFFENCES_ATTEMPTS_CONSPIRACIES = [
+    "cc463(a)",
+    "cc463(b)",
+    "cc463(c)",
+    "cc463(d)",
+    "cc465(1)(a)",
+    "cc465(1)(b)(i)",
+    "cc465(1)(b)(ii)",
+    "cc465(1)(c)",
+    "cc465(1)(d)",
+]
+
+# cc553(c)
+ABSOLUTE_JURISDICITON_OFFENCES_DESIGNATED_OFFENCES = [
+    "cc201(1)",
+    "cc202-1",
+    "cc202-2",
+    "cc202-s",
+    "cc203-1",
+    "cc203-2",
+    "cc203-s",
+    "cc206(1)",
+    "cc206(4)",
+    "cc209",
+    "cc393(1)",
+    "cc393(2)",
+    "cc490.031",
+    "cc490.0311",
+    "cc811)",
+    "cc733.1",
+    "cdsa4(4)",
+]

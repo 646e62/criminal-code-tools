@@ -13,6 +13,7 @@ from parser import (
     check_suspended_sentence_available,
     check_soira,
     check_proceeds_of_crime_forfeiture,
+    check_absolute_jurisdiction_offence,
 )
 
 # Open the CSV file
@@ -51,6 +52,9 @@ def parse_offence(offence, mode="summary"):
             parsed_offence["summary_maximum"] = summary_maximum_quantum
             parsed_offence["indictable_minimum"] = indictable_minimum_quantum
             parsed_offence["indictable_maximum"] = indictable_maximum_quantum
+            parsed_offence["absolute_jurisdiction"] = check_absolute_jurisdiction_offence(
+                row[0]
+            )
 
             # Procedural rights
             parsed_offence["prelim_available"] = prelim_available

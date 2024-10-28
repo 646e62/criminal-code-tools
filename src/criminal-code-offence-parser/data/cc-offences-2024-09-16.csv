@@ -369,7 +369,7 @@ cc336,criminal breach of trust,,14y,,
 cc338(1),fraudulently taking cattle or defacing brand,,5y,,sc
 cc338(2),theft of cattle,,10y,,sc
 cc339(1),taking possession of drift timber,,5y,,sc
-cc339(2),dealer in second-hand goods U2014 — registered lumbering equipment,,,,sc
+cc339(2),dealer in second-hand goods — registered lumbering equipment,,,,sc
 cc340,destroying documents of title,,10y,,sc
 cc341,fraudulent concealment,,2y,,sc
 cc342(1),theft forgery of credit card,,10y,,sc
@@ -401,7 +401,7 @@ cc356,theft from mail,,10y,,sc
 cc357,bringing into canada property obtained by crime,,10y,,sc
 cc362(2)(a),false pretence or false statement — theft over $5000,,10y,,sc
 cc362(2)(b),false pretence or false statement — theft under $5000,,2y,,sc
-cc362(3),false pretence or false statemetn — other,,10y,,sc
+cc362(3),false pretence or false statement — other,,10y,,sc
 cc363,obtaining execution of valuable security by fraud,,5y,,sc
 cc364,fraudulently obtaining food beverage or accommodation,,,,sc
 cc367,forgery,,10y,,sc
@@ -434,7 +434,8 @@ cc387,fraudulent sale of real property,,2y,,sc
 cc388,misleading receipt,,2y,,sc
 cc389,fraudlent disposal of goods on which money advanced,,2y,,sc
 cc390,fraudulent receipts under bank act,,2y,,sc
-cc391,trade secret,,14y,,sc
+cc391(1),trade secret,,14y,,sc
+cc391(2),trade secret — prior knowledge,,14y,,sc
 cc392,disposal of property to defraud creditors,,2y,,sc
 cc393(1),commit fraud in relation to fares,,2y,,sc
 cc393(2),enduce fraud in relation to fares,,2y,,sc
@@ -545,7 +546,7 @@ cc487.0552,failure to comply with order or summons,,2y,,sc
 cc487.08(3),improper use of bodily substances seized — warrant,,,,sc
 cc487.08(4),improper use of bodily substances seized — order authorization,,2y,,sc
 cc490.031,failure to comply with soira or nda order,,10000$&729d,,10000$&729d
-cc490.311,providing false information re soira,,10000$&729d,,10000$&729d
+cc490.0311,providing false information re soira,,10000$&729d,,10000$&729d
 cc490.0312,failure to advise police re soira,,,,sc
 cc490.8,failure to comply with restraint order,,5y,,sc
 cc517,failure to comply with publication ban — bail,,,,sc
