@@ -33,7 +33,13 @@ def parse_offence(offence, mode="summary"):
 
     # Remove any whitespace from the offence input and convert to lowercase
     offence = offence.strip().lower()
-    parsed_offence = {}
+    parsed_offence = {
+        "offence_data": {},
+        "procedure": {},
+        "sentencing": {},
+        "ancillary_orders": {},
+        "collateral_consequences": {},
+    }
 
     # Find the offence in the data
     for row in data:
@@ -49,73 +55,73 @@ def parse_offence(offence, mode="summary"):
             section_469_offence = check_section_469_offence(row[0])
 
             # Offence data
-            parsed_offence["section"] = row[0]
-            parsed_offence["description"] = row[1]
-            parsed_offence["mode"] = mode
-            parsed_offence["summary_minimum"] = summary_minimum_quantum
-            parsed_offence["summary_maximum"] = summary_maximum_quantum
-            parsed_offence["indictable_minimum"] = indictable_minimum_quantum
-            parsed_offence["indictable_maximum"] = indictable_maximum_quantum
-            parsed_offence["absolute_jurisdiction"] = check_absolute_jurisdiction_offence(
+            parsed_offence["offence_data"]["section"] = row[0]
+            parsed_offence["offence_data"]["description"] = row[1]
+            parsed_offence["offence_data"]["mode"] = mode
+            parsed_offence["offence_data"]["summary_minimum"] = summary_minimum_quantum
+            parsed_offence["offence_data"]["summary_maximum"] = summary_maximum_quantum
+            parsed_offence["offence_data"]["indictable_minimum"] = indictable_minimum_quantum
+            parsed_offence["offence_data"]["indictable_maximum"] = indictable_maximum_quantum
+            parsed_offence["offence_data"]["absolute_jurisdiction"] = check_absolute_jurisdiction_offence(
                 row[0]
             )
 
             # Procedural rights
-            parsed_offence["prelim_available"] = prelim_available
-            parsed_offence["release_by_superior_court_judge"] = section_469_offence
+            parsed_offence["procedure"]["prelim_available"] = prelim_available
+            parsed_offence["procedure"]["release_by_superior_court_judge"] = section_469_offence
 
             # Sentencing options
-            parsed_offence["cso_available"] = check_cso_availablity(
+            parsed_offence["sentencing"]["cso_available"] = check_cso_availablity(
                 row[0],
                 summary_minimum_quantum,
                 indictable_minimum_quantum,
                 indictable_maximum_quantum,
                 mode,
             )
-            parsed_offence["intermittent_available"] = check_intermittent_available(
+            parsed_offence["sentencing"]["intermittent_available"] = check_intermittent_available(
                 summary_minimum_quantum, indictable_minimum_quantum
             )
-            parsed_offence["suspended_sentence_available"] = (
+            parsed_offence["sentencing"]["suspended_sentence_available"] = (
                 check_suspended_sentence_available(
                     summary_minimum_quantum, indictable_minimum_quantum
                 )
             )
-            parsed_offence["discharge_available"] = check_discharge_available(
+            parsed_offence["sentencing"]["discharge_available"] = check_discharge_available(
                 summary_minimum_quantum,
                 indictable_minimum_quantum,
                 indictable_maximum_quantum,
             )
 
-            parsed_offence["prison_and_probation_available"] = check_prison_and_probation(
+            parsed_offence["sentencing"]["prison_and_probation_available"] = check_prison_and_probation(
                 mode,
                 indictable_minimum_quantum,
             )
 
-            parsed_offence["fine_alone"] = check_fine_alone(
+            parsed_offence["sentencing"]["fine_alone"] = check_fine_alone(
                 indictable_minimum_quantum,
                 indictable_minimum_quantum,
             )
 
-            parsed_offence["fine_and_probation"] = check_fine_and_probation(
+            parsed_offence["sentencing"]["fine_and_probation"] = check_fine_and_probation(
                 indictable_minimum_quantum,
             )
 
             # Ancillary orders
-            parsed_offence["dna_designation"] = check_dna_designation(
+            parsed_offence["ancillary_orders"]["dna_designation"] = check_dna_designation(
                 row, mode, indictable_maximum_quantum
             )
-            parsed_offence["soira"] = check_soira(
+            parsed_offence["ancillary_orders"]["soira"] = check_soira(
                 row[0], mode, indictable_maximum_quantum
             )
-            parsed_offence["proceeds_of_crime_forfeiture"] = check_proceeds_of_crime_forfeiture(
+            parsed_offence["ancillary_orders"]["proceeds_of_crime_forfeiture"] = check_proceeds_of_crime_forfeiture(
                 row[0], mode
             )
-            parsed_offence["section_164.2_forfeiture_order"] = check_section_164_forfeiture_order(
+            parsed_offence["ancillary_orders"]["section_164.2_forfeiture_order"] = check_section_164_forfeiture_order(
                 row[0]
             )
 
             # Collateral consequences
-            parsed_offence["inadmissibility"] = check_inadmissibility(
+            parsed_offence["collateral_consequences"]["inadmissibility"] = check_inadmissibility(
                 row[0], mode, indictable_maximum_quantum["amount"]
             )
 

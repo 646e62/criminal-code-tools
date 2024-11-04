@@ -1,3 +1,8 @@
+"""
+Criminal Code of Canada rules for creating a sentencing grid. The rules are 
+current to October 2, 2024.
+"""
+
 from constants import (
     PRIMARY_DESIGNATED_DNA_OFFENCES,
     SECONDARY_DESIGNATED_DNA_OFFENCES,
