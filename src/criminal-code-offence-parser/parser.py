@@ -96,7 +96,7 @@ def check_prelim_available(indictable_maximum):
 
     prelim_available = {}
 
-    if indictable_maximum == "14y" or indictable_maximum == "255y":
+    if indictable_maximum == "14y" or offence == "255y":
         prelim_available["status"] = "available"
         prelim_available["section"] = "cc535"
         prelim_available["reason"] = "maximum prison term of 14y or greater"
@@ -133,6 +133,7 @@ def check_absolute_jurisdiction_offence(section):
     if section in ABSOLUTE_JURISDICITON_OFFENCES_THEFT:
         absolute_jurisdiction_list.append(
             {
+                "status": True,
                 "section": "cc553(a)(i)",
                 "reason": "theft (other than cattle theft)",
             }
@@ -141,6 +142,7 @@ def check_absolute_jurisdiction_offence(section):
     if section in ABSOLUTE_JURISDICITON_OFFENCES_FALSE_PRETENCES:
         absolute_jurisdiction_list.append(
             {
+                "status": True,
                 "section": "cc553(a)(ii)",
                 "reason": "false pretences",
             }
@@ -149,6 +151,7 @@ def check_absolute_jurisdiction_offence(section):
     if section in ABSOLUTE_JURISDICITON_OFFENCES_PPOBC:
         absolute_jurisdiction_list.append(
             {
+                "status": True,
                 "section": "cc553(a)(iii)",
                 "reason": "possession of property obtained by crime",
             }
@@ -157,6 +160,7 @@ def check_absolute_jurisdiction_offence(section):
     if section in ABSOLUTE_JURISDICITON_OFFENCES_FRAUD:
         absolute_jurisdiction_list.append(
             {
+                "status": True,
                 "section": "cc553(a)(iv)",
                 "reason": "fraud",
             }
@@ -165,6 +169,7 @@ def check_absolute_jurisdiction_offence(section):
     if section in ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF:
         absolute_jurisdiction_list.append(
             {
+                "status": True,
                 "section": "cc553(a)(v)",
                 "reason": "mischief",
             }
@@ -173,6 +178,7 @@ def check_absolute_jurisdiction_offence(section):
     if section in ABSOLUTE_JURISDICITON_OFFENCES_ATTEMPTS_CONSPIRACIES:
         absolute_jurisdiction_list.append(
             {
+                "status": True,
                 "section": "cc553(b)",
                 "reason": "attempt or conspiracies in relation to cc554(a) or (c)",
             }
@@ -181,8 +187,18 @@ def check_absolute_jurisdiction_offence(section):
     if section in ABSOLUTE_JURISDICITON_OFFENCES_DESIGNATED_OFFENCES:
         absolute_jurisdiction_list.append(
             {
+                "status": True,
                 "section": "cc553(c)",
                 "reason": "designated offences",
+            }
+        )
+
+    if absolute_jurisdiction_list == []:
+        absolute_jurisdiction_list.append(
+            {
+                "status": False,
+                "section": "cc553",
+                "reason": "",
             }
         )
 
