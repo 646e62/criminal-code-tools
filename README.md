@@ -1,10 +1,13 @@
 # criminal-code-offence-parser
+## Overview
 Offence analysis tools for *Criminal Code*, RSC 1985, c C-46 and related statutes.
 
 The tools are designed to provide domain-specific expert inferences with human-readable explanations for the results. The tools themselves are functions that translate statutory legal logic into computational logic. The provided explanations include citations to the statute where the unformatted legislative logic is located.
 
 The tools will work as intended when they return accurate results with complete explanations of the program's logic.
 
+## Examples
+### Basic call
 As of v0.0.5, the main function call will provide customizable output. The program call will always produce basic offence information:
 
 ```python
@@ -22,6 +25,8 @@ As of v0.0.5, the main function call will provide customizable output. The progr
     'section': 'cc553',
     'notes': None}]}}
 ```
+
+### Arguments
 
 Adding an argument will append the requested information to the basic offence details:
 
@@ -48,6 +53,10 @@ Adding an argument will append the requested information to the basic offence de
     'status': 'foreign national',
     'notes': 'criminality'}]}}
 ```
+
+Currently, arguments include `procedure`, `sentencing`, `ancillary_orders`, `collateral_consequences`, and `full`. 
+
+### Multiple arguments
 
 The program accepts multiple arguments, and will append them to the basic offence details:
 
@@ -81,7 +90,9 @@ The program accepts multiple arguments, and will append them to the basic offenc
   'section_164.2_forfeiture_order': []}}
 ```
 
-Using the `full` argument will return all offence information
+### Full output
+
+Using the `full` argument will return all offence information:
 
 ```python
 > parse_offence("cc172.2", full=True)
