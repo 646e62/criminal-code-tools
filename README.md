@@ -3,7 +3,9 @@ Offence analysis tools for *Criminal Code*, RSC 1985, c C-46 and related statute
 
 The tools are designed to provide domain-specific expert inferences with human-readable explanations for the results. The tools themselves are functions that translate statutory legal logic into computational logic. The provided explanations include citations to the statute where the unformatted legislative logic is located.
 
-The tools will work as intended when they return accurate results with complete explanations of the program's logic. 
+The tools will work as intended when they return accurate results with complete explanations of the program's logic.
+
+As of v0.0.5, the main function call will provide customizable output. The program call will always produce basic offence information:
 
 ```python
 > from main import parse_offence
@@ -19,9 +21,13 @@ The tools will work as intended when they return accurate results with complete 
      'notes': None},
     'section': 'cc553',
     'notes': None}]}}
-  
-  > parse_offence("cc151", collateral_consequences=True)
-  {'offence_data': {'section': 'cc151',
+```
+
+Adding an argument will append the requested information to the basic offence details:
+
+```python
+> parse_offence("cc151", collateral_consequences=True)
+{'offence_data': {'section': 'cc151',
   'description': 'sexual interference',
   'mode': 'hybrid',
   'summary_minimum': {'amount': '90', 'unit': 'days'},
@@ -41,9 +47,45 @@ The tools will work as intended when they return accurate results with complete 
    {'section': 'irpa36(2)',
     'status': 'foreign national',
     'notes': 'criminality'}]}}
+```
 
-    > parse_offence("cc172.2", full=True)
-    {'offence_data': {'section': 'cc172.2',
+The program accepts multiple arguments, and will append them to the basic offence details:
+
+```python
+> parse_offence("cc811", ancillary_orders=True, procedure=True)
+{'offence_data': {'section': 'cc811',
+  'description': 'breach of recognizance',
+  'mode': 'hybrid',
+  'summary_minimum': {'amount': None, 'unit': None},
+  'summary_maximum': {'amount': '729', 'unit': 'days'},
+  'indictable_minimum': {'amount': None, 'unit': None},
+  'indictable_maximum': {'amount': '4', 'unit': 'years'},
+  'absolute_jurisdiction': [{'status': {'absolute_jurisdiction': False,
+     'notes': None},
+    'section': 'cc553',
+    'notes': None}]},
+ 'procedure': {'prelim_available': {'status': ({'available': False,
+     'notes': None},),
+   'section': 'cc535',
+   'notes': 'maximum term of less than 14y'},
+  'release_by_superior_court_judge': False},
+ 'ancillary_orders': {'dna_designation': {'status': ({'available': False,
+     'notes': None},),
+   'section': 'cc487.04',
+   'notes': 'not a designated offence'},
+  'soira': None,
+  'proceeds_of_crime_forfeiture': [{'section': ['cc462.3[designated offence]',
+     'cc462.37(1)'],
+    'status': 'available',
+    'notes': 'offence prosecutable by indictment'}],
+  'section_164.2_forfeiture_order': []}}
+```
+
+Using the `full` argument will return all offence information
+
+```python
+> parse_offence("cc172.2", full=True)
+{'offence_data': {'section': 'cc172.2',
   'description': 'agreement or arrangement — sexual offence against child',
   'mode': 'hybrid',
   'summary_minimum': {'amount': 180, 'unit': 'days'},
