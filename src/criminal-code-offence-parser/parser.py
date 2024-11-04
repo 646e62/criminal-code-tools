@@ -335,38 +335,38 @@ def check_intermittent_available(summary_minimum, indictable_minimum):
     """
 
     intermittent_available = {}
+    summary_minimum = convert_quantum_to_days(summary_minimum)
+    indictable_minimum = convert_quantum_to_days(indictable_minimum)
 
-    if summary_minimum["amount"]:
-        convert_quantum_to_days(summary_minimum)
-        if int(summary_minimum["amount"]) > 90:
-            intermittent_available["status"] = "unavailable"
-            intermittent_available["section"] = "cc732(1)"
-            intermittent_available["reason"] = "mandatory minimum term of imprisonment exceeds 90 days"
+    print(summary_minimum, indictable_minimum)
 
-            return intermittent_available
-        
-        else:
-            intermittent_available["status"] = "available"
-            intermittent_available["section"] = "cc732(1)"
-            intermittent_available["reason"] = None
+    if summary_minimum == None and indictable_minimum == None:
+        intermittent_available["status"] = "available"
+        intermittent_available["section"] = "cc732(1)"
+        intermittent_available["reason"] = "no minimum term of imprisonment"
 
-            return intermittent_available
+        return intermittent_available
+
+    elif summary_minimum["amount"] and int(summary_minimum["amount"]) <= 90:
+        intermittent_available["status"] = "available"
+        intermittent_available["section"] = "cc732(1)"
+        intermittent_available["reason"] = "minimum does not exceed 90 days"
+
+        return intermittent_available
     
-    elif indictable_minimum["amount"]:
-        convert_quantum_to_days(indictable_minimum)
-        if int(indictable_minimum["amount"]) > 90:
-            intermittent_available["status"] = "unavailable"
-            intermittent_available["section"] = "cc732(1)"
-            intermittent_available["reason"] = "mandatory minimum term of imprisonment exceeds 90 days"
+    elif indictable_minimum["amount"] and int(indictable_minimum["amount"]) <= 90:
+        intermittent_available["status"] = "available"
+        intermittent_available["section"] = "cc732(1)"
+        intermittent_available["reason"] = "minimum does not exceed 90 days"
 
-            return intermittent_available
-        
-        else:
-            intermittent_available["status"] = "available"
-            intermittent_available["section"] = "cc732(1)"
-            intermittent_available["reason"] = None
+        return intermittent_available
+    
+    else:
+        intermittent_available["status"] = "unavailable"
+        intermittent_available["section"] = "cc732(1)"
+        intermittent_available["reason"] = "mandatory minimum term of imprisonment exceeds 90 days"
 
-            return intermittent_available
+        return intermittent_available
 
 
 def check_suspended_sentence_available(summary_minimum, indictable_minimum):
@@ -492,40 +492,60 @@ def check_fine_alone(summary_minimum, indictable_minimum):
         return fine_alone_available
 
 
-def check_fine_and_probation(summary_minimum, indictable_minimum):
+def check_fine_and_probation(indictable_minimum):
     """
-    A court that imposes a fine *or* a jail sentence may also impose a period
-    of probation (by implication of CC732(1)). This function checks to see
-    whether the offence has a mandatory minimum term of imprisonment. If so,
-    the court may not add a fine and a probationary period to the sentence. 
-    
-    The function does not check to see whether the offence exceeds the maximum
-    term of imprisonment, as any period of jail time would preclude the 
-    imposition of a fine and probation.
+    The same rules apply to this check as to the check for prison and 
+    probation. If the offence has a mandatory minimum term of imprisonment that
+    exceeds two years, probation is not available. Otherwise, it is.
+
+    The function only checks for indictable offences, as summary maximums are
+    all below two years.
     """
 
     fine_and_probation_available = {}
+    print(indictable_minimum)
 
-    if summary_minimum["amount"] == None or indictable_minimum["amount"] == None:
+    if indictable_minimum["amount"] == None:
         fine_and_probation_available["status"] = "available"
         fine_and_probation_available["section"] = "cc732(1)"
-        fine_and_probation_available["reason"] = "no mandatory minimum term of imprisonment"
-
-        return fine_and_probation_available
-
-    if summary_minimum["amount"]:
-        fine_and_probation_available["status"] = "unavailable"
-        fine_and_probation_available["section"] = "cc732(1)"
-        fine_and_probation_available["reason"] = "mandatory minimum term of imprisonment"
+        fine_and_probation_available["reason"] = "no minimum term of imprisonment"
 
         return fine_and_probation_available
     
-    elif indictable_minimum["amount"]:
-        fine_and_probation_available["status"] = "unavailable"
+    else:
+        indictable_minimum = convert_quantum_to_days(indictable_minimum)
+
+    if indictable_minimum["amount"] < 730:
+        fine_and_probation_available["status"] = "available"
         fine_and_probation_available["section"] = "cc732(1)"
-        fine_and_probation_available["reason"] = "mandatory minimum term of imprisonment"
+        fine_and_probation_available["reason"] = None
 
         return fine_and_probation_available
+    else:
+        fine_and_probation_available["status"] = "unavailable"
+        fine_and_probation_available["section"] = "cc732(1)"
+        fine_and_probation_available["reason"] = "mandatory minimum term of imprisonment exceeds two years"
+
+        return fine_and_probation_available
+
+
+def check_fine_probation_intermittent(summary_minimum, indictable_minimum):
+    """
+    Check to see if an intermittent sentence is available. If it is, the court
+    can also impose the fine and probation order. The only offences excluded
+    from this are those with a mandatory minimum term of imprisonment exceeding
+    90 days.
+
+    Keep this code as a separate function. Although it just duplicates the
+    check_intermittent_available function, the two checks should be kept apart
+    in case the logic for either changes in the future.
+    """
+
+    fine_probation_intermittent_available = check_intermittent_available(
+        summary_minimum, indictable_minimum
+    )
+
+    return fine_probation_intermittent_available
 
 
 #############################

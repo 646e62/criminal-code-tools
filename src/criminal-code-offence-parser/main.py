@@ -93,12 +93,11 @@ def parse_offence(offence, mode="summary"):
 
             parsed_offence["fine_alone"] = check_fine_alone(
                 indictable_minimum_quantum,
-                indictable_maximum_quantum,
+                indictable_minimum_quantum,
             )
 
             parsed_offence["fine_and_probation"] = check_fine_and_probation(
                 indictable_minimum_quantum,
-                indictable_maximum_quantum,
             )
 
             # Ancillary orders
