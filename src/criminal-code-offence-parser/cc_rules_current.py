@@ -782,18 +782,47 @@ def check_dna_designation(offence, mode, quantum):
     except:
         quantum_int = 0
 
+    dna_designation = {}
+
     if offence[0] in PRIMARY_DESIGNATED_DNA_OFFENCES:
-        return "primary"
+        dna_designation["status"] = {
+            "available": True,
+            "notes": "",
+        },
+        dna_designation["section"] = "cc487.04"
+        dna_designation["reason"] = "primary designated offence"
+
+        return dna_designation
+
     elif offence[0] in SECONDARY_DESIGNATED_DNA_OFFENCES:
-        return "secondary"
+        dna_designation["status"] = {
+            "available": True,
+            "notes": "",
+        },
+        dna_designation["section"] = "cc487.04"
+        dna_designation["reason"] = "secondary designated offence"
+
+        return dna_designation
     elif (
         (mode == "indictable" or mode == "hybrid")
         and quantum["unit"] == "years"
         and quantum_int >= 5
     ):
-        return "secondary"
+        dna_designation["status"] = {
+            "available": True,
+            "notes": "",
+        },
+        dna_designation["section"] = "cc487.04"
+        dna_designation["reason"] = "secondary designated offence"
     else:
-        return None
+        dna_designation["status"] = {
+            "available": False,
+            "notes": "",
+        },
+        dna_designation["section"] = "cc487.04"
+        dna_designation["reason"] = "not a designated offence"
+
+        return dna_designation
     
 
 def check_soira(section, mode, indictable_maximum):
