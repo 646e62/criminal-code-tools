@@ -96,7 +96,7 @@ def check_prelim_available(indictable_maximum):
 
     prelim_available = {}
 
-    if indictable_maximum == "14y" or offence == "255y":
+    if indictable_maximum == "14y" or indictable_maximum == "255y":
         prelim_available["status"] = {
             "available": True,
             "notes": "",
