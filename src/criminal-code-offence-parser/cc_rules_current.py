@@ -104,19 +104,19 @@ def check_prelim_available(indictable_maximum):
     if indictable_maximum == "14y" or indictable_maximum == "255y":
         prelim_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
             },
         prelim_available["section"] = "cc535"
-        prelim_available["reason"] = "maximum prison term of 14y or greater"
+        prelim_available["notes"] = "maximum prison term of 14y or greater"
         
         return prelim_available
     else:
         prelim_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
             },
         prelim_available["section"] = "cc535"
-        prelim_available["reason"] = "maximum term of less than 14y"
+        prelim_available["notes"] = "maximum term of less than 14y"
         
         return prelim_available
 
@@ -146,10 +146,10 @@ def check_absolute_jurisdiction_offence(section):
             {
                 "status": {
                     "absolute_jurisdiction": True,
-                    "notes": "",
+                    "notes": None,
             },
                 "section": "cc553(a)(i)",
-                "reason": "theft (other than cattle theft)",
+                "notes": "theft (other than cattle theft)",
             }
         )
 
@@ -158,10 +158,10 @@ def check_absolute_jurisdiction_offence(section):
             {
                 "status": {
                     "absolute_jurisdiction": True,
-                    "notes": "",
+                    "notes": None,
             },
                 "section": "cc553(a)(ii)",
-                "reason": "false pretences",
+                "notes": "false pretences",
             }
         )
 
@@ -170,10 +170,10 @@ def check_absolute_jurisdiction_offence(section):
             {
                 "status": {
                     "absolute_jurisdiction": True,
-                    "notes": "",
+                    "notes": None,
             },
                 "section": "cc553(a)(iii)",
-                "reason": "possession of property obtained by crime",
+                "notes": "possession of property obtained by crime",
             }
         )
 
@@ -182,10 +182,10 @@ def check_absolute_jurisdiction_offence(section):
             {
                 "status": {
                     "absolute_jurisdiction": True,
-                    "notes": "",
+                    "notes": None,
             },
                 "section": "cc553(a)(iv)",
-                "reason": "fraud",
+                "notes": "fraud",
             }
         )
 
@@ -194,10 +194,10 @@ def check_absolute_jurisdiction_offence(section):
             {
                 "status": {
                     "absolute_jurisdiction": True,
-                    "notes": "",
+                    "notes": None,
             },
                 "section": "cc553(a)(v)",
-                "reason": "mischief",
+                "notes": "mischief",
             }
         )
 
@@ -206,10 +206,10 @@ def check_absolute_jurisdiction_offence(section):
             {
                 "status": {
                     "absolute_jurisdiction": True,
-                    "notes": "",
+                    "notes": None,
             },
                 "section": "cc553(b)",
-                "reason": "attempt or conspiracies in relation to cc554(a) or (c)",
+                "notes": "attempt or conspiracies in relation to cc554(a) or (c)",
             }
         )
 
@@ -218,10 +218,10 @@ def check_absolute_jurisdiction_offence(section):
             {
                 "status": {
                     "absolute_jurisdiction": True,
-                    "notes": "",
+                    "notes": None,
             },
                 "section": "cc553(c)",
-                "reason": "designated offences",
+                "notes": "designated offences",
             }
         )
 
@@ -230,10 +230,10 @@ def check_absolute_jurisdiction_offence(section):
             {
                 "status": {
                     "absolute_jurisdiction": False,
-                    "notes": "",
+                    "notes": None,
             },
                 "section": "cc553",
-                "reason": "",
+                "notes": None,
             }
         )
 
@@ -257,30 +257,30 @@ def check_discharge_available(summary_minimum, indictable_minimum, indictable_ma
     if summary_minimum["amount"] or indictable_minimum["amount"]:
         discharge_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         discharge_available["section"] = "cc730(1)"
-        discharge_available["reason"] = "mandatory minimum sentence"
+        discharge_available["notes"] = "mandatory minimum sentence"
 
         return discharge_available
 
     elif indictable_maximum["amount"] >= 14:
         discharge_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         discharge_available["section"] = "cc730(1)"
-        discharge_available["reason"] = "maximum term of 14y or greater"
+        discharge_available["notes"] = "maximum term of 14y or greater"
 
         return discharge_available
     
     else:
         discharge_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         discharge_available["section"] = "cc730(1)"
-        discharge_available["reason"] = None
+        discharge_available["notes"] = ""
 
         return discharge_available
 
@@ -313,20 +313,20 @@ def check_cso_availablity(
         if summary_minimum["unit"] == "days" or summary_minimum["unit"] == "months" or summary_minimum["unit"] == "years":  
             cso_available["status"] = {
                 "available": False,
-                "notes": "",
+                "notes": None,
             },
             cso_available["section"] = "cc742.1(b)"
-            cso_available["reason"] = "mandatory minimum term of imprisonment"
+            cso_available["notes"] = "mandatory minimum term of imprisonment"
 
             return cso_available
         
         else:
             cso_available["status"] = {
                 "available": True,
-                "notes": "",
+                "notes": None,
             },
             cso_available["section"] = "cc742.1"
-            cso_available["reason"] = None
+            cso_available["notes"] = None
 
             return cso_available
 
@@ -336,28 +336,28 @@ def check_cso_availablity(
         if indictable_minimum["unit"] == "days" or indictable_minimum["unit"] == "months" or indictable_minimum["unit"] == "years":
             cso_available["status"] = {
                 "available": False,
-                "notes": "",
+                "notes": None,
             },
             cso_available["section"] = "cc742.1(b)"
-            cso_available["reason"] = "mandatory minimum term of imprisonment"
+            cso_available["notes"] = "mandatory minimum term of imprisonment"
 
             return cso_available
         
         else:
             cso_available["status"] = {
                 "available": True,
-                "notes": "",
+                "notes": None,
             },
             cso_available["section"] = "cc742.1"
-            cso_available["reason"] = None
+            cso_available["notes"] = None
 
     elif section in EXCLUDED_CSO_OFFENCES:
         cso_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         cso_available["section"] = "cc742.1(c)"
-        cso_available["reason"] = "enumerated excluded offence"
+        cso_available["notes"] = "enumerated excluded offence"
 
         return cso_available
 
@@ -368,10 +368,10 @@ def check_cso_availablity(
     ):
         cso_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         cso_available["section"] = "cc742.1(d)"
-        cso_available["reason"] = "serious indictable terrorism offence"
+        cso_available["notes"] = "serious indictable terrorism offence"
 
         return cso_available
 
@@ -383,7 +383,7 @@ def check_cso_availablity(
                 "notes": "summary conviction only",
         },
         cso_available["section"] = "cc742.1(d)"
-        cso_available["reason"] = "serious indictable terrorism offence"
+        cso_available["notes"] = "serious indictable terrorism offence"
 
         return cso_available
     
@@ -394,10 +394,10 @@ def check_cso_availablity(
     ):
         cso_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         cso_available["section"] = "cc742.1(d)"
-        cso_available["reason"] = "serious indictable criminal organization offence"
+        cso_available["notes"] = "serious indictable criminal organization offence"
 
         return cso_available
     
@@ -411,17 +411,17 @@ def check_cso_availablity(
             "notes": "summary conviction only",
         },
         cso_available["section"] = "cc742.1(d)"
-        cso_available["reason"] = "serious indictable criminal organization offence"
+        cso_available["notes"] = "serious indictable criminal organization offence"
 
         return cso_available
     
     else:
         cso_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         cso_available["section"] = "cc742.1"
-        cso_available["reason"] = None
+        cso_available["notes"] = None
 
         return cso_available
 
@@ -443,40 +443,40 @@ def check_intermittent_available(summary_minimum, indictable_minimum):
     if summary_minimum == None and indictable_minimum == None:
         intermittent_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         intermittent_available["section"] = "cc732(1)"
-        intermittent_available["reason"] = "no minimum term of imprisonment"
+        intermittent_available["notes"] = "no minimum term of imprisonment"
 
         return intermittent_available
 
     elif summary_minimum["amount"] and int(summary_minimum["amount"]) <= 90:
         intermittent_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         intermittent_available["section"] = "cc732(1)"
-        intermittent_available["reason"] = "minimum does not exceed 90 days"
+        intermittent_available["notes"] = "minimum does not exceed 90 days"
 
         return intermittent_available
     
     elif indictable_minimum["amount"] and int(indictable_minimum["amount"]) <= 90:
         intermittent_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         intermittent_available["section"] = "cc732(1)"
-        intermittent_available["reason"] = "minimum does not exceed 90 days"
+        intermittent_available["notes"] = "minimum does not exceed 90 days"
 
         return intermittent_available
     
     else:
         intermittent_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         intermittent_available["section"] = "cc732(1)"
-        intermittent_available["reason"] = "mandatory minimum term of imprisonment exceeds 90 days"
+        intermittent_available["notes"] = "mandatory minimum term of imprisonment exceeds 90 days"
 
         return intermittent_available
 
@@ -494,30 +494,30 @@ def check_suspended_sentence_available(summary_minimum, indictable_minimum):
     if summary_minimum["amount"]:
         suspended_sentence_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         suspended_sentence_available["section"] = "cc731(1)"
-        suspended_sentence_available["reason"] = "mandatory minimum sentence"
+        suspended_sentence_available["notes"] = "mandatory minimum sentence"
 
         return suspended_sentence_available
     
     elif indictable_minimum["amount"]:
         suspended_sentence_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         suspended_sentence_available["section"] = "cc731(1)"
-        suspended_sentence_available["reason"] = "mandatory minimum sentence"
+        suspended_sentence_available["notes"] = "mandatory minimum sentence"
 
         return suspended_sentence_available
         
     else:
         suspended_sentence_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         suspended_sentence_available["section"] = "cc731(1)"
-        suspended_sentence_available["reason"] = None
+        suspended_sentence_available["notes"] = None
 
         return suspended_sentence_available
     
@@ -539,10 +539,10 @@ def check_prison_and_probation(mode, indictable_minimum):
     if indictable_minimum["amount"] == None:
         prison_and_probation_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         prison_and_probation_available["section"] = "cc732(1)"
-        prison_and_probation_available["reason"] = "no minimum term of imprisonment"
+        prison_and_probation_available["notes"] = "no minimum term of imprisonment"
 
         return prison_and_probation_available
     else:
@@ -551,10 +551,10 @@ def check_prison_and_probation(mode, indictable_minimum):
     if mode == "summary":
         prison_and_probation_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         prison_and_probation_available["section"] = "cc732(1)(b)"
-        prison_and_probation_available["reason"] = None
+        prison_and_probation_available["notes"] = None
 
         return prison_and_probation_available
 
@@ -562,19 +562,19 @@ def check_prison_and_probation(mode, indictable_minimum):
         if indictable_minimum["amount"] < 730:
             prison_and_probation_available["status"] = {
                 "available": True,
-                "notes": "",
+                "notes": None,
             },
             prison_and_probation_available["section"] = "cc732(1)"
-            prison_and_probation_available["reason"] = None
+            prison_and_probation_available["notes"] = None
 
             return prison_and_probation_available
         else:
             prison_and_probation_available["status"] = {
                 "available": False,
-                "notes": "",
+                "notes": None,
             },
             prison_and_probation_available["section"] = "cc732(1)"
-            prison_and_probation_available["reason"] = "mandatory minimum term of imprisonment exceeds two years"
+            prison_and_probation_available["notes"] = "mandatory minimum term of imprisonment exceeds two years"
 
             return prison_and_probation_available
 
@@ -582,19 +582,19 @@ def check_prison_and_probation(mode, indictable_minimum):
         if indictable_minimum["amount"] < 730:
             prison_and_probation_available["status"] = {
                 "available": True,
-                "notes": "",
+                "notes": None,
             },
             prison_and_probation_available["section"] = "cc732(1)"
-            prison_and_probation_available["reason"] = None
+            prison_and_probation_available["notes"] = None
 
             return prison_and_probation_available
         else:
             prison_and_probation_available["status"] = {
                 "available": False,
-                "notes": "",
+                "notes": None,
             },
             prison_and_probation_available["section"] = "cc732(1)"
-            prison_and_probation_available["reason"] = "mandatory minimum term of imprisonment exceeds two years"
+            prison_and_probation_available["notes"] = "mandatory minimum term of imprisonment exceeds two years"
 
             return prison_and_probation_available
 
@@ -612,30 +612,30 @@ def check_fine_alone(summary_minimum, indictable_minimum):
     if summary_minimum["amount"] == None or indictable_minimum["amount"] == None:
         fine_alone_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         fine_alone_available["section"] = "cc734(1)"
-        fine_alone_available["reason"] = "no mandatory minimum term of imprisonment"
+        fine_alone_available["notes"] = "no mandatory minimum term of imprisonment"
 
         return fine_alone_available
 
     if summary_minimum["amount"]:
         fine_alone_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         fine_alone_available["section"] = "cc734(1)"
-        fine_alone_available["reason"] = "mandatory minimum term of imprisonment"
+        fine_alone_available["notes"] = "mandatory minimum term of imprisonment"
 
         return fine_alone_available
     
     elif indictable_minimum["amount"]:
         fine_alone_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         fine_alone_available["section"] = "cc734(1)"
-        fine_alone_available["reason"] = "mandatory minimum term of imprisonment"
+        fine_alone_available["notes"] = "mandatory minimum term of imprisonment"
 
         return fine_alone_available
 
@@ -656,10 +656,10 @@ def check_fine_and_probation(indictable_minimum):
     if indictable_minimum["amount"] == None:
         fine_and_probation_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         fine_and_probation_available["section"] = "cc732(1)"
-        fine_and_probation_available["reason"] = "no minimum term of imprisonment"
+        fine_and_probation_available["notes"] = "no minimum term of imprisonment"
 
         return fine_and_probation_available
     
@@ -669,19 +669,19 @@ def check_fine_and_probation(indictable_minimum):
     if indictable_minimum["amount"] < 730:
         fine_and_probation_available["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         fine_and_probation_available["section"] = "cc732(1)"
-        fine_and_probation_available["reason"] = None
+        fine_and_probation_available["notes"] = None
 
         return fine_and_probation_available
     else:
         fine_and_probation_available["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         fine_and_probation_available["section"] = "cc732(1)"
-        fine_and_probation_available["reason"] = "mandatory minimum term of imprisonment exceeds two years"
+        fine_and_probation_available["notes"] = "mandatory minimum term of imprisonment exceeds two years"
 
         return fine_and_probation_available
 
@@ -728,7 +728,7 @@ def check_inadmissibility(section, mode, indictable_maximum):
             {
                 "section": "irpa34(1)",
                 "status": "permanent resident",
-                "reason": "security",
+                "notes": "security",
             }
         )
 
@@ -737,14 +737,14 @@ def check_inadmissibility(section, mode, indictable_maximum):
             {
                 "section": "irpa35(1)(c.1)",
                 "status": "permanent resident",
-                "reason": "human or international rights violations",
+                "notes": "human or international rights violations",
             }
         )
         inadmissibilty_list.append(
             {
                 "section": "irpa35(1)(c.1)",
                 "status": "foreign national",
-                "reason": "human or international rights violations",
+                "notes": "human or international rights violations",
             }
         )
 
@@ -753,14 +753,14 @@ def check_inadmissibility(section, mode, indictable_maximum):
             {
                 "section": "irpa36(1)",
                 "status": "permanent resident",
-                "reason": "serious criminality",
+                "notes": "serious criminality",
             }
         )
         inadmissibilty_list.append(
             {
                 "section": "irpa36(1)",
                 "status": "foreign national",
-                "reason": "serious criminality",
+                "notes": "serious criminality",
             }
         )
 
@@ -769,7 +769,7 @@ def check_inadmissibility(section, mode, indictable_maximum):
             {
                 "section": "irpa36(2)",
                 "status": "foreign national",
-                "reason": "criminality",
+                "notes": "criminality",
             }
         )
 
@@ -792,20 +792,20 @@ def check_dna_designation(offence, mode, quantum):
     if offence[0] in PRIMARY_DESIGNATED_DNA_OFFENCES:
         dna_designation["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         dna_designation["section"] = "cc487.04"
-        dna_designation["reason"] = "primary designated offence"
+        dna_designation["notes"] = "primary designated offence"
 
         return dna_designation
 
     elif offence[0] in SECONDARY_DESIGNATED_DNA_OFFENCES:
         dna_designation["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         dna_designation["section"] = "cc487.04"
-        dna_designation["reason"] = "secondary designated offence"
+        dna_designation["notes"] = "secondary designated offence"
 
         return dna_designation
     elif (
@@ -815,17 +815,17 @@ def check_dna_designation(offence, mode, quantum):
     ):
         dna_designation["status"] = {
             "available": True,
-            "notes": "",
+            "notes": None,
         },
         dna_designation["section"] = "cc487.04"
-        dna_designation["reason"] = "secondary designated offence"
+        dna_designation["notes"] = "secondary designated offence"
     else:
         dna_designation["status"] = {
             "available": False,
-            "notes": "",
+            "notes": None,
         },
         dna_designation["section"] = "cc487.04"
-        dna_designation["reason"] = "not a designated offence"
+        dna_designation["notes"] = "not a designated offence"
 
         return dna_designation
     
@@ -854,7 +854,7 @@ def check_soira(section, mode, indictable_maximum):
                     "cc490.011[primary offence](a)",
                     ],
                 "status": "primary",
-                "reason": "primary designated offence",
+                "notes": "primary designated offence",
             }
         )
 
@@ -865,7 +865,7 @@ def check_soira(section, mode, indictable_maximum):
                     "cc490.011[secondary offence](a)",
                     ],
                 "status": "secondary",
-                "reason": "secondary designated offence",
+                "notes": "secondary designated offence",
             }
         )
     elif section in SOIRA_OFFENCES_ATTEMPTS:
@@ -876,7 +876,7 @@ def check_soira(section, mode, indictable_maximum):
                     "cc490.011[secondary offence](b)",
                     ],
                 "status": "secondary",
-                "reason": "attempted designated offence",
+                "notes": "attempted designated offence",
             }
         )
     elif section in SOIRA_OFFENCES_CONSPIRACY:
@@ -887,7 +887,7 @@ def check_soira(section, mode, indictable_maximum):
                     "cc490.011[secondary offence](b)",
                     ],
                 "status": "secondary",
-                "reason": "conspiracy to commit designated offence",
+                "notes": "conspiracy to commit designated offence",
             }
         )
     else:
@@ -941,7 +941,7 @@ def check_proceeds_of_crime_forfeiture(section, mode):
                     "cc462.37(1)",
                     ],
                 "status": "unavailable",
-                "reason": "strictly summary conviction offence",
+                "notes": "strictly summary conviction offence",
             }
         )
 
@@ -954,7 +954,7 @@ def check_proceeds_of_crime_forfeiture(section, mode):
                     "cc462.37(2.02)(a)"
                     ],
                 "status": "available",
-                "reason": "particular circumstances — criminal organization offence",
+                "notes": "particular circumstances — criminal organization offence",
             }
         )
 
@@ -965,7 +965,7 @@ def check_proceeds_of_crime_forfeiture(section, mode):
                     "cc462.37(2.02)(b)"
                     ],
                 "status": "available",
-                "reason": "particular circumstances — CDSA offence",
+                "notes": "particular circumstances — CDSA offence",
             }
         )
 
@@ -976,7 +976,7 @@ def check_proceeds_of_crime_forfeiture(section, mode):
                     "cc462.37(2.02)(c)"
                     ],
                 "status": "available",
-                "reason": "particular circumstances — cannabis offence",
+                "notes": "particular circumstances — cannabis offence",
             }
         )
 
@@ -987,7 +987,7 @@ def check_proceeds_of_crime_forfeiture(section, mode):
                     "cc462.37(2.02)(d)"
                     ],
                 "status": "available",
-                "reason": "particular circumstances — human trafficking offence",
+                "notes": "particular circumstances — human trafficking offence",
             }
         )
 
@@ -998,7 +998,7 @@ def check_proceeds_of_crime_forfeiture(section, mode):
                     "cc462.3[designated offence]",
                     "cc462.37(1)",],
                 "status": "available",
-                "reason": "offence prosecutable by indictment",
+                "notes": "offence prosecutable by indictment",
             }   
         )
 
@@ -1017,7 +1017,7 @@ def check_section_164_forfeiture_order(section):
         section_164_forfeiture_list.append(
             {
                 "section": "cc164.2",
-                "reason": "enumerated offence",
+                "notes": "enumerated offence",
             }
         )
     
