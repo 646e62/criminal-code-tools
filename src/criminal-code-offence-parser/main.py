@@ -41,7 +41,7 @@ def parse_offence(offence, mode="summary"):
 
             # Create the offence variables
             mode = check_offence_type(row)
-            prelim_available = check_prelim_available(row)
+            prelim_available = check_prelim_available(row[3])
             indictable_minimum_quantum = parse_quantum(row[2])
             indictable_maximum_quantum = parse_quantum(row[3])
             summary_minimum_quantum = parse_quantum(row[4])

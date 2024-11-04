@@ -89,15 +89,25 @@ def convert_quantum_to_days(quantum):
 
 
 # Procedure
-def check_prelim_available(offence):
+def check_prelim_available(indictable_maximum):
     """
     Check if the preliminary inquiry is available for a given offence.
     """
 
-    if offence[3] == "14y" or offence[3] == "255y":
-        return True
+    prelim_available = {}
+
+    if indictable_maximum == "14y" or indictable_maximum == "255y":
+        prelim_available["status"] = "available"
+        prelim_available["section"] = "cc535"
+        prelim_available["reason"] = "maximum prison term of 14y or greater"
+        
+        return prelim_available
     else:
-        return False
+        prelim_available["status"] = "unavailable"
+        prelim_available["section"] = "cc535"
+        prelim_available["reason"] = "maximum term of less than 14y"
+        
+        return prelim_available
 
 
 def reverse_onus():
