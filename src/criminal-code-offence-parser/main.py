@@ -1,6 +1,6 @@
 import csv
 
-from parser import (
+from cc_rules_current import (
     check_offence_type,
     check_prelim_available,
     check_section_469_offence,
