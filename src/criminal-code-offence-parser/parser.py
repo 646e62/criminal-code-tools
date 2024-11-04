@@ -19,7 +19,8 @@ from constants import (
     ABSOLUTE_JURISDICITON_OFFENCES_FALSE_PRETENCES,
     ABSOLUTE_JURISDICITON_OFFENCES_PPOBC,
     ABSOLUTE_JURISDICITON_OFFENCES_THEFT,
-    ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF
+    ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF,
+    SECTION_161_FORFEITURE_ORDER_OFFENCES,
 )
 
 # Basic metadata
@@ -105,13 +106,15 @@ def reverse_onus():
 
 def check_section_469_offence(section):
     """
-    
+    Quick check to determine whether an offence exists in the 469 list. Has 
+    implication on which court can adjudicate a show-cause hearing.
     """
 
     if section in SECTION_469_OFFENCES:
         return True
     else:
         return False
+
 
 def check_absolute_jurisdiction_offence(section):
     
@@ -175,7 +178,12 @@ def check_absolute_jurisdiction_offence(section):
 
     return absolute_jurisdiction_list
 
-# Sentencing options
+########################
+##                    ##
+## Sentencing options ##
+##                    ##
+########################
+
 def check_discharge_available(summary_minimum, indictable_minimum, indictable_maximum):
     """
     Discharges are available when the following conditions obtain:
@@ -391,9 +399,65 @@ def check_suspended_sentence_available(summary_minimum, indictable_minimum):
         suspended_sentence_available["reason"] = None
 
         return suspended_sentence_available
+    
+
+def check_prison_and_probation(mode, indictable_minimum):
+    """
+    A suspended sentence is available for any offence that doesn't have a 
+    mandatory minimum exceeding two years. If the offence is hybrid, 
+    probation is available on summary conviction proceedings. If the offence
+    is straight indictable, probation is available where the minimum term of
+    imprisonment is less than two years.
+    """
+
+    prison_and_probation_available = {}
+
+    # Convert the quantum of the offence to days if it is not already in that
+    # format
+    indictable_minimum = convert_quantum_to_days(indictable_minimum)
+
+    if mode == "summary":
+        prison_and_probation_available["status"] = "available"
+        prison_and_probation_available["section"] = "cc732(1)(b)"
+        prison_and_probation_available["reason"] = None
+
+        return prison_and_probation_available
+
+    elif mode == "hybrid":
+        if indictable_minimum["amount"] < 730:
+            prison_and_probation_available["status"] = "available"
+            prison_and_probation_available["section"] = "cc732(1)"
+            prison_and_probation_available["reason"] = None
+
+            return prison_and_probation_available
+        else:
+            prison_and_probation_available["status"] = "unavailable"
+            prison_and_probation_available["section"] = "cc732(1)"
+            prison_and_probation_available["reason"] = "mandatory minimum term of imprisonment exceeds two years"
+
+            return prison_and_probation_available
+
+    elif mode == "indictable":
+        if indictable_minimum["amount"] < 730:
+            prison_and_probation_available["status"] = "available"
+            prison_and_probation_available["section"] = "cc732(1)"
+            prison_and_probation_available["reason"] = None
+
+            return prison_and_probation_available
+        else:
+            prison_and_probation_available["status"] = "unavailable"
+            prison_and_probation_available["section"] = "cc732(1)"
+            prison_and_probation_available["reason"] = "mandatory minimum term of imprisonment exceeds two years"
+
+            return prison_and_probation_available
 
 
-# Collateral consequences
+#############################
+##                         ##
+## Collateral consequences ##
+##                         ##
+#############################
+
 def check_inadmissibility(section, mode, indictable_maximum):
     """
     Checks to see whether the offence renders the defendant liable for IRPA
@@ -657,6 +721,26 @@ def check_proceeds_of_crime_forfeiture(section, mode):
         )
 
     return proceeds_list
+
+
+def check_section_164_forfeiture_order(section):
+    """
+    Checks whether the offence is one of the enumerated offences for which a
+    cc164.2 forfeiture order is required.
+    """
+
+    section_164_forfeiture_list = []
+
+    if section in SECTION_161_FORFEITURE_ORDER_OFFENCES:
+        section_164_forfeiture_list.append(
+            {
+                "section": "cc164.2",
+                "reason": "enumerated offence",
+            }
+        )
+    
+    return section_164_forfeiture_list
+
 
 def check_section_515_mandatory_weapons_prohibition(section):
     pass

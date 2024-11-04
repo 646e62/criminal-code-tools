@@ -14,6 +14,8 @@ from parser import (
     check_soira,
     check_proceeds_of_crime_forfeiture,
     check_absolute_jurisdiction_offence,
+    check_section_164_forfeiture_order,
+    check_prison_and_probation,
 )
 
 # Open the CSV file
@@ -82,6 +84,11 @@ def parse_offence(offence, mode="summary"):
                 indictable_maximum_quantum,
             )
 
+            parsed_offence["prison_and_fine_available"] = check_prison_and_probation(
+                mode,
+                indictable_minimum_quantum,
+            )
+
             # Ancillary orders
             parsed_offence["dna_designation"] = check_dna_designation(
                 row, mode, indictable_maximum_quantum
@@ -89,8 +96,11 @@ def parse_offence(offence, mode="summary"):
             parsed_offence["soira"] = check_soira(
                 row[0], mode, indictable_maximum_quantum
             )
-            parsed_offence["proceeds_of_crime"] = check_proceeds_of_crime_forfeiture(
+            parsed_offence["proceeds_of_crime_forfeiture"] = check_proceeds_of_crime_forfeiture(
                 row[0], mode
+            )
+            parsed_offence["section_164.2_forfeiture_order"] = check_section_164_forfeiture_order(
+                row[0]
             )
 
             # Collateral consequences
