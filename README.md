@@ -2,13 +2,13 @@
 ## Overview
 Offence analysis tools for *Criminal Code*, RSC 1985, c C-46 and related statutes.
 
-The tools are designed to provide domain-specific expert inferences with human-readable explanations for the results. The tools themselves are functions that translate statutory legal logic into computational logic. The provided explanations include citations to the statute where the unformatted legislative logic is located.
+The program provides domain-specific expert inferences with human-readable explanations for the results. The program's tools are functions that translate statutory legal logic into computational logic. The provided explanations include citations to the statute where the unformatted legislative logic is located.
 
 The tools will work as intended when they return accurate results with complete explanations of the program's logic.
 
 ## Examples
 ### Basic call
-As of v0.0.5, the main function call will provide customizable output. The program call will always produce basic offence information:
+As of v0.0.5, the main function call provides customizable output. The program call will always produce basic offence information:
 
 ```python
 > from main import parse_offence
