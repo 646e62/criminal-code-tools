@@ -438,8 +438,6 @@ def check_intermittent_available(summary_minimum, indictable_minimum):
     summary_minimum = convert_quantum_to_days(summary_minimum)
     indictable_minimum = convert_quantum_to_days(indictable_minimum)
 
-    print(summary_minimum, indictable_minimum)
-
     if summary_minimum == None and indictable_minimum == None:
         intermittent_available["status"] = {
             "available": True,
@@ -607,8 +605,6 @@ def check_fine_alone(summary_minimum, indictable_minimum):
 
     fine_alone_available = {}
 
-    print(indictable_minimum)
-
     if summary_minimum["amount"] == None or indictable_minimum["amount"] == None:
         fine_alone_available["status"] = {
             "available": True,
@@ -651,7 +647,6 @@ def check_fine_and_probation(indictable_minimum):
     """
 
     fine_and_probation_available = {}
-    print(indictable_minimum)
 
     if indictable_minimum["amount"] == None:
         fine_and_probation_available["status"] = {
