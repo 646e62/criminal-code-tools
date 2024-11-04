@@ -16,6 +16,7 @@ from parser import (
     check_absolute_jurisdiction_offence,
     check_section_164_forfeiture_order,
     check_prison_and_probation,
+    check_fine_alone,
 )
 
 # Open the CSV file
@@ -84,9 +85,14 @@ def parse_offence(offence, mode="summary"):
                 indictable_maximum_quantum,
             )
 
-            parsed_offence["prison_and_fine_available"] = check_prison_and_probation(
+            parsed_offence["prison_and_probation_available"] = check_prison_and_probation(
                 mode,
                 indictable_minimum_quantum,
+            )
+
+            parsed_offence["fine_alone"] = check_fine_alone(
+                indictable_minimum_quantum,
+                indictable_maximum_quantum,
             )
 
             # Ancillary orders

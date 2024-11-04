@@ -414,7 +414,15 @@ def check_prison_and_probation(mode, indictable_minimum):
 
     # Convert the quantum of the offence to days if it is not already in that
     # format
-    indictable_minimum = convert_quantum_to_days(indictable_minimum)
+    
+    if indictable_minimum["amount"] == None:
+        prison_and_probation_available["status"] = "available"
+        prison_and_probation_available["section"] = "cc732(1)"
+        prison_and_probation_available["reason"] = "no minimum term of imprisonment"
+
+        return prison_and_probation_available
+    else:
+        indictable_minimum = convert_quantum_to_days(indictable_minimum)
 
     if mode == "summary":
         prison_and_probation_available["status"] = "available"
@@ -450,6 +458,45 @@ def check_prison_and_probation(mode, indictable_minimum):
             prison_and_probation_available["reason"] = "mandatory minimum term of imprisonment exceeds two years"
 
             return prison_and_probation_available
+
+
+def check_fine_alone(summary_minimum, indictable_minimum):
+    """
+    Checks to see whether the offence has a mandatory minimum prison term. If
+    so, a fine alone is not available. Otherwise, it is.
+    """
+
+    fine_alone_available = {}
+
+    print(indictable_minimum)
+
+    if summary_minimum["amount"] == None or indictable_minimum["amount"] == None:
+        fine_alone_available["status"] = "available"
+        fine_alone_available["section"] = "cc734(1)"
+        fine_alone_available["reason"] = "no mandatory minimum term of imprisonment"
+
+        return fine_alone_available
+
+    if summary_minimum["amount"]:
+        fine_alone_available["status"] = "unavailable"
+        fine_alone_available["section"] = "cc734(1)"
+        fine_alone_available["reason"] = "mandatory minimum term of imprisonment"
+
+        return fine_alone_available
+    
+    elif indictable_minimum["amount"]:
+        fine_alone_available["status"] = "unavailable"
+        fine_alone_available["section"] = "cc734(1)"
+        fine_alone_available["reason"] = "mandatory minimum term of imprisonment"
+
+        return fine_alone_available
+    
+    else:
+        fine_alone_available["status"] = "available"
+        fine_alone_available["section"] = "cc734(1)"
+        fine_alone_available["reason"] = None
+
+        return fine_alone_available
 
 
 #############################
