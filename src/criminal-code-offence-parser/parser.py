@@ -490,13 +490,42 @@ def check_fine_alone(summary_minimum, indictable_minimum):
         fine_alone_available["reason"] = "mandatory minimum term of imprisonment"
 
         return fine_alone_available
-    
-    else:
-        fine_alone_available["status"] = "available"
-        fine_alone_available["section"] = "cc734(1)"
-        fine_alone_available["reason"] = None
 
-        return fine_alone_available
+
+def check_fine_and_probation(summary_minimum, indictable_minimum):
+    """
+    A court that imposes a fine *or* a jail sentence may also impose a period
+    of probation (by implication of CC732(1)). This function checks to see
+    whether the offence has a mandatory minimum term of imprisonment. If so,
+    the court may not add a fine and a probationary period to the sentence. 
+    
+    The function does not check to see whether the offence exceeds the maximum
+    term of imprisonment, as any period of jail time would preclude the 
+    imposition of a fine and probation.
+    """
+
+    fine_and_probation_available = {}
+
+    if summary_minimum["amount"] == None or indictable_minimum["amount"] == None:
+        fine_and_probation_available["status"] = "available"
+        fine_and_probation_available["section"] = "cc732(1)"
+        fine_and_probation_available["reason"] = "no mandatory minimum term of imprisonment"
+
+        return fine_and_probation_available
+
+    if summary_minimum["amount"]:
+        fine_and_probation_available["status"] = "unavailable"
+        fine_and_probation_available["section"] = "cc732(1)"
+        fine_and_probation_available["reason"] = "mandatory minimum term of imprisonment"
+
+        return fine_and_probation_available
+    
+    elif indictable_minimum["amount"]:
+        fine_and_probation_available["status"] = "unavailable"
+        fine_and_probation_available["section"] = "cc732(1)"
+        fine_and_probation_available["reason"] = "mandatory minimum term of imprisonment"
+
+        return fine_and_probation_available
 
 
 #############################
