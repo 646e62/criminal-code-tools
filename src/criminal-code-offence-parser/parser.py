@@ -140,7 +140,7 @@ def check_absolute_jurisdiction_offence(section):
         absolute_jurisdiction_list.append(
             {
                 "status": {
-                    "available": True,
+                    "absolute_jurisdiction": True,
                     "notes": "",
             },
                 "section": "cc553(a)(i)",
@@ -152,7 +152,7 @@ def check_absolute_jurisdiction_offence(section):
         absolute_jurisdiction_list.append(
             {
                 "status": {
-                    "available": True,
+                    "absolute_jurisdiction": True,
                     "notes": "",
             },
                 "section": "cc553(a)(ii)",
@@ -164,7 +164,7 @@ def check_absolute_jurisdiction_offence(section):
         absolute_jurisdiction_list.append(
             {
                 "status": {
-                    "available": True,
+                    "absolute_jurisdiction": True,
                     "notes": "",
             },
                 "section": "cc553(a)(iii)",
@@ -176,7 +176,7 @@ def check_absolute_jurisdiction_offence(section):
         absolute_jurisdiction_list.append(
             {
                 "status": {
-                    "available": True,
+                    "absolute_jurisdiction": True,
                     "notes": "",
             },
                 "section": "cc553(a)(iv)",
@@ -188,7 +188,7 @@ def check_absolute_jurisdiction_offence(section):
         absolute_jurisdiction_list.append(
             {
                 "status": {
-                    "available": True,
+                    "absolute_jurisdiction": True,
                     "notes": "",
             },
                 "section": "cc553(a)(v)",
@@ -200,7 +200,7 @@ def check_absolute_jurisdiction_offence(section):
         absolute_jurisdiction_list.append(
             {
                 "status": {
-                    "available": True,
+                    "absolute_jurisdiction": True,
                     "notes": "",
             },
                 "section": "cc553(b)",
@@ -212,7 +212,7 @@ def check_absolute_jurisdiction_offence(section):
         absolute_jurisdiction_list.append(
             {
                 "status": {
-                    "available": True,
+                    "absolute_jurisdiction": True,
                     "notes": "",
             },
                 "section": "cc553(c)",
@@ -224,7 +224,7 @@ def check_absolute_jurisdiction_offence(section):
         absolute_jurisdiction_list.append(
             {
                 "status": {
-                    "available": False,
+                    "absolute_jurisdiction": False,
                     "notes": "",
             },
                 "section": "cc553",
