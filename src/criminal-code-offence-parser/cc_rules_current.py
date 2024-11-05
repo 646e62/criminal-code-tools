@@ -476,7 +476,10 @@ def check_intermittent_available(summary_minimum, indictable_minimum):
 
     intermittent_available = {}
 
-    if summary_minimum == None and indictable_minimum == None:
+    summary_minimum = convert_quantum_to_days(summary_minimum)
+    indictable_minimum = convert_quantum_to_days(indictable_minimum)
+
+    if summary_minimum["amount"] == 0 and indictable_minimum["amount"] == 0:
         intermittent_available["status"] = (
             {
                 "available": True,
