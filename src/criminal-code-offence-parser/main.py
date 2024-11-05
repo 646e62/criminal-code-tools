@@ -25,6 +25,111 @@ with open("data/cc-offences-2024-09-16.csv") as csvfile:
     data = list(csvreader)
 
 
+def generate_basic_offence_details(row):
+    """
+    Generates the basic offence details that every function call should 
+    include.
+    """
+    offence_data = {}
+
+    # Create the offence variables
+    mode = check_offence_type(row)
+    indictable_minimum_quantum = parse_quantum(row[2])
+    indictable_maximum_quantum = parse_quantum(row[3])
+    summary_minimum_quantum = parse_quantum(row[4])
+    summary_maximum_quantum = parse_quantum(row[5])
+
+    # Offence data
+    offence_data["section"] = row[0]
+    offence_data["description"] = row[1]
+    offence_data["mode"] = mode
+    offence_data["summary_minimum"] = summary_minimum_quantum
+    offence_data["summary_maximum"] = summary_maximum_quantum
+    offence_data["indictable_minimum"] = indictable_minimum_quantum
+    offence_data["indictable_maximum"] = indictable_maximum_quantum
+
+    return offence_data
+
+
+def generate_procedure_details(row):
+    """
+    Generates basic information about procedural rights or requirements for 
+    certain offences.
+    """
+    procedure_data = {}
+
+    # Create the offence variables
+    prelim_available = check_prelim_available(row[3])
+    section_469_offence = check_section_469_offence(row[0])
+
+    procedure_data["prelim_available"] = prelim_available
+    procedure_data["absolute_jurisdiction"] = (
+        check_absolute_jurisdiction_offence(row[0])
+    )
+    procedure_data["release_by_superior_court_judge"] = section_469_offence
+
+    return procedure_data
+
+
+def generate_sentencing_details(row):
+    """
+    Generates basic information about sentencing options for certain offences.
+    """
+    sentencing_data = {}
+
+    # Create the offence variables
+    mode = check_offence_type(row)
+    indictable_minimum_quantum = parse_quantum(row[2])
+    indictable_maximum_quantum = parse_quantum(row[3])
+    summary_minimum_quantum = parse_quantum(row[4])
+    summary_maximum_quantum = parse_quantum(row[5])
+
+    sentencing_data["cso_available"] = check_cso_availablity(
+        row[0],
+        summary_minimum_quantum,
+        indictable_minimum_quantum,
+        indictable_maximum_quantum,
+        mode,
+    )
+    sentencing_data["intermittent_available"] = check_intermittent_available(
+        summary_minimum_quantum, indictable_minimum_quantum
+    )
+    sentencing_data["suspended_sentence_available"] = check_suspended_sentence_available(
+        summary_minimum_quantum, indictable_minimum_quantum
+    )
+    sentencing_data["discharge_available"] = check_discharge_available(
+        summary_minimum_quantum, 
+        indictable_minimum_quantum, 
+        indictable_maximum_quantum
+    )
+    sentencing_data["prison_and_probation_available"] = check_prison_and_probation(
+        mode,
+        indictable_minimum_quantum,
+    )
+    sentencing_data["fine_alone"] = check_fine_alone(
+        indictable_minimum_quantum,
+        indictable_minimum_quantum,
+    )
+    sentencing_data["fine_and_probation"] = check_fine_and_probation(
+        indictable_minimum_quantum,
+    )
+
+    return sentencing_data
+
+
+def parse_offence_beta(
+        offence,
+        mode="summary",
+        full=False,
+        procedure=False,
+        ancillary_orders=False,
+        sentencing=False,
+        collateral_consequences=False,
+):
+    pass
+
+
+## Original function (v0.0.1 — 0.0.5)
 def parse_offence(
     offence,
     mode="summary",
