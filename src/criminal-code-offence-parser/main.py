@@ -19,6 +19,11 @@ from cc_rules_current import (
     check_fine_and_probation,
 )
 
+from map import (
+    CC_DISAMBIGUATION,
+    CC_GRADUATED_OFFENCES
+)
+
 # Open the CSV file
 with open("data/cc-offences-2024-09-16.csv") as csvfile:
     csvreader = csv.reader(csvfile)
@@ -82,7 +87,8 @@ def generate_sentencing_details(row):
     indictable_minimum_quantum = parse_quantum(row[2])
     indictable_maximum_quantum = parse_quantum(row[3])
     summary_minimum_quantum = parse_quantum(row[4])
-    summary_maximum_quantum = parse_quantum(row[5])
+
+    print(summary_minimum_quantum, indictable_minimum_quantum)
 
     sentencing_data["cso_available"] = check_cso_availablity(
         row[0],
@@ -117,6 +123,39 @@ def generate_sentencing_details(row):
     return sentencing_data
 
 
+def generate_ancillary_order_details(row):
+    """
+    Generates basic information about ancillary orders for certain offences.
+    """
+    ancillary_order_data = {}
+
+    mode = check_offence_type(row)
+    indictable_maximum_quantum = parse_quantum(row[3])
+
+    ancillary_order_data["dna_designation"] = check_dna_designation(row, mode, indictable_maximum_quantum)
+    ancillary_order_data["soira"] = check_soira(row[0], mode, indictable_maximum_quantum)
+    ancillary_order_data["proceeds_of_crime_forfeiture"] = check_proceeds_of_crime_forfeiture(row[0], mode)
+    ancillary_order_data["section_164.2_forfeiture_order"] = check_section_164_forfeiture_order(row[0])
+
+    return ancillary_order_data
+
+
+def generate_collateral_consequence_details(row):
+    """
+    Generates basic information about collateral consequences for certain offences.
+    """
+    collateral_consequence_data = {}
+
+    mode = check_offence_type(row)
+    indictable_maximum_quantum = parse_quantum(row[3])
+
+    collateral_consequence_data["inadmissibility"] = check_inadmissibility(
+        row[0], mode, indictable_maximum_quantum["amount"]
+    )
+
+    return collateral_consequence_data
+
+
 def parse_offence_beta(
         offence,
         mode="summary",
@@ -126,8 +165,63 @@ def parse_offence_beta(
         sentencing=False,
         collateral_consequences=False,
 ):
-    pass
+    """
+    Parse the offence data for a given offence. Updated for modularity and 
+    increased functionality. Now returns a list of dictionaries, which accounts
+    for ambiguous and imperfect user input.
 
+    By default, returns only `offence_data`. Additional categories can be added by
+    setting `procedure`, `ancillary_orders`, `sentencing`, or 
+    `collateral_consequences` to True. Setting `full` to True will return all 
+    categories.
+    """
+
+    def offence_parser(row):
+        parsed_offence = {
+            "offence_data": generate_basic_offence_details(row)
+        }
+
+        if full or procedure:
+            parsed_offence["procedure"] = generate_procedure_details(row)
+
+        if full or sentencing:
+            parsed_offence["sentencing"] = generate_sentencing_details(row)
+
+        if full or ancillary_orders:
+            parsed_offence["ancillary_orders"] = generate_ancillary_order_details(row)
+
+        if full or collateral_consequences:
+            parsed_offence["collateral_consequences"] = generate_collateral_consequence_details(row)
+
+        return parsed_offence
+
+    offence = offence.strip().lower()
+    parsed_offence_list = []
+    
+    # Check to see if the offence is in the data. If not, check if it is a key in the
+    # disambiguation or graduated offences dictionaries. Offences in these dictionaries
+    # will be in list format. The program will need to cycle through each offence in the
+    # list and add the results of the parser to the parsed_offence_list.
+
+    for row in data:
+        if row[0] == offence:
+            parsed_offence_list.append(offence_parser(row))
+            return parsed_offence_list
+        
+    if offence in CC_DISAMBIGUATION:
+        for disambiguated_offence in CC_DISAMBIGUATION[offence]:
+            for row in data:
+                if row[0] == disambiguated_offence:
+                    parsed_offence_list.append(offence_parser(row))
+        return parsed_offence_list
+    
+    if offence in CC_GRADUATED_OFFENCES:
+        for graduated_offence in CC_GRADUATED_OFFENCES[offence]:
+            for row in data:
+                if row[0] == graduated_offence:
+                    parsed_offence_list.append(offence_parser(row))
+        return parsed_offence_list
+    
 
 ## Original function (v0.0.1 — 0.0.5)
 def parse_offence(

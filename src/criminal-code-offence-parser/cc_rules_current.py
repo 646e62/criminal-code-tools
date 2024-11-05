@@ -42,7 +42,7 @@ def check_offence_type(offence):
     else:
         return "hybrid"
 
-
+# Move these to a utils
 def parse_quantum(quantum):
     """
     Parse the quantum of the offence.
@@ -50,8 +50,8 @@ def parse_quantum(quantum):
     parsed_quantum = {}
 
     if quantum == "":
-        parsed_quantum["amount"] = None
-        parsed_quantum["unit"] = None
+        parsed_quantum["amount"] = 0
+        parsed_quantum["unit"] = "days"
         return parsed_quantum
 
     #
@@ -475,8 +475,6 @@ def check_intermittent_available(summary_minimum, indictable_minimum):
     """
 
     intermittent_available = {}
-    summary_minimum = convert_quantum_to_days(summary_minimum)
-    indictable_minimum = convert_quantum_to_days(indictable_minimum)
 
     if summary_minimum == None and indictable_minimum == None:
         intermittent_available["status"] = (
