@@ -325,9 +325,9 @@ cc320.13(2)-s,dangerous operation — causing bodily harm — subsequent offence
 cc320.13(3)-1,dangerous operation — causing death — first offence,1000$,255y,,
 cc320.13(3)-2,dangerous operation — causing death — second offence,30d,255y,,
 cc320.13(3)-s,dangerous operation — causing death — subsequent offence,120d,255y,,
-cc320.14(1)-1a,operation while impaired — first offence,1000$,10y,1000$,5000$&729d
-cc320.14(1)-1b,operation while impaired — first offence — BAC between 120mg and 160mg,1500$,10y,1500$,5000$&729d
-cc320.14(1)-1c,operation while impaired — first offence — BAC over 160mg,2000$,10y,2000$,5000$&729d
+cc320.14(1)-1-a,operation while impaired — first offence,1000$,10y,1000$,5000$&729d
+cc320.14(1)-1-b,operation while impaired — first offence — BAC between 120mg and 160mg,1500$,10y,1500$,5000$&729d
+cc320.14(1)-1-c,operation while impaired — first offence — BAC over 160mg,2000$,10y,2000$,5000$&729d
 cc320.14(1)-2,operation while impaired — second offence,30d,10y,30d,5000$&729d
 cc320.14(1)-s,operation while impaired — subsequent offence,120d,10y,120d,5000$&729d
 cc320.14(2)-1,operation while impaired — causing bodily harm — first offence,1000$,14y,1000$,5000$&729d
@@ -530,7 +530,7 @@ cc463(d),attempts accessories — hybrid,,7y,,sc
 cc464,counselling offence that is not committed — indictable,,14y,,sc
 cc465(1)(a),conspiracy — murder,,255y,,
 cc465(1)(b)(i),conspiracy — indictable punishable by 14y or less,,10y,,sc
-cc145(1)(b)(ii),conspiracy — indictable punihsable by less than 14y,,5y,,sc
+cc465(1)(b)(ii),conspiracy — indictable punihsable by less than 14y,,5y,,sc
 cc465(1)(c),conspiracy — indictable — other,,255y,,
 cc465(1)(d),conspiracy — sc,,,,sc
 cc467.11,participation in activities of criminal organization,,5y,,sc
