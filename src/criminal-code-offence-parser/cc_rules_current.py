@@ -29,8 +29,8 @@ from constants import (
 )
 
 from utils import (
-    parse_quantum,
     convert_quantum_to_days,
+    standard_output,
 )
 
 # Basic metadata
@@ -52,29 +52,22 @@ def check_prelim_available(indictable_maximum):
     Check if the preliminary inquiry is available for a given offence.
     """
 
-    prelim_available = {}
-
     if indictable_maximum == "14y" or indictable_maximum == "255y":
-        prelim_available["status"] = (
-            {
-                "available": True,
-                "notes": None,
-            },
+        prelim_available = standard_output(
+            True, 
+            None, 
+            ["cc535"], 
+            "maximum term of 14y or greater"
         )
-        prelim_available["section"] = "cc535"
-        prelim_available["notes"] = "maximum prison term of 14y or greater"
-
         return prelim_available
+    
     else:
-        prelim_available["status"] = (
-            {
-                "available": False,
-                "notes": None,
-            },
+        prelim_available = standard_output(
+            False, 
+            None, 
+            ["cc535"], 
+            "maximum of less than 14y"
         )
-        prelim_available["section"] = "cc535"
-        prelim_available["notes"] = "maximum term of less than 14y"
-
         return prelim_available
 
 
@@ -89,9 +82,12 @@ def check_section_469_offence(section):
     """
 
     if section in SECTION_469_OFFENCES:
-        return True
+        section_469_offence = standard_output(True, None, ["cc469"], "listed offence")
+        return section_469_offence
+    
     else:
-        return False
+        section_469_offence = standard_output(False, None, ["cc469"], "not a listed offence")
+        return section_469_offence
 
 
 def check_absolute_jurisdiction_offence(section):

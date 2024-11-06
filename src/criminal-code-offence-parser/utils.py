@@ -53,3 +53,18 @@ def convert_quantum_to_days(quantum):
         return quantum
     else:
         return None
+
+def standard_output(result, result_notes, sections, explanation):
+    """
+    Function to standardize the output for the check results.
+    """
+    output_dictionary = {
+        "status": {
+            "available": result,
+            "notes": result_notes,
+        },
+        "sections": sections,
+        "notes": explanation
+    }
+
+    return output_dictionary

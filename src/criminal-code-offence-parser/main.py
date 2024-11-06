@@ -3,7 +3,6 @@ from cc_rules_current import (
     check_offence_type,
     check_prelim_available,
     check_section_469_offence,
-    parse_quantum,
     check_cso_availablity,
     check_inadmissibility,
     check_dna_designation,
@@ -19,6 +18,10 @@ from cc_rules_current import (
     check_fine_and_probation,
 )
 
+from utils import (
+    parse_quantum,
+)
+
 from map import (
     CC_DISAMBIGUATION,
     CC_GRADUATED_OFFENCES
@@ -29,7 +32,13 @@ with open("data/cc-offences-2024-09-16.csv") as csvfile:
     csvreader = csv.reader(csvfile)
     data = list(csvreader)
 
-
+# Basic offence data
+# row[0] = statutory code and section number
+# row[1] = offence title
+# row[2] = indictable minimum
+# row[3] = indictable maximum
+# row[4] = summary minimum
+# row[5] = summary maximum
 def generate_basic_offence_details(row):
     """
     Generates the basic offence details that every function call should 
@@ -156,7 +165,7 @@ def generate_collateral_consequence_details(row):
     return collateral_consequence_data
 
 
-def parse_offence_beta(
+def parse_offence(
         offence,
         mode="summary",
         full=False,
@@ -224,7 +233,7 @@ def parse_offence_beta(
     
 
 ## Original function (v0.0.1 — 0.0.5)
-def parse_offence(
+def parse_offence_legacy(
     offence,
     mode="summary",
     full=False,
