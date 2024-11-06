@@ -28,6 +28,10 @@ from constants import (
     SECTION_161_FORFEITURE_ORDER_OFFENCES,
 )
 
+from utils import (
+    parse_quantum,
+    convert_quantum_to_days,
+)
 
 # Basic metadata
 def check_offence_type(offence):
@@ -41,58 +45,6 @@ def check_offence_type(offence):
         return "indictable"
     else:
         return "hybrid"
-
-# Move these to a utils
-def parse_quantum(quantum):
-    """
-    Parse the quantum of the offence.
-    """
-    parsed_quantum = {}
-
-    if quantum == "":
-        parsed_quantum["amount"] = 0
-        parsed_quantum["unit"] = "days"
-        return parsed_quantum
-
-    #
-    # Update to reflect the maximum fine amount
-    if quantum == "sc":
-        quantum = "729d"
-
-    unit_mappings = {"y": "years", "m": "months", "d": "days", "$": "dollars"}
-    unit = unit_mappings.get(quantum[-1], quantum[-1])
-
-    # Assign all but the last character of the quantum string to the value variable
-    value = quantum[:-1]
-    parsed_quantum["amount"] = value
-    parsed_quantum["unit"] = unit
-
-    return parsed_quantum
-
-
-def convert_quantum_to_days(quantum):
-    """
-    Convert the quantum of the offence to days.
-    """
-    try:
-        quantum_int = int(quantum["amount"])
-    except:
-        quantum_int = 0
-
-    if quantum["unit"] == "years":
-        quantum["amount"] = quantum_int * 365
-        quantum["unit"] = "days"
-        return quantum
-
-    elif quantum["unit"] == "months":
-        quantum["amount"] = quantum_int * 30
-        quantum["unit"] = "days"
-        return quantum
-    elif quantum["unit"] == "days":
-        return quantum
-    else:
-        return None
-
 
 # Procedure
 def check_prelim_available(indictable_maximum):
@@ -293,7 +245,7 @@ def check_discharge_available(summary_minimum, indictable_minimum, indictable_ma
             },
         )
         discharge_available["section"] = "cc730(1)"
-        discharge_available["notes"] = ""
+        discharge_available["notes"] = "no mandatory minimum, punishable by less than 14y"
 
         return discharge_available
 
