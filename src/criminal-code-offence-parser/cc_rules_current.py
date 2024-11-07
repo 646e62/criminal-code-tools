@@ -669,6 +669,8 @@ def check_inadmissibility(section, mode, indictable_maximum):
     """
     inadmissibilty_list = []
 
+    # Determine whether this check is still necessary, given the changes in 
+    # v0.0.5
     try:
         indictable_maximum = int(indictable_maximum)
     except:
@@ -676,52 +678,58 @@ def check_inadmissibility(section, mode, indictable_maximum):
 
     if section in TERRORISM_OFFENCES:
         inadmissibilty_list.append(
-            {
-                "section": "irpa34(1)",
-                "status": "permanent resident",
-                "notes": "security",
-            }
+            standard_output(
+                True,
+                "permanent resident",
+                ["irpa34(1)"],
+                "security"
+            )
         )
 
     if section == "cc240.1":
         inadmissibilty_list.append(
-            {
-                "section": "irpa35(1)(c.1)",
-                "status": "permanent resident",
-                "notes": "human or international rights violations",
-            }
+            standard_output(
+                True,
+                "permanent resident",
+                ["irpa35(1)(c.1)"],
+                "human or international rights violations",
+            )
         )
         inadmissibilty_list.append(
-            {
-                "section": "irpa35(1)(c.1)",
-                "status": "foreign national",
-                "notes": "human or international rights violations",
-            }
+            standard_output(
+                True,
+                "foreign national",
+                ["irpa35(1)(c.1)"],
+                "human or international rights violations",
+            )
         )
 
     if indictable_maximum >= 10:
         inadmissibilty_list.append(
-            {
-                "section": "irpa36(1)",
-                "status": "permanent resident",
-                "notes": "serious criminality",
-            }
+            standard_output(
+                True,
+                "permanent resident",
+                ["irpa36(1)"],
+                "serious criminality"
+            )
         )
         inadmissibilty_list.append(
-            {
-                "section": "irpa36(1)",
-                "status": "foreign national",
-                "notes": "serious criminality",
-            }
+            standard_output(
+                True,
+                "foreign national",
+                ["irpa36(1)"],
+                "serious criminality"
+            )
         )
 
     if mode == "hybrid" or mode == "indictable":
         inadmissibilty_list.append(
-            {
-                "section": "irpa36(2)",
-                "status": "foreign national",
-                "notes": "criminality",
-            }
+            standard_output(
+                True,
+                "foreign national",
+                ["irpa36(2)"],
+                "criminality"
+            )
         )
 
     return inadmissibilty_list
@@ -733,60 +741,47 @@ def check_dna_designation(offence, mode, quantum):
     Check if the offence is a designated DNA offence.
     """
 
+    # Refactor this code to remove this check, if possible
     try:
         quantum_int = int(quantum["amount"])
     except:
         quantum_int = 0
 
-    dna_designation = {}
-
     if offence[0] in PRIMARY_DESIGNATED_DNA_OFFENCES:
-        dna_designation["status"] = (
-            {
-                "available": True,
-                "notes": None,
-            },
+        return standard_output(
+            True,
+            None,
+            ["cc487.04"],
+            "primary designated offence"
         )
-        dna_designation["section"] = "cc487.04"
-        dna_designation["notes"] = "primary designated offence"
-
-        return dna_designation
 
     elif offence[0] in SECONDARY_DESIGNATED_DNA_OFFENCES:
-        dna_designation["status"] = (
-            {
-                "available": True,
-                "notes": None,
-            },
+        return standard_output(
+            True,
+            None,
+            ["cc487.04"],
+            "secondary designated offence"
         )
-        dna_designation["section"] = "cc487.04"
-        dna_designation["notes"] = "secondary designated offence"
-
-        return dna_designation
+    
     elif (
         (mode == "indictable" or mode == "hybrid")
         and quantum["unit"] == "years"
         and quantum_int >= 5
     ):
-        dna_designation["status"] = (
-            {
-                "available": True,
-                "notes": None,
-            },
+        return standard_output(
+            True,
+            None,
+            ["cc487.04"],
+            "secondary designated offence"
         )
-        dna_designation["section"] = "cc487.04"
-        dna_designation["notes"] = "secondary designated offence"
+    
     else:
-        dna_designation["status"] = (
-            {
-                "available": False,
-                "notes": None,
-            },
+        return standard_output(
+            False,
+            None,
+            ["cc487.04"],
+            "not a designated offence"
         )
-        dna_designation["section"] = "cc487.04"
-        dna_designation["notes"] = "not a designated offence"
-
-        return dna_designation
 
 
 def check_soira(section, mode, indictable_maximum):
@@ -808,51 +803,61 @@ def check_soira(section, mode, indictable_maximum):
     # Check to see whether the offence is a designated SOIRA offence
     if section in PRIMARY_SOIRA_OFFENCES_CURRENT:
         soira_list.append(
-            {
-                "section": [
-                    "cc490.011[primary offence](a)",
-                ],
-                "status": "primary",
-                "notes": "primary designated offence",
-            }
+            standard_output(
+                True,
+                "primary",
+                ["cc490.011[primary offence](a)"],
+                "primary designated offence"
+            )
         )
 
     elif section in SECONDARY_SOIRA_OFFENCES:
         soira_list.append(
-            {
-                "section": [
-                    "cc490.011[secondary offence](a)",
-                ],
-                "status": "secondary",
-                "notes": "secondary designated offence",
-            }
+            standard_output(
+                True,
+                "secondary",
+                ["cc490.011[secondary offence](a)"],
+                "secondary designated offence"
+            )
         )
     elif section in SOIRA_OFFENCES_ATTEMPTS:
         soira_list.append(
-            {
-                "section": [
+            standard_output(
+                True,
+                "secondary",
+                [
                     "cc490.011[primary offence](f)",
                     "cc490.011[secondary offence](b)",
                 ],
-                "status": "secondary",
-                "notes": "attempted designated offence",
-            }
+                "attempted designated offence"
+            )
         )
     elif section in SOIRA_OFFENCES_CONSPIRACY:
         soira_list.append(
-            {
-                "section": [
+            standard_output(
+                True,
+                "secondary",
+                [
                     "cc490.011[primary offence](f)",
                     "cc490.011[secondary offence](b)",
                 ],
-                "status": "secondary",
-                "notes": "conspiracy to commit designated offence",
-            }
+                "conspiracy to commit designated offence"
+            )
         )
     else:
-        return None
+        return standard_output(
+            False,
+            None,
+            [
+                "cc490.011[primary offence](f)",
+                "cc490.011[secondary offence](b)",
+            ],
+            "not a designated offence"
+        )
 
     # Determine the duration of the SOIRA order
+    # Rework this code after recent re-writes, and adapt to use the standard
+    # output function
     # cc490.011(2)
     if mode == "summary":
         soira_list[0]["section"].append("cc490.011(2)(a)")
@@ -899,25 +904,27 @@ def check_proceeds_of_crime_forfeiture(section, mode):
 
     if mode == "summary":
         proceeds_list.append(
-            {
-                "section": [
+            standard_output(
+                False,
+                None,
+                [
                     "cc462.3[designated offence]",
                     "cc462.37(1)",
                 ],
-                "status": "unavailable",
-                "notes": "strictly summary conviction offence",
-            }
+                "strictly summary conviction offence"
+            )
         )
 
         return proceeds_list
 
     elif section in PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CRIMINAL_ORGANIZATION:
         proceeds_list.append(
-            {
-                "section": ["cc462.37(2.02)(a)"],
-                "status": "available",
-                "notes": "particular circumstances — criminal organization offence",
-            }
+            standard_output(
+                True,
+                None,
+                ["cc462.37(2.02)(a)"],
+                "particular circumstances — criminal organization offence"
+            )
         )
 
     elif section in PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CDSA:
