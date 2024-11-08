@@ -8,25 +8,54 @@ def parse_quantum(quantum):
     """
     Parse the quantum of the offence.
     """
-    parsed_quantum = {}
+    parsed_quantum = {
+        "fine": {
+            "amount": 0,
+            "unit": "dollars"
+        },
+        "jail": {
+            "amount": 0,
+            "unit": "days"
+        }
+    }
 
     if quantum == "":
-        parsed_quantum["amount"] = 0
-        parsed_quantum["unit"] = "days"
         return parsed_quantum
 
     #
     # Update to reflect the maximum fine amount
     if quantum == "sc":
-        quantum = "729d"
+        parsed_quantum["fine"]["amount"] = 5000
+        parsed_quantum["fine"]["unit"] = "dollars"
+        parsed_quantum["jail"]["amount"] = 729
+        parsed_quantum["jail"]["unit"] = "days"
+        return parsed_quantum
 
+    # Assign all but the last character of the quantum string to the value variable
     unit_mappings = {"y": "years", "m": "months", "d": "days", "$": "dollars"}
     unit = unit_mappings.get(quantum[-1], quantum[-1])
 
-    # Assign all but the last character of the quantum string to the value variable
-    value = quantum[:-1]
-    parsed_quantum["amount"] = value
-    parsed_quantum["unit"] = unit
+    if "&" in quantum:
+        quantums = quantum.split("&")
+        parsed_quantum["fine"]["amount"] = quantums[0]
+        parsed_quantum["fine"]["unit"] = "dollars"
+        parsed_quantum["jail"]["amount"] = quantums[1]
+        print(parsed_quantum["jail"]["amount"])
+        parsed_quantum["jail"]["unit"] = "days"
+        return parsed_quantum
+    
+    if unit == "dollars":
+        value = quantum[:-1]
+        parsed_quantum["fine"]["amount"] = value
+        parsed_quantum["fine"]["unit"] = unit
+        parsed_quantum["jail"]["amount"] = 0
+        parsed_quantum["jail"]["unit"] = "days"
+    else:
+        value = quantum[:-1]
+        parsed_quantum["jail"]["amount"] = value
+        parsed_quantum["jail"]["unit"] = unit
+        parsed_quantum["fine"]["amount"] = 0
+        parsed_quantum["fine"]["unit"] = "dollars"
 
     return parsed_quantum
 
