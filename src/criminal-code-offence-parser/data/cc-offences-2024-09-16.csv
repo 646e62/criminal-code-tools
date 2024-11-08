@@ -52,9 +52,9 @@ cc83.02,collecting property for terrorist activities,,10y,,
 cc83.03(1),providing property or services for terrorist purposes,,10y,,
 cc83.03(2),providing property or services for use by a terrorist group,,10y,,
 cc83.04,using or possessing property for terrorist purposes,,10y,,
-cc83.08,dealing with terrorist property,,10y,,729d&100000$
-cc83.1,failure to disclose terrorist property,,10y,,729d&100000$
-cc83.11,failure to audit for listed terrorist entities,,10y,,729d&100000$
+cc83.08,dealing with terrorist property,,10y,,100000&729
+cc83.1,failure to disclose terrorist property,,10y,,100000&729
+cc83.11,failure to audit for listed terrorist entities,,10y,,100000&729
 cc83.18,participaty in terrorist group activity,,10y,,
 cc83.181,leaving canada to participate in terrorist group activity,,10y,,
 cc83.19,facilitating terrorist activity,,14y,,
@@ -290,10 +290,10 @@ cc280,abduction of person under age of 16,,5y,,sc
 cc281,abduction of person under age of 14,,10y,,sc
 cc282,abduction in contravention of custody or parenting order,,10y,,sc
 cc283,abduction,,10y,,sc
-cc286.1(1)(a)(i)-1,obtaining sexual services for consideration — public place — first offence,2000$,5y,1000$,729d&5000$
-cc286.1(1)(a)(i)-s,obtaining sexual services for consideration — public place — subsequent offence,4000$,5y,2000$,729d&5000$
-cc286.1(1)(a)(ii)-1,obtaining sexual services for consideration — first offence,1000$,5y,500$,729d&5000$
-cc286.1(1)(a)(ii)-s,obtaining sexual services for consideration — subsequent offence,2000$,5y,1000$,729d&5000$
+cc286.1(1)(a)(i)-1,obtaining sexual services for consideration — public place — first offence,2000$,5y,1000$,5000&729
+cc286.1(1)(a)(i)-s,obtaining sexual services for consideration — public place — subsequent offence,4000$,5y,2000$,5000&729
+cc286.1(1)(a)(ii)-1,obtaining sexual services for consideration — first offence,1000$,5y,500$,5000&729
+cc286.1(1)(a)(ii)-s,obtaining sexual services for consideration — subsequent offence,2000$,5y,1000$,5000&729
 cc286.1(2)-1,obtaining sexual services for consideration from person under 18 years — first offence,6m,10y,,
 cc286.1(2)-s,obtaining sexual services for consideration from person under 18 years — subsequent offence,1y,10y,,
 cc286.2(1),material benefit from sexual services,,10y,,sc
@@ -319,37 +319,37 @@ cc320.102,conversion therapy,,5y,,sc
 cc320.103,conversion therapy — promoting or advertising,,2y,,sc
 cc320.104,conversion therapy — material benefit,,2y,,sc
 cc320.13(1),dangerous operation,,10y,,sc
-cc320.13(2)-1,dangerous operation — causing bodily harm — first offence,1000$,14y,1000$,5000$&729d
-cc320.13(2)-2,dangerous operation — causing bodily harm — second offence,30d,14y,30d,5000$&729d
-cc320.13(2)-s,dangerous operation — causing bodily harm — subsequent offence,120d,14y,120d,5000$&729d
+cc320.13(2)-1,dangerous operation — causing bodily harm — first offence,1000$,14y,1000$,5000&729
+cc320.13(2)-2,dangerous operation — causing bodily harm — second offence,30d,14y,30d,5000&729
+cc320.13(2)-s,dangerous operation — causing bodily harm — subsequent offence,120d,14y,120d,5000&729
 cc320.13(3)-1,dangerous operation — causing death — first offence,1000$,255y,,
 cc320.13(3)-2,dangerous operation — causing death — second offence,30d,255y,,
 cc320.13(3)-s,dangerous operation — causing death — subsequent offence,120d,255y,,
-cc320.14(1)-1-a,operation while impaired — first offence,1000$,10y,1000$,5000$&729d
-cc320.14(1)-1-b,operation while impaired — first offence — BAC between 120mg and 160mg,1500$,10y,1500$,5000$&729d
-cc320.14(1)-1-c,operation while impaired — first offence — BAC over 160mg,2000$,10y,2000$,5000$&729d
-cc320.14(1)-2,operation while impaired — second offence,30d,10y,30d,5000$&729d
-cc320.14(1)-s,operation while impaired — subsequent offence,120d,10y,120d,5000$&729d
-cc320.14(2)-1,operation while impaired — causing bodily harm — first offence,1000$,14y,1000$,5000$&729d
-cc320.14(2)-2,operation while impaired — causing bodily harm — second offence,30d,14y,30d,5000$&729d
-cc320.14(2)-s,operation while impaired — causing bodily harm — subsequent offence,120d,14y,120d,5000$&729d
+cc320.14(1)-1-a,operation while impaired — first offence,1000$,10y,1000$,5000&729
+cc320.14(1)-1-b,operation while impaired — first offence — BAC between 120mg and 160mg,1500$,10y,1500$,5000&729
+cc320.14(1)-1-c,operation while impaired — first offence — BAC over 160mg,2000$,10y,2000$,5000&729
+cc320.14(1)-2,operation while impaired — second offence,30d,10y,30d,5000&729
+cc320.14(1)-s,operation while impaired — subsequent offence,120d,10y,120d,5000&729
+cc320.14(2)-1,operation while impaired — causing bodily harm — first offence,1000$,14y,1000$,5000&729
+cc320.14(2)-2,operation while impaired — causing bodily harm — second offence,30d,14y,30d,5000&729
+cc320.14(2)-s,operation while impaired — causing bodily harm — subsequent offence,120d,14y,120d,5000&729
 cc320.14(3)-1,operation while impaired — causing death — first offence,1000$,255y,,
 cc320.14(3)-2,operation while impaired — causing death — second offence,30d,255y,,
 cc320.14(3)-s,operation while impaired — causing death — subsequent offence,120d,255y,,
 cc320.14(4),operation while impaired — low blood drug concentration,,,,1000$
-cc320.15(1)-1,failure or refusal to comply with demand — first offence,2000$,10y,1000$,5000$&729d
-cc320.15(1)-2,failure or refusal to comply with demand — second offence,30d,10y,30d,5000$&729d
-cc320.15(1)-s,failure or refusal to comply with demand — subsequent offence,120d,10y,120d,5000$&729d
-cc320.15(2)-1,failure or refusal to comply with demand — accident resulting in bodily harm — first offence,1000$,10y,1000$,5000$&729d
-cc320.15(2)-2,failure or refusal to comply with demand — accident resulting in bodily harm — second offence,30d,10y,30d,5000$&729d
-cc320.15(2)-s,failure or refusal to comply with demand — accident resulting in bodily harm — subsequent offence,120d,10y,120d,5000$&729d
+cc320.15(1)-1,failure or refusal to comply with demand — first offence,2000$,10y,1000$,5000&729
+cc320.15(1)-2,failure or refusal to comply with demand — second offence,30d,10y,30d,5000&729
+cc320.15(1)-s,failure or refusal to comply with demand — subsequent offence,120d,10y,120d,5000&729
+cc320.15(2)-1,failure or refusal to comply with demand — accident resulting in bodily harm — first offence,1000$,10y,1000$,5000&729
+cc320.15(2)-2,failure or refusal to comply with demand — accident resulting in bodily harm — second offence,30d,10y,30d,5000&729
+cc320.15(2)-s,failure or refusal to comply with demand — accident resulting in bodily harm — subsequent offence,120d,10y,120d,5000&729
 cc320.15(3)-1,failure or refusal to comply with demand — accident resulting in death — first offence,1000$,255y,,
 cc320.15(3)-2,failure or refusal to comply with demand — accident resulting in death — second offence,30d,255y,,
 cc320.15(3)-s,failure or refusal to comply with demand — accident resulting in death — subsequent offence,120d,255y,,
 cc320.16(1),failure to stop after accident,,10y,,sc
-cc320.16(2)-1,failure to stop after accident — accident resulting in bodily harm — first offence,1000$,10y,1000$,5000$&729d
-cc320.16(2)-2,failure to stop after accident — accident resulting in bodily harm — second offence,30d,10y,30d,5000$&729d
-cc320.16(2)-s,failure to stop after accident — accident resulting in bodily harm — subsequent offence,120d,10y,120d,5000$&729d
+cc320.16(2)-1,failure to stop after accident — accident resulting in bodily harm — first offence,1000$,10y,1000$,5000&729
+cc320.16(2)-2,failure to stop after accident — accident resulting in bodily harm — second offence,30d,10y,30d,5000&729
+cc320.16(2)-s,failure to stop after accident — accident resulting in bodily harm — subsequent offence,120d,10y,120d,5000&729
 cc320.16(3)-1,failure to stop after accident — accident resulting in death — first offence,1000$,255y,,
 cc320.16(3)-2,failure to stop after accident — accident resulting in death — second offence,30d,255y,,
 cc320.16(3)-s,failure to stop after accident — accident resulting in death — subsequent offence,120d,255y,,
@@ -384,7 +384,7 @@ cc345,stopping mail with intent,,255y,,
 cc346(1.1)(a)-1,extortion — restricted or prohibited firearm or criminal organization — first offence,5y,255y,,
 cc346(1.1)(a)-s,extortion — restricted or prohibited firearm or criminal organization — subsequent offence,7y,255y,,
 cc346(1.1)(b),extortion,,255y,,
-cc347,criminal interest rate,,5y,,25000$&729d
+cc347,criminal interest rate,,5y,,25000&729
 cc348(1)(d),breaking and entering with intent committing offence or breaking out — dwelling-house,,255y,,
 cc348(1)(e),breaking and entering with intent committing offence or breaking out — non-dwelling-house,,10y,
 cc349,being unlawfully in dwelling-house,,10y,,sc
@@ -502,13 +502,13 @@ cc440,removing natural bar without permission,,2y,,sc
 cc441,occupant injuring building,,5y,,sc
 cc442,interfering with boundary lines,,,,sc
 cc443,interfering with international boundary marks,,5y,,sc
-cc445,injuring or endangering other animals,,5y,,10000$&729d
+cc445,injuring or endangering other animals,,5y,,10000&729
 cc445.01(2)(a),killing or injuring certain animals — law enforcement animal killed,6m,5y,,
-cc445.01(2)(b),killing or injuring certain animals,,5y,,10000$&729d
-cc445.1,causing unnecessary suffering — animals,,5y,,10000$&729d
+cc445.01(2)(b),killing or injuring certain animals,,5y,,10000&729
+cc445.1,causing unnecessary suffering — animals,,5y,,10000&729
 cc445.2,owning or breeding cetaceans,,,,200000$
 cc446,causing damage or injury — animals,,2y,,sc
-cc447,arena for animal fighting,,5y,,10000$&729d
+cc447,arena for animal fighting,,5y,,10000&729
 cc449,making — counterfeit money,,14y,,
 cc450,possession — counterfeit money,,14y,,
 cc451,having clippings produced by altering currency,,5y,,sc
@@ -540,13 +540,13 @@ cc467.12,commission of offence for criminal organization,,14y,,
 cc467.13,instructing commission of offence for criminal organization,,255y,,
 cc486.6,failure to comply with publication ban — victims and witnesses,,,,sc
 cc487.0197,failure to comply with preservation demand,,,,5000$
-cc487.0198,failure to comply with preservation or production order,,,,250000$&729d
+cc487.0198,failure to comply with preservation or production order,,,,250000&729
 cc487.0199,failure to comply with destruction order,,,,sc
 cc487.0552,failure to comply with order or summons,,2y,,sc
 cc487.08(3),improper use of bodily substances seized — warrant,,,,sc
 cc487.08(4),improper use of bodily substances seized — order authorization,,2y,,sc
-cc490.031,failure to comply with soira or nda order,,10000$&729d,,10000$&729d
-cc490.0311,providing false information re soira,,10000$&729d,,10000$&729d
+cc490.031,failure to comply with soira or nda order,,10000&729,,10000&729
+cc490.0311,providing false information re soira,,10000&729,,10000&729
 cc490.0312,failure to advise police re soira,,,,sc
 cc490.8,failure to comply with restraint order,,5y,,sc
 cc517,failure to comply with publication ban — bail,,,,sc
@@ -556,7 +556,7 @@ cc648,failure to comply with publication ban — jury evidence,,,,sc
 cc649,disclosure of jury proceedings,,,,sc
 cc672.37,improper application for federal employment,,,,sc
 672.501,failure to comply with order restricting publication — sexual offences,,,,sc
-cc708,contempt,,,,100$&90d
+cc708,contempt,,,,100&90
 cc732.11,improper use or disclosure of bodily substances seized — probatin order,,,,sc
 cc733.1,failure to comply with probation order,,4y,,sc
 cc742.31,improper use or disclosure of bodily substances seized — conditional sentence,,,,sc
