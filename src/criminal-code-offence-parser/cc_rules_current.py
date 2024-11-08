@@ -929,41 +929,44 @@ def check_proceeds_of_crime_forfeiture(section, mode):
 
     elif section in PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CDSA:
         proceeds_list.append(
-            {
-                "section": ["cc462.37(2.02)(b)"],
-                "status": "available",
-                "notes": "particular circumstances — CDSA offence",
-            }
+            standard_output(
+                True,
+                None,
+                ["cc462.37(2.02)(b)"],
+                "particular circumstances — CDSA offence"
+            )
         )
 
     elif section in PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_CANNABIS:
         proceeds_list.append(
-            {
-                "section": ["cc462.37(2.02)(c)"],
-                "status": "available",
-                "notes": "particular circumstances — cannabis offence",
-            }
+            standard_output(
+                True,
+                None,
+                ["cc462.37(2.02)(c)"],
+                "particular circumstances — cannabis offence"
+            )
         )
 
     elif section in PROCEEDS_OF_CRIME_PARTICULAR_CIRCUMSTANCES_HUMAN_TRAFFICKING:
         proceeds_list.append(
-            {
-                "section": ["cc462.37(2.02)(d)"],
-                "status": "available",
-                "notes": "particular circumstances — human trafficking offence",
-            }
+            standard_output(
+                True,
+                None,
+                ["cc462.37(2.02)(d)"],
+                "particular circumstances — human trafficking offence"
+            )
         )
 
     else:
         proceeds_list.append(
-            {
-                "section": [
+            standard_output(
+                False,
+                None,
+                [
                     "cc462.3[designated offence]",
-                    "cc462.37(1)",
-                ],
-                "status": "available",
-                "notes": "offence prosecutable by indictment",
-            }
+                    "cc462.37(1)",],
+                "offence prosecutable by indictment"
+            )
         )
 
     return proceeds_list
@@ -975,17 +978,13 @@ def check_section_164_forfeiture_order(section):
     cc164.2 forfeiture order is required.
     """
 
-    section_164_forfeiture_list = []
-
     if section in SECTION_161_FORFEITURE_ORDER_OFFENCES:
-        section_164_forfeiture_list.append(
-            {
-                "section": "cc164.2",
-                "notes": "enumerated offence",
-            }
+        return standard_output(
+            True,
+            None,
+            ["cc164.2"],
+            "enumerated offence"
         )
-
-    return section_164_forfeiture_list
 
 
 def check_section_515_mandatory_weapons_prohibition(section):
