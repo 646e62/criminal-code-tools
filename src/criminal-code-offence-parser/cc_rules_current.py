@@ -55,7 +55,7 @@ def check_prelim_available(indictable_maximum):
     if indictable_maximum == "14y" or indictable_maximum == "255y":
         prelim_available = standard_output(
             True, 
-            None, 
+            None,
             ["cc535"], 
             "maximum term of 14y or greater"
         )
@@ -269,16 +269,6 @@ def check_cso_availablity(
                 ["cc742.1"],
                 "no mandatory minimum"
             )
-            cso_available["status"] = (
-                {
-                    "available": True,
-                    "notes": None,
-                },
-            )
-            cso_available["section"] = "cc742.1"
-            cso_available["notes"] = None
-
-            return cso_available
 
     elif indictable_minimum["amount"]:
 
