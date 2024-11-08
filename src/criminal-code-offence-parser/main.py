@@ -27,6 +27,10 @@ from map import (
     CC_GRADUATED_OFFENCES
 )
 
+from constants import(
+    STATUTE_CODES
+)
+
 # Open the CSV file
 with open("data/cc-offences-2024-09-16.csv") as csvfile:
     csvreader = csv.reader(csvfile)
@@ -228,4 +232,20 @@ def parse_offence(
                 if row[0] == graduated_offence:
                     parsed_offence_list.append(offence_parser(row))
         return parsed_offence_list
-    
+
+def report(offence_code):
+    """
+    Generates a human-readable report from the offence parser data
+    """
+    offence_list = parse_offence(offence_code, full=True)
+
+    for offence in offence_list:
+        statute_code = offence["offence_data"]["section"].split("_")[0]
+        section_number = offence["offence_data"]["section"].split("_")[1]
+        statute_name = STATUTE_CODES[statute_code]["name"]
+        offence_name = offence["offence_data"]["description"]
+
+        if statute_code in STATUTE_CODES:
+            print(f"{statute_name} s. {section_number} — {offence_name.title()}")
+            
+

@@ -40,7 +40,6 @@ def parse_quantum(quantum):
         parsed_quantum["fine"]["amount"] = quantums[0]
         parsed_quantum["fine"]["unit"] = "dollars"
         parsed_quantum["jail"]["amount"] = quantums[1]
-        print(parsed_quantum["jail"]["amount"])
         parsed_quantum["jail"]["unit"] = "days"
         return parsed_quantum
     
@@ -69,16 +68,16 @@ def convert_quantum_to_days(quantum):
     except:
         quantum_int = 0
 
-    if quantum["unit"] == "years":
-        quantum["amount"] = quantum_int * 365
-        quantum["unit"] = "days"
+    if quantum["jail"]["unit"] == "years":
+        quantum["jail"]["amount"] = quantum_int * 365
+        quantum["jail"]["unit"] = "days"
         return quantum
 
-    elif quantum["unit"] == "months":
-        quantum["amount"] = quantum_int * 30
-        quantum["unit"] = "days"
+    elif quantum["jail"]["unit"] == "months":
+        quantum["jail"]["amount"] = quantum_int * 30
+        quantum["jail"]["unit"] = "days"
         return quantum
-    elif quantum["unit"] == "days":
+    elif quantum["jail"]["unit"] == "days":
         return quantum
     else:
         return None

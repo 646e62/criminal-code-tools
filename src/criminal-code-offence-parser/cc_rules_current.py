@@ -251,9 +251,9 @@ def check_cso_availablity(
     if summary_minimum["jail"]["amount"]:
 
         if (
-            summary_minimum["unit"] == "days"
-            or summary_minimum["unit"] == "months"
-            or summary_minimum["unit"] == "years"
+            summary_minimum["jail"]["unit"] == "days"
+            or summary_minimum["jail"]["unit"] == "months"
+            or summary_minimum["jail"]["unit"] == "years"
         ):
             return standard_output(
                 False,
@@ -273,9 +273,9 @@ def check_cso_availablity(
     elif indictable_minimum["jail"]["amount"]:
 
         if (
-            indictable_minimum["unit"] == "days"
-            or indictable_minimum["unit"] == "months"
-            or indictable_minimum["unit"] == "years"
+            indictable_minimum["jail"]["unit"] == "days"
+            or indictable_minimum["jail"]["unit"] == "months"
+            or indictable_minimum["jail"]["unit"] == "years"
         ):
             return standard_output(
                 False,
@@ -302,7 +302,7 @@ def check_cso_availablity(
 
     elif (
         section in TERRORISM_OFFENCES
-        and indictable_maximum["jail"]["amount"] >= 10
+        and int(indictable_maximum["jail"]["amount"]) >= 10
         and mode == "indictable"
     ):
         return standard_output(
@@ -313,7 +313,7 @@ def check_cso_availablity(
         )
 
     elif (
-        section in TERRORISM_OFFENCES and indictable_maximum["jail"]["amount"] >= 10 and mode == "hybrid"
+        section in TERRORISM_OFFENCES and int(indictable_maximum["jail"]["amount"]) >= 10 and mode == "hybrid"
     ):
         return standard_output(
             True,
@@ -324,7 +324,7 @@ def check_cso_availablity(
 
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
-        and indictable_maximum["jail"]["amount"] >= 10
+        and int(indictable_maximum["jail"]["amount"]) >= 10
         and mode == "indictable"
     ):
         return standard_output(
@@ -336,7 +336,7 @@ def check_cso_availablity(
 
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
-        and indictable_maximum["jail"]["amount"] >= 10
+        and int(indictable_maximum["jail"]["amount"]) >= 10
         and mode == "hybrid"
     ):
         return standard_output(
@@ -468,7 +468,7 @@ def check_prison_and_probation(mode, indictable_minimum):
         return prison_and_probation_available
 
     elif mode == "hybrid":
-        if indictable_minimum["jail"]["amount"] < 730:
+        if int(indictable_minimum["jail"]["amount"]) < 730:
             prison_and_probation_available["status"] = (
                 {
                     "available": True,
@@ -494,7 +494,7 @@ def check_prison_and_probation(mode, indictable_minimum):
             return prison_and_probation_available
 
     elif mode == "indictable":
-        if indictable_minimum["jail"]["amount"] < 730:
+        if int(indictable_minimum["jail"]["amount"]) < 730:
             prison_and_probation_available["status"] = (
                 {
                     "available": True,
@@ -575,7 +575,7 @@ def check_fine_and_probation(indictable_minimum):
     all below two years.
     """
 
-    if indictable_minimum["jail"]["amount"] == 0:
+    if int(indictable_minimum["jail"]["amount"]) == 0:
         return standard_output(
             True,
             None,
@@ -583,10 +583,7 @@ def check_fine_and_probation(indictable_minimum):
             "no minimum term of imprionment"
         )
 
-    else:
-        indictable_minimum = convert_quantum_to_days(indictable_minimum)
-
-    if indictable_minimum["jail"]["amount"] < 730:
+    if int(indictable_minimum["jail"]["amount"]) < 730:
         return standard_output(
             True,
             None,
@@ -707,7 +704,6 @@ def check_dna_designation(offence, mode, quantum):
     """
     Check if the offence is a designated DNA offence.
     """
-    print(quantum)
 
     if offence[0] in PRIMARY_DESIGNATED_DNA_OFFENCES:
         return standard_output(
