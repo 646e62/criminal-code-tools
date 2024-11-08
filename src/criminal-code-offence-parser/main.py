@@ -245,7 +245,21 @@ def report(offence_code):
         statute_name = STATUTE_CODES[statute_code]["name"]
         offence_name = offence["offence_data"]["description"]
 
+        summary_minimum_jail = f"{
+            offence["offence_data"]["summary_minimum"]["jail"]["amount"] 
+            } {
+            offence["offence_data"]["summary_minimum"]["jail"]["unit"]
+            }"
+        summary_maximum = offence["offence_data"]["summary_maximum"]
+        indictable_minimum = offence["offence_data"]["indictable_minimum"]
+        indictable_maximum = offence["offence_data"]["indictable_maximum"]
+
         if statute_code in STATUTE_CODES:
             print(f"{statute_name} s. {section_number} — {offence_name.title()}")
-            
+        
+        print("Mode: ", offence["offence_data"]["mode"])
+        print(f"Summary Minimum: {summary_minimum_jail}")
+        print("Summary Maximum: ", offence["offence_data"]["summary_maximum"])
+        print("Indictable Minimum: ", offence["offence_data"]["indictable_minimum"])
+        print("Indictable Maximum: ", offence["offence_data"]["indictable_maximum"])
 
