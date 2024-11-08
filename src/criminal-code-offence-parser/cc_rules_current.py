@@ -199,7 +199,7 @@ def check_discharge_available(summary_minimum, indictable_minimum, indictable_ma
     - The offence is not punishable by 14y or greater
     """
 
-    if summary_minimum["amount"] or indictable_minimum["amount"]:
+    if summary_minimum["jail"]["amount"] or indictable_minimum["jail"]["amount"]:
         return standard_output(
             False,
             None,
@@ -207,7 +207,7 @@ def check_discharge_available(summary_minimum, indictable_minimum, indictable_ma
             "mandatory minimum sentence"
         )
 
-    elif indictable_maximum["amount"] >= 14:
+    elif indictable_maximum["jail"]["amount"] >= 14:
         return standard_output(
             False,
             None,
@@ -242,13 +242,13 @@ def check_cso_availablity(
     # Convert None values to a comparable integer
     # Confirm whether this is necessary since the v0.0.5 updates to the program
     try:
-        indictable_maximum["amount"] = int(indictable_maximum["amount"])
+        indictable_maximum["jail"]["amount"] = int(indictable_maximum["amount"])
     except:
-        indictable_maximum["amount"] = 0
+        indictable_maximum["jail"]["amount"] = 0
 
     cso_available = {}
 
-    if summary_minimum["amount"]:
+    if summary_minimum["jail"]["amount"]:
 
         if (
             summary_minimum["unit"] == "days"
@@ -270,7 +270,7 @@ def check_cso_availablity(
                 "no mandatory minimum"
             )
 
-    elif indictable_minimum["amount"]:
+    elif indictable_minimum["jail"]["amount"]:
 
         if (
             indictable_minimum["unit"] == "days"
@@ -302,22 +302,18 @@ def check_cso_availablity(
 
     elif (
         section in TERRORISM_OFFENCES
-        and indictable_maximum["amount"] >= 10
+        and indictable_maximum["jail"]["amount"] >= 10
         and mode == "indictable"
     ):
-        cso_available["status"] = (
-            {
-                "available": False,
-                "notes": None,
-            },
+        return standard_output(
+            False,
+            None,
+            ["cc742.1(d)"],
+            "serious indictable terrorism offence"
         )
-        cso_available["section"] = "cc742.1(d)"
-        cso_available["notes"] = "serious indictable terrorism offence"
-
-        return cso_available
 
     elif (
-        section in TERRORISM_OFFENCES and indictable_maximum >= 10 and mode == "hybrid"
+        section in TERRORISM_OFFENCES and indictable_maximum["jail"]["amount"] >= 10 and mode == "hybrid"
     ):
         return standard_output(
             True,
@@ -328,7 +324,7 @@ def check_cso_availablity(
 
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
-        and indictable_maximum["amount"] >= 10
+        and indictable_maximum["jail"]["amount"] >= 10
         and mode == "indictable"
     ):
         return standard_output(
@@ -340,7 +336,7 @@ def check_cso_availablity(
 
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
-        and indictable_maximum["amount"] >= 10
+        and indictable_maximum["jail"]["amount"] >= 10
         and mode == "hybrid"
     ):
         return standard_output(
@@ -367,10 +363,7 @@ def check_intermittent_available(summary_minimum, indictable_minimum):
     than 90 days.
     """
 
-    summary_minimum = convert_quantum_to_days(summary_minimum)
-    indictable_minimum = convert_quantum_to_days(indictable_minimum)
-
-    if summary_minimum["amount"] == 0 and indictable_minimum["amount"] == 0:
+    if summary_minimum["jail"]["amount"] == 0 and indictable_minimum["jail"]["amount"] == 0:
         return standard_output(
             True,
             None,
@@ -378,7 +371,7 @@ def check_intermittent_available(summary_minimum, indictable_minimum):
             "no minimum term of imprisonment"
         )
 
-    elif summary_minimum["amount"] and int(summary_minimum["amount"]) <= 90:
+    elif summary_minimum["jail"]["amount"] and int(summary_minimum["jail"]["amount"]) <= 90:
         return standard_output(
             True,
             None,
@@ -386,7 +379,7 @@ def check_intermittent_available(summary_minimum, indictable_minimum):
             "minimum does not exceed 90 days"
         )
 
-    elif indictable_minimum["amount"] and int(indictable_minimum["amount"]) <= 90:
+    elif indictable_minimum["jail"]["amount"] and int(indictable_minimum["jail"]["amount"]) <= 90:
         return standard_output(
             True,
             None,
@@ -411,43 +404,29 @@ def check_suspended_sentence_available(summary_minimum, indictable_minimum):
     to parse imposed sentences, rather than simply creating an offence grid.
     """
 
-    suspended_sentence_available = {}
-
-    if summary_minimum["amount"]:
-        suspended_sentence_available["status"] = (
-            {
-                "available": False,
-                "notes": None,
-            },
+    if summary_minimum["jail"]["amount"] or summary_minimum["fine"]["amount"]:
+        return standard_output(
+            False,
+            None,
+            ["cc731(1)"],
+            "mandatory minimum sentence"
         )
-        suspended_sentence_available["section"] = "cc731(1)"
-        suspended_sentence_available["notes"] = "mandatory minimum sentence"
 
-        return suspended_sentence_available
-
-    elif indictable_minimum["amount"]:
-        suspended_sentence_available["status"] = (
-            {
-                "available": False,
-                "notes": None,
-            },
+    elif indictable_minimum["jail"]["amount"] or indictable_minimum["fine"]["amount"]:
+        return standard_output(
+            False,
+            None,
+            ["cc731(1)"],
+            "mandatory minimum sentence"
         )
-        suspended_sentence_available["section"] = "cc731(1)"
-        suspended_sentence_available["notes"] = "mandatory minimum sentence"
-
-        return suspended_sentence_available
 
     else:
-        suspended_sentence_available["status"] = (
-            {
-                "available": True,
-                "notes": None,
-            },
+        return standard_output(
+            True,
+            None,
+            ["cc731(1)"],
+            "no mandatory minimum sentence"
         )
-        suspended_sentence_available["section"] = "cc731(1)"
-        suspended_sentence_available["notes"] = None
-
-        return suspended_sentence_available
 
 
 def check_prison_and_probation(mode, indictable_minimum):
@@ -464,7 +443,7 @@ def check_prison_and_probation(mode, indictable_minimum):
     # Convert the quantum of the offence to days if it is not already in that
     # format
 
-    if indictable_minimum["amount"] == None:
+    if indictable_minimum["jail"]["amount"] == None:
         prison_and_probation_available["status"] = (
             {
                 "available": True,
@@ -475,8 +454,6 @@ def check_prison_and_probation(mode, indictable_minimum):
         prison_and_probation_available["notes"] = "no minimum term of imprisonment"
 
         return prison_and_probation_available
-    else:
-        indictable_minimum = convert_quantum_to_days(indictable_minimum)
 
     if mode == "summary":
         prison_and_probation_available["status"] = (
@@ -491,7 +468,7 @@ def check_prison_and_probation(mode, indictable_minimum):
         return prison_and_probation_available
 
     elif mode == "hybrid":
-        if indictable_minimum["amount"] < 730:
+        if indictable_minimum["jail"]["amount"] < 730:
             prison_and_probation_available["status"] = (
                 {
                     "available": True,
@@ -517,7 +494,7 @@ def check_prison_and_probation(mode, indictable_minimum):
             return prison_and_probation_available
 
     elif mode == "indictable":
-        if indictable_minimum["amount"] < 730:
+        if indictable_minimum["jail"]["amount"] < 730:
             prison_and_probation_available["status"] = (
                 {
                     "available": True,
@@ -551,7 +528,7 @@ def check_fine_alone(summary_minimum, indictable_minimum):
 
     fine_alone_available = {}
 
-    if summary_minimum["amount"] == None or indictable_minimum["amount"] == None:
+    if summary_minimum["jail"]["amount"] == None or indictable_minimum["jail"]["amount"] == None:
         fine_alone_available["status"] = (
             {
                 "available": True,
@@ -563,7 +540,7 @@ def check_fine_alone(summary_minimum, indictable_minimum):
 
         return fine_alone_available
 
-    if summary_minimum["amount"]:
+    if summary_minimum["jail"]["amount"]:
         fine_alone_available["status"] = (
             {
                 "available": False,
@@ -575,7 +552,7 @@ def check_fine_alone(summary_minimum, indictable_minimum):
 
         return fine_alone_available
 
-    elif indictable_minimum["amount"]:
+    elif indictable_minimum["jail"]["amount"]:
         fine_alone_available["status"] = (
             {
                 "available": False,
@@ -598,7 +575,7 @@ def check_fine_and_probation(indictable_minimum):
     all below two years.
     """
 
-    if indictable_minimum["amount"] == 0:
+    if indictable_minimum["jail"]["amount"] == 0:
         return standard_output(
             True,
             None,
@@ -609,7 +586,7 @@ def check_fine_and_probation(indictable_minimum):
     else:
         indictable_minimum = convert_quantum_to_days(indictable_minimum)
 
-    if indictable_minimum["amount"] < 730:
+    if indictable_minimum["jail"]["amount"] < 730:
         return standard_output(
             True,
             None,
@@ -730,12 +707,7 @@ def check_dna_designation(offence, mode, quantum):
     """
     Check if the offence is a designated DNA offence.
     """
-
-    # Refactor this code to remove this check, if possible
-    try:
-        quantum_int = int(quantum["amount"])
-    except:
-        quantum_int = 0
+    print(quantum)
 
     if offence[0] in PRIMARY_DESIGNATED_DNA_OFFENCES:
         return standard_output(
@@ -755,8 +727,8 @@ def check_dna_designation(offence, mode, quantum):
     
     elif (
         (mode == "indictable" or mode == "hybrid")
-        and quantum["unit"] == "years"
-        and quantum_int >= 5
+        and quantum["jail"]["unit"] == "years"
+        and int(quantum["jail"]["amount"]) >= 5
     ):
         return standard_output(
             True,
