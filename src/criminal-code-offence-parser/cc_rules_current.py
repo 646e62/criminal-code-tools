@@ -26,6 +26,7 @@ from constants import (
     ABSOLUTE_JURISDICITON_OFFENCES_THEFT,
     ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF,
     SECTION_161_FORFEITURE_ORDER_OFFENCES,
+    VIOLENCE_USED_THREATENED_ATTEMPTED_OFFENCES,
 )
 
 from utils import (
@@ -944,6 +945,24 @@ def check_section_164_forfeiture_order(section):
             "enumerated offence"
         )
 
+
+def check_section_109_weapons_prohibition(offence):
+    """
+    Checks if the offence fits the criteria for a section 109 prohibition 
+    order. Some of the preconditions are case-specific, and thus are out of
+    scope for this program at this time. Once the program starts to integrate
+    NLP, we can start to parse the facts of the case to determine whether the
+    offence meets the criteria for a section 109 order. Once this is possible,
+    we should also be able to check for section 110 orders, which are almost 
+    entirely fact-specific.
+    """
+    
+    return standard_output(
+        False,
+        None,
+        ["cc109"],
+        "not a firearms offence"
+    )
 
 def check_section_515_mandatory_weapons_prohibition(section):
     pass
