@@ -87,6 +87,7 @@ def check_prelim_available(
     Raises:
         TypeError: If indictable_maximum is not a string
     """
+    print(indictable_maximum)
     if not isinstance(indictable_maximum, str):
         raise TypeError("indictable_maximum must be a string")
 
@@ -245,7 +246,7 @@ def check_discharge_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-
+    print(indictable_maximum["jail"]["amount"])
     if summary_minimum["jail"]["amount"] or indictable_minimum["jail"]["amount"]:
         return standard_output(False, None, ["cc730(1)"], "mandatory minimum sentence")
 
@@ -298,6 +299,7 @@ def check_cso_availablity(
 
     # Convert None values to a comparable integer
     # Confirm whether this is necessary since the v0.0.5 updates to the program
+    print(indictable_maximum["jail"]["amount"])
     try:
         indictable_maximum["jail"]["amount"] = int(indictable_maximum["amount"])
     except:
@@ -841,9 +843,13 @@ def check_soira(
             "unit": "years",
         }
 
-    elif indictable_maximum and isinstance(indictable_maximum, dict) and "amount" in indictable_maximum:
+    elif (
+        indictable_maximum
+        and isinstance(indictable_maximum, dict)
+        and "amount" in indictable_maximum
+    ):
         max_amount = int(indictable_maximum["amount"])
-        
+
         if max_amount in [2, 5]:
             soira_list[0]["section"].append("cc490.011(2)(a)")
             soira_list[0]["duration"] = {
