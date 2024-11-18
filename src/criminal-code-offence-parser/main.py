@@ -4,7 +4,6 @@ from cc_rules_current import (
     check_prelim_available,
     check_section_469_offence,
     check_cso_availablity,
-    check_inadmissibility,
     check_dna_designation,
     check_discharge_available,
     check_intermittent_available,
@@ -16,6 +15,10 @@ from cc_rules_current import (
     check_prison_and_probation,
     check_fine_alone,
     check_fine_and_probation,
+)
+
+from ca_collateral_consequences import (
+    check_inadmissibility,
 )
 
 from utils import (
