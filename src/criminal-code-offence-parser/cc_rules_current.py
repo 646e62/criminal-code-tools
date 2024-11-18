@@ -26,6 +26,7 @@ from constants import (
     ABSOLUTE_JURISDICITON_OFFENCES_THEFT,
     ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF,
     SECTION_161_FORFEITURE_ORDER_OFFENCES,
+    VIOLENCE_USED_THREATENED_ATTEMPTED_OFFENCES,
 )
 
 from utils import (
@@ -619,86 +620,6 @@ def check_fine_probation_intermittent(summary_minimum, indictable_minimum):
     return fine_probation_intermittent_available
 
 
-#############################
-##                         ##
-## Collateral consequences ##
-##                         ##
-#############################
-
-
-def check_inadmissibility(section, mode, indictable_maximum):
-    """
-    Checks to see whether the offence renders the defendant liable for IRPA
-    consequences.
-    """
-    inadmissibilty_list = []
-
-    # Determine whether this check is still necessary, given the changes in 
-    # v0.0.5
-    try:
-        indictable_maximum = int(indictable_maximum)
-    except:
-        indictable_maximum = 0
-
-    if section in TERRORISM_OFFENCES:
-        inadmissibilty_list.append(
-            standard_output(
-                True,
-                "permanent resident",
-                ["irpa34(1)"],
-                "security"
-            )
-        )
-
-    if section == "cc240.1":
-        inadmissibilty_list.append(
-            standard_output(
-                True,
-                "permanent resident",
-                ["irpa35(1)(c.1)"],
-                "human or international rights violations",
-            )
-        )
-        inadmissibilty_list.append(
-            standard_output(
-                True,
-                "foreign national",
-                ["irpa35(1)(c.1)"],
-                "human or international rights violations",
-            )
-        )
-
-    if indictable_maximum >= 10:
-        inadmissibilty_list.append(
-            standard_output(
-                True,
-                "permanent resident",
-                ["irpa36(1)"],
-                "serious criminality"
-            )
-        )
-        inadmissibilty_list.append(
-            standard_output(
-                True,
-                "foreign national",
-                ["irpa36(1)"],
-                "serious criminality"
-            )
-        )
-
-    if mode == "hybrid" or mode == "indictable":
-        inadmissibilty_list.append(
-            standard_output(
-                True,
-                "foreign national",
-                ["irpa36(2)"],
-                "criminality"
-            )
-        )
-
-    return inadmissibilty_list
-
-
 # Ancillary orders
 def check_dna_designation(offence, mode, quantum):
     """
@@ -944,6 +865,24 @@ def check_section_164_forfeiture_order(section):
             "enumerated offence"
         )
 
+
+def check_section_109_weapons_prohibition(offence):
+    """
+    Checks if the offence fits the criteria for a section 109 prohibition 
+    order. Some of the preconditions are case-specific, and thus are out of
+    scope for this program at this time. Once the program starts to integrate
+    NLP, we can start to parse the facts of the case to determine whether the
+    offence meets the criteria for a section 109 order. Once this is possible,
+    we should also be able to check for section 110 orders, which are almost 
+    entirely fact-specific.
+    """
+    
+    return standard_output(
+        False,
+        None,
+        ["cc109"],
+        "not a firearms offence"
+    )
 
 def check_section_515_mandatory_weapons_prohibition(section):
     pass

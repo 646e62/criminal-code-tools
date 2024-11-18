@@ -4,7 +4,6 @@ from cc_rules_current import (
     check_prelim_available,
     check_section_469_offence,
     check_cso_availablity,
-    check_inadmissibility,
     check_dna_designation,
     check_discharge_available,
     check_intermittent_available,
@@ -16,6 +15,10 @@ from cc_rules_current import (
     check_prison_and_probation,
     check_fine_alone,
     check_fine_and_probation,
+)
+
+from ca_collateral_consequences import (
+    check_inadmissibility,
 )
 
 from utils import (
@@ -245,7 +248,21 @@ def report(offence_code):
         statute_name = STATUTE_CODES[statute_code]["name"]
         offence_name = offence["offence_data"]["description"]
 
+        summary_minimum_jail = f"{
+            offence["offence_data"]["summary_minimum"]["jail"]["amount"] 
+            } {
+            offence["offence_data"]["summary_minimum"]["jail"]["unit"]
+            }"
+        summary_maximum = offence["offence_data"]["summary_maximum"]
+        indictable_minimum = offence["offence_data"]["indictable_minimum"]
+        indictable_maximum = offence["offence_data"]["indictable_maximum"]
+
         if statute_code in STATUTE_CODES:
             print(f"{statute_name} s. {section_number} — {offence_name.title()}")
-            
+        
+        print("Mode: ", offence["offence_data"]["mode"])
+        print(f"Summary Minimum: {summary_minimum_jail}")
+        print("Summary Maximum: ", offence["offence_data"]["summary_maximum"])
+        print("Indictable Minimum: ", offence["offence_data"]["indictable_minimum"])
+        print("Indictable Maximum: ", offence["offence_data"]["indictable_maximum"])
 
