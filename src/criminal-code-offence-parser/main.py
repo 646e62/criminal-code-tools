@@ -34,22 +34,52 @@ from constants import(
     STATUTE_CODES
 )
 
-# Open the CSV file
-with open("data/cc-offences-2024-09-16.csv") as csvfile:
-    csvreader = csv.reader(csvfile)
-    data = list(csvreader)
+# Constants
+CSV_FILE_PATH = "data/cc-offences-2024-09-16.csv"
+VALID_MODES = ["summary", "indictable"]
 
-# Basic offence data
-# row[0] = statutory code and section number
-# row[1] = offence title
-# row[2] = indictable minimum
-# row[3] = indictable maximum
-# row[4] = summary minimum
-# row[5] = summary maximum
-def generate_basic_offence_details(row):
+# Global variables
+data = None
+
+def initialize():
+    """Initialize global data by reading the CSV file."""
+    global data
+    try:
+        # Open the CSV file
+        with open(CSV_FILE_PATH) as csvfile:
+            csvreader = csv.reader(csvfile)
+            data = list(csvreader)
+        return True
+    except FileNotFoundError:
+        print(f"Error: Could not find CSV file at {CSV_FILE_PATH}")
+        return False
+    except csv.Error as e:
+        print(f"Error reading CSV file: {e}")
+        return False
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return False
+
+def generate_basic_offence_details(row: list) -> dict:
     """
-    Generates the basic offence details that every function call should 
-    include.
+    Generates the basic offence details that every function call should include.
+    
+    Args:
+        row (list): A row from the CSV file containing offence data.
+            [0] = statutory code and section number
+            [1] = offence title
+            [2] = indictable minimum
+            [3] = indictable maximum
+            [4] = summary minimum
+            [5] = summary maximum
+    
+    Returns:
+        dict: A dictionary containing basic offence details including:
+            - section: statutory code and section number
+            - description: offence title
+            - mode: type of offence (summary/indictable/hybrid)
+            - summary_minimum/maximum: quantum for summary proceedings
+            - indictable_minimum/maximum: quantum for indictable proceedings
     """
     offence_data = {}
 
@@ -171,40 +201,56 @@ def generate_collateral_consequence_details(row):
 
 
 def parse_offence(
-        offence,
-        mode="summary",
-        full=False,
-        procedure=False,
-        ancillary_orders=False,
-        sentencing=False,
-        collateral_consequences=False,
-):
+        offence: str,
+        mode: str = "summary",
+        full: bool = False,
+        procedure: bool = False,
+        ancillary_orders: bool = False,
+        sentencing: bool = False,
+        collateral_consequences: bool = False,
+) -> list:
     """
-    Parse the offence data for a given offence. Updated for modularity and 
-    increased functionality. Now returns a list of dictionaries, which accounts
-    for ambiguous and imperfect user input.
-
-    By default, returns only `offence_data`. Additional categories can be added by
-    setting `procedure`, `ancillary_orders`, `sentencing`, or 
-    `collateral_consequences` to True. Setting `full` to True will return all 
-    categories.
+    Parse the offence data for a given offence.
+    
+    Args:
+        offence (str): The offence code to parse
+        mode (str): The mode of proceeding ("summary" or "indictable")
+        full (bool): If True, returns all categories of information
+        procedure (bool): If True, includes procedural details
+        ancillary_orders (bool): If True, includes ancillary order details
+        sentencing (bool): If True, includes sentencing details
+        collateral_consequences (bool): If True, includes collateral consequence details
+    
+    Returns:
+        list: A list of dictionaries containing the requested offence information
+        
+    Raises:
+        ValueError: If mode is not "summary" or "indictable"
+        KeyError: If offence code is not found
     """
+    # Input validation
+    if mode not in VALID_MODES:
+        raise ValueError(f"Invalid mode: {mode}. Must be one of {VALID_MODES}")
+        
+    # If full is True, set all detail flags to True
+    if full:
+        procedure = ancillary_orders = sentencing = collateral_consequences = True
 
     def offence_parser(row):
         parsed_offence = {
             "offence_data": generate_basic_offence_details(row)
         }
 
-        if full or procedure:
+        if procedure:
             parsed_offence["procedure"] = generate_procedure_details(row)
 
-        if full or sentencing:
+        if sentencing:
             parsed_offence["sentencing"] = generate_sentencing_details(row)
 
-        if full or ancillary_orders:
+        if ancillary_orders:
             parsed_offence["ancillary_orders"] = generate_ancillary_order_details(row)
 
-        if full or collateral_consequences:
+        if collateral_consequences:
             parsed_offence["collateral_consequences"] = generate_collateral_consequence_details(row)
 
         return parsed_offence
@@ -236,10 +282,24 @@ def parse_offence(
                     parsed_offence_list.append(offence_parser(row))
         return parsed_offence_list
 
+    raise KeyError(f"Offence code '{offence}' not found")
+
+
 def report(offence_code):
     """
     Generates a human-readable report from the offence parser data
+    
+    Args:
+        offence_code (str): The offence code to generate a report for
+        
+    Raises:
+        RuntimeError: If the data hasn't been initialized
     """
+    global data
+    if data is None:
+        if not initialize():
+            raise RuntimeError("Failed to initialize data. Please check the CSV file.")
+    
     offence_list = parse_offence(offence_code, full=True)
 
     for offence in offence_list:
@@ -266,3 +326,10 @@ def report(offence_code):
         print("Indictable Minimum: ", offence["offence_data"]["indictable_minimum"])
         print("Indictable Maximum: ", offence["offence_data"]["indictable_maximum"])
 
+
+def main():
+    """Main function to handle CSV processing and error handling."""
+    initialize()
+
+if __name__ == "__main__":
+    main()
