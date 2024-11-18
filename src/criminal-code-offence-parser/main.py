@@ -211,7 +211,7 @@ def parse_offence(
 ) -> list:
     """
     Parse the offence data for a given offence.
-    
+
     Args:
         offence (str): The offence code to parse
         mode (str): The mode of proceeding ("summary" or "indictable")
@@ -220,18 +220,24 @@ def parse_offence(
         ancillary_orders (bool): If True, includes ancillary order details
         sentencing (bool): If True, includes sentencing details
         collateral_consequences (bool): If True, includes collateral consequence details
-    
+
     Returns:
         list: A list of dictionaries containing the requested offence information
-        
+
     Raises:
         ValueError: If mode is not "summary" or "indictable"
         KeyError: If offence code is not found
+        RuntimeError: If data hasn't been initialized
     """
+    global data
+    if data is None:
+        if not initialize():
+            raise RuntimeError("Failed to initialize data. Please check the CSV file.")
+
     # Input validation
     if mode not in VALID_MODES:
         raise ValueError(f"Invalid mode: {mode}. Must be one of {VALID_MODES}")
-        
+
     # If full is True, set all detail flags to True
     if full:
         procedure = ancillary_orders = sentencing = collateral_consequences = True
