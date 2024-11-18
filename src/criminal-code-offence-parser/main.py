@@ -291,12 +291,12 @@ def parse_offence(
     raise KeyError(f"Offence code '{offence}' not found")
 
 
-def report(offence_code):
+def report(offence_code: str) -> None:
     """
-    Generates a human-readable report from the offence parser data
+    Generates a comprehensive human-readable report from the offence parser data.
     
     Args:
-        offence_code (str): The offence code to generate a report for
+        offence_code (str): The offence code to generate a report for (e.g., "cc266")
         
     Raises:
         RuntimeError: If the data hasn't been initialized
@@ -309,28 +309,209 @@ def report(offence_code):
     offence_list = parse_offence(offence_code, full=True)
 
     for offence in offence_list:
+        # Extract basic information
         statute_code = offence["offence_data"]["section"].split("_")[0]
         section_number = offence["offence_data"]["section"].split("_")[1]
         statute_name = STATUTE_CODES[statute_code]["name"]
         offence_name = offence["offence_data"]["description"]
+        mode = offence["offence_data"]["mode"]
 
-        summary_minimum_jail = f"{
-            offence["offence_data"]["summary_minimum"]["jail"]["amount"] 
-            } {
-            offence["offence_data"]["summary_minimum"]["jail"]["unit"]
-            }"
-        summary_maximum = offence["offence_data"]["summary_maximum"]
-        indictable_minimum = offence["offence_data"]["indictable_minimum"]
-        indictable_maximum = offence["offence_data"]["indictable_maximum"]
+        # Print header
+        print("\n" + "=" * 80)
+        print(f"{statute_name} s. {section_number} — {offence_name.title()}")
+        print("=" * 80 + "\n")
 
-        if statute_code in STATUTE_CODES:
-            print(f"{statute_name} s. {section_number} — {offence_name.title()}")
+        # Basic Information
+        print("BASIC INFORMATION")
+        print("-" * 50)
+        print(f"Mode of Proceeding: {mode.title()}")
+
+        # Sentencing Ranges
+        print("\nSENTENCING RANGES")
+        print("-" * 50)
         
-        print("Mode: ", offence["offence_data"]["mode"])
-        print(f"Summary Minimum: {summary_minimum_jail}")
-        print("Summary Maximum: ", offence["offence_data"]["summary_maximum"])
-        print("Indictable Minimum: ", offence["offence_data"]["indictable_minimum"])
-        print("Indictable Maximum: ", offence["offence_data"]["indictable_maximum"])
+        def format_quantum(quantum):
+            if not quantum:
+                return "None"
+            fine = quantum.get("fine", {})
+            jail = quantum.get("jail", {})
+            parts = []
+            if fine.get("amount"):
+                parts.append(f"${fine['amount']} {fine['unit']}")
+            if jail.get("amount"):
+                parts.append(f"{jail['amount']} {jail['unit']}")
+            return " and ".join(parts) if parts else "None"
+
+        # Summary Proceedings
+        if mode in ["summary", "hybrid"]:
+            print("\nSummary Proceedings:")
+            print(f"  Minimum: {format_quantum(offence['offence_data']['summary_minimum'])}")
+            print(f"  Maximum: {format_quantum(offence['offence_data']['summary_maximum'])}")
+
+        # Indictable Proceedings
+        if mode in ["indictable", "hybrid"]:
+            print("\nIndictable Proceedings:")
+            print(f"  Minimum: {format_quantum(offence['offence_data']['indictable_minimum'])}")
+            print(f"  Maximum: {format_quantum(offence['offence_data']['indictable_maximum'])}")
+
+        # Procedure
+        if "procedure" in offence:
+            print("\nPROCEDURAL INFORMATION")
+            print("-" * 50)
+            
+            # Preliminary Inquiry
+            if "prelim_available" in offence["procedure"]:
+                prelim = offence["procedure"]["prelim_available"]
+                if isinstance(prelim, dict):
+                    status = prelim.get('status', {})
+                    if isinstance(status, tuple):
+                        status = status[0] if status else {}
+                    avail = status.get('available', False)
+                    print(f"Preliminary Inquiry Available: {avail}")
+                    if prelim.get('notes'):
+                        print(f"  Note: {prelim['notes']}")
+
+            # Absolute Jurisdiction
+            if "absolute_jurisdiction" in offence["procedure"]:
+                abs_juris = offence["procedure"]["absolute_jurisdiction"]
+                if abs_juris and isinstance(abs_juris, list) and abs_juris[0]:
+                    status = abs_juris[0].get('status', {})
+                    if isinstance(status, tuple):
+                        status = status[0] if status else {}
+                    avail = status.get('absolute_jurisdiction', False)
+                    print(f"Absolute Jurisdiction: {avail}")
+                    if abs_juris[0].get('notes'):
+                        print(f"  Note: {abs_juris[0]['notes']}")
+
+            # Superior Court Judge Release
+            if "release_by_superior_court_judge" in offence["procedure"]:
+                scj_release = offence["procedure"]["release_by_superior_court_judge"]
+                if isinstance(scj_release, dict):
+                    status_dict = scj_release.get('status', {})
+                    avail = status_dict.get('available', False)
+                    print(f"Superior Court Judge Release Required: {'Required' if avail else 'Not Required'}")
+                    if scj_release.get('notes'):
+                        print(f"  Note: {scj_release['notes']}")
+                    if scj_release.get('sections'):
+                        print(f"  Sections: {', '.join(scj_release['sections'])}")
+
+        # Sentencing Options
+        if "sentencing" in offence:
+            print("\nSENTENCING OPTIONS")
+            print("-" * 50)
+            
+            sent = offence.get("sentencing", {})
+            options = [
+                ("Conditional Sentence", sent.get("cso_available")),
+                ("Intermittent Sentence", sent.get("intermittent_available")),
+                ("Suspended Sentence", sent.get("suspended_sentence_available")),
+                ("Discharge", sent.get("discharge_available")),
+                ("Prison and Probation", sent.get("prison_and_probation_available")),
+                ("Fine Alone", sent.get("fine_alone")),
+                ("Fine and Probation", sent.get("fine_and_probation"))
+            ]
+            
+            for option, status in options:
+                if status:
+                    # Handle tuple status
+                    if isinstance(status, tuple):
+                        status_dict = status[0] if status else {}
+                        if isinstance(status_dict, dict):
+                            avail = status_dict.get('available', False)
+                            print(f"{option}: {'Available' if avail else 'Not Available'}")
+                            if status_dict.get('notes'):
+                                print(f"  Note: {status_dict['notes']}")
+                    # Handle dictionary status
+                    elif isinstance(status, dict):
+                        status_dict = status.get('status', {})
+                        if isinstance(status_dict, dict):
+                            avail = status_dict.get('available', False)
+                            print(f"{option}: {'Available' if avail else 'Not Available'}")
+                            if status.get('notes'):
+                                print(f"  Note: {status['notes']}")
+
+        # Ancillary Orders
+        if "ancillary_orders" in offence:
+            print("\nANCILLARY ORDERS")
+            print("-" * 50)
+            
+            anc = offence.get("ancillary_orders", {})
+            
+            # DNA Orders
+            dna = anc.get("dna_designation", {})
+            if dna:
+                status = dna.get('status', {})
+                if isinstance(status, tuple):
+                    status = status[0] if status else {}
+                avail = status.get('available', False)
+                print(f"DNA Order: {'Available' if avail else 'Not Available'}")
+                if dna.get("notes"):
+                    print(f"  Note: {dna['notes']}")
+
+            # SOIRA Orders
+            soira_list = anc.get("soira", [])
+            if soira_list and isinstance(soira_list, list):
+                soira = soira_list[0]
+                if isinstance(soira, dict):
+                    print(f"SOIRA Registration: {soira.get('status', 'Not Available')}")
+                    duration = soira.get("duration", {})
+                    if duration:
+                        print(f"  Duration: {duration.get('amount')} {duration.get('unit', '')}")
+                    if soira.get("notes"):
+                        print(f"  Note: {soira['notes']}")
+
+            # Proceeds of Crime
+            poc = anc.get("proceeds_of_crime_forfeiture", {})
+            if poc:
+                if isinstance(poc, dict):
+                    avail = poc.get('available', False)
+                    print(f"Proceeds of Crime Forfeiture: {'Available' if avail else 'Not Available'}")
+                    if poc.get('notes'):
+                        print(f"  Note: {poc['notes']}")
+
+            # Section 164.2 Forfeiture
+            s164_list = anc.get("section_164.2_forfeiture_order", [])
+            if s164_list and isinstance(s164_list, list):
+                s164 = s164_list[0]
+                if isinstance(s164, dict):
+                    print("Section 164.2 Forfeiture Order Available")
+                    if s164.get("notes"):
+                        print(f"  Note: {s164['notes']}")
+
+        # Collateral Consequences
+        if "collateral_consequences" in offence:
+            print("\nCOLLATERAL CONSEQUENCES")
+            print("-" * 50)
+            
+            collateral = offence["collateral_consequences"]
+            
+            # Immigration Status
+            inadmissibility = collateral.get("inadmissibility", [])
+            if inadmissibility and isinstance(inadmissibility, list):
+                for item in inadmissibility:
+                    if isinstance(item, dict):
+                        # Extract status information
+                        if isinstance(item.get('status'), dict):
+                            avail = item['status'].get('available', False)
+                            status_notes = item['status'].get('notes')
+                            print(f"Immigration Status: {'Applicable' if avail else 'Not Applicable'}")
+                            if status_notes:
+                                print(f"  Status Note: {status_notes}")
+                        else:
+                            print(f"Immigration Status: {item.get('status', 'Unknown')}")
+                        
+                        # Extract section information
+                        section = item.get('section', [])
+                        if isinstance(section, list):
+                            section = ', '.join(section)
+                        if section:
+                            print(f"  Section: {section}")
+                        
+                        # Extract notes
+                        if item.get('notes'):
+                            print(f"  Note: {item['notes']}")
+
+        print("\n" + "=" * 80 + "\n")
 
 
 def main():

@@ -686,10 +686,9 @@ def check_fine_probation_intermittent(
     indictable_minimum: Dict[str, Dict[str, Union[int, str]]],
 ) -> Dict[str, Union[bool, None, List[str], str]]:
     """
-    Check to see if an intermittent sentence is available. If it is, the court
-    can also impose the fine and probation order. The only offences excluded
-    from this are those with a mandatory minimum term of imprisonment exceeding
-    90 days.
+    Check to see whether the offence has a mandatory minimum term of
+    imprisonment exceeding 90 days. If so, an intermittent sentence is not
+    available. Otherwise, it is.
 
     Args:
         summary_minimum (Dict): The minimum sentence for summary proceedings
@@ -842,32 +841,27 @@ def check_soira(
             "unit": "years",
         }
 
-    elif int(
-        indictable_maximum["amount"] == 2 or int(indictable_maximum["amount"]) == 5
-    ):
-        soira_list[0]["section"].append("cc490.011(2)(a)")
-        soira_list[0]["duration"] = {
-            "amount": 10,
-            "unit": "years",
-        }
-
-    elif (
-        int(indictable_maximum["amount"]) == 10
-        or int(indictable_maximum["amount"]) == 14
-    ):
-        soira_list[0]["section"].append("cc490.011(2)(b)")
-        soira_list[0]["duration"] = {
-            "amount": 20,
-            "unit": "years",
-        }
-
-    elif int(indictable_maximum["amount"]) == 255:
-        soira_list[0]["section"].append("cc490.011(2)(c)")
-        soira_list[0]["duration"] = {
-            "amount": 255,
-            "unit": "years",
-        }
-
+    elif indictable_maximum and isinstance(indictable_maximum, dict) and "amount" in indictable_maximum:
+        max_amount = int(indictable_maximum["amount"])
+        
+        if max_amount in [2, 5]:
+            soira_list[0]["section"].append("cc490.011(2)(a)")
+            soira_list[0]["duration"] = {
+                "amount": 10,
+                "unit": "years",
+            }
+        elif max_amount in [10, 14]:
+            soira_list[0]["section"].append("cc490.011(2)(b)")
+            soira_list[0]["duration"] = {
+                "amount": 20,
+                "unit": "years",
+            }
+        elif max_amount > 14:
+            soira_list[0]["section"].append("cc490.011(2)(c)")
+            soira_list[0]["duration"] = {
+                "amount": "life",
+                "unit": None,
+            }
     # cc490.13(3) & (5) are implementable once we have data for an offender's
     # criminal record
 
