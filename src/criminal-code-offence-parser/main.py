@@ -296,7 +296,7 @@ def report(offence_code: str) -> None:
     Generates a comprehensive human-readable report from the offence parser data.
     
     Args:
-        offence_code (str): The offence code to generate a report for (e.g., "cc266")
+        offence_code (str): The offence code to generate a report for (e.g., "cc_266")
         
     Raises:
         RuntimeError: If the data hasn't been initialized
@@ -372,7 +372,7 @@ def report(offence_code: str) -> None:
                     avail = status.get('available', False)
                     print(f"Preliminary Inquiry Available: {avail}")
                     if prelim.get('notes'):
-                        print(f"  Note: {prelim['notes']}")
+                        print(f"  Reason: {prelim['notes']}")
 
             # Absolute Jurisdiction
             if "absolute_jurisdiction" in offence["procedure"]:
@@ -384,7 +384,7 @@ def report(offence_code: str) -> None:
                     avail = status.get('absolute_jurisdiction', False)
                     print(f"Absolute Jurisdiction: {avail}")
                     if abs_juris[0].get('notes'):
-                        print(f"  Note: {abs_juris[0]['notes']}")
+                        print(f"  Reason: {abs_juris[0]['notes']}")
 
             # Superior Court Judge Release
             if "release_by_superior_court_judge" in offence["procedure"]:
@@ -394,7 +394,7 @@ def report(offence_code: str) -> None:
                     avail = status_dict.get('available', False)
                     print(f"Superior Court Judge Release Required: {'Required' if avail else 'Not Required'}")
                     if scj_release.get('notes'):
-                        print(f"  Note: {scj_release['notes']}")
+                        print(f"  Reason: {scj_release['notes']}")
                     if scj_release.get('sections'):
                         print(f"  Sections: {', '.join(scj_release['sections'])}")
 
@@ -423,7 +423,7 @@ def report(offence_code: str) -> None:
                             avail = status_dict.get('available', False)
                             print(f"{option}: {'Available' if avail else 'Not Available'}")
                             if status_dict.get('notes'):
-                                print(f"  Note: {status_dict['notes']}")
+                                print(f"  Reason: {status_dict['notes']}")
                     # Handle dictionary status
                     elif isinstance(status, dict):
                         status_dict = status.get('status', {})
@@ -431,7 +431,7 @@ def report(offence_code: str) -> None:
                             avail = status_dict.get('available', False)
                             print(f"{option}: {'Available' if avail else 'Not Available'}")
                             if status.get('notes'):
-                                print(f"  Note: {status['notes']}")
+                                print(f"  Reason: {status['notes']}")
 
         # Ancillary Orders
         if "ancillary_orders" in offence:
@@ -449,7 +449,7 @@ def report(offence_code: str) -> None:
                 avail = status.get('available', False)
                 print(f"DNA Order: {'Available' if avail else 'Not Available'}")
                 if dna.get("notes"):
-                    print(f"  Note: {dna['notes']}")
+                    print(f"  Reason: {dna['notes']}")
 
             # SOIRA Orders
             soira_list = anc.get("soira", [])
@@ -469,7 +469,7 @@ def report(offence_code: str) -> None:
                         if soira.get("sections"):
                             print(f"  Sections: {', '.join(soira['sections'])}")
                         if soira.get("notes"):
-                            print(f"  Note: {soira['notes']}")
+                            print(f"  Reason: {soira['notes']}")
 
             # Proceeds of Crime
             poc = anc.get("proceeds_of_crime_forfeiture", {})
@@ -478,7 +478,7 @@ def report(offence_code: str) -> None:
                     avail = poc.get('available', False)
                     print(f"Proceeds of Crime Forfeiture: {'Available' if avail else 'Not Available'}")
                     if poc.get('notes'):
-                        print(f"  Note: {poc['notes']}")
+                        print(f"  Reason: {poc['notes']}")
 
             # Section 164.2 Forfeiture
             s164_list = anc.get("section_164.2_forfeiture_order", [])
@@ -487,7 +487,7 @@ def report(offence_code: str) -> None:
                 if isinstance(s164, dict):
                     print("Section 164.2 Forfeiture Order Available")
                     if s164.get("notes"):
-                        print(f"  Note: {s164['notes']}")
+                        print(f"  Reason: {s164['notes']}")
 
         # Collateral Consequences
         if "collateral_consequences" in offence:
@@ -507,7 +507,7 @@ def report(offence_code: str) -> None:
                             status_notes = item['status'].get('notes')
                             print(f"Immigration Status: {'Applicable' if avail else 'Not Applicable'}")
                             if status_notes:
-                                print(f"  Status Note: {status_notes}")
+                                print(f"  Status Reason: {status_notes}")
                         else:
                             print(f"Immigration Status: {item.get('status', 'Unknown')}")
                         
@@ -520,7 +520,7 @@ def report(offence_code: str) -> None:
                         
                         # Extract notes
                         if item.get('notes'):
-                            print(f"  Note: {item['notes']}")
+                            print(f"  Reason: {item['notes']}")
 
         print("\n" + "=" * 80 + "\n")
 
