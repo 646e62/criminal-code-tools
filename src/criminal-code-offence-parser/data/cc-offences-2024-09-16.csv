@@ -386,7 +386,7 @@ cc_346(1.1)(a)-s,extortion — restricted or prohibited firearm or criminal orga
 cc_346(1.1)(b),extortion,,255y,,
 cc_347,criminal interest rate,,5y,,25000&729
 cc_348(1)(d),breaking and entering with intent committing offence or breaking out — dwelling-house,,255y,,
-cc_348(1)(e),breaking and entering with intent committing offence or breaking out — non-dwelling-house,,10y,
+cc_348(1)(e),breaking and entering with intent committing offence or breaking out — non-dwelling-house,,10y,,
 cc_349,being unlawfully in dwelling-house,,10y,,sc
 cc_351(1),possession of break-in instrument,,10y,,sc
 cc_351(2),disguise with intent,,10y,,sc

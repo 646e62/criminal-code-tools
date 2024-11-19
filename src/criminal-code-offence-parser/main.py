@@ -339,7 +339,10 @@ def report(offence_code: str) -> None:
             if fine.get("amount"):
                 parts.append(f"${fine['amount']} {fine['unit']}")
             if jail.get("amount"):
-                parts.append(f"{jail['amount']} {jail['unit']}")
+                if jail.get("unit") == "years" and int(jail["amount"]) == 255:
+                    parts.append("life")
+                else:
+                    parts.append(f"{jail['amount']} {jail['unit']}")
             return " and ".join(parts) if parts else "None"
 
         # Summary Proceedings
@@ -453,12 +456,20 @@ def report(offence_code: str) -> None:
             if soira_list and isinstance(soira_list, list):
                 soira = soira_list[0]
                 if isinstance(soira, dict):
-                    print(f"SOIRA Registration: {soira.get('status', 'Not Available')}")
-                    duration = soira.get("duration", {})
-                    if duration:
-                        print(f"  Duration: {duration.get('amount')} {duration.get('unit', '')}")
-                    if soira.get("notes"):
-                        print(f"  Note: {soira['notes']}")
+                    status = soira.get('status', {})
+                    avail = status.get('available', False) if isinstance(status, dict) else False
+                    print(f"SOIRA Registration: {'Available' if avail else 'Not Available'}")
+                    if avail:
+                        duration = soira.get("duration", {})
+                        if duration and duration.get('amount'):
+                            if duration.get('amount') == "life":
+                                print("  Duration: Life")
+                            else:
+                                print(f"  Duration: {duration.get('amount')} {duration.get('unit', '')}")
+                        if soira.get("sections"):
+                            print(f"  Sections: {', '.join(soira['sections'])}")
+                        if soira.get("notes"):
+                            print(f"  Note: {soira['notes']}")
 
             # Proceeds of Crime
             poc = anc.get("proceeds_of_crime_forfeiture", {})

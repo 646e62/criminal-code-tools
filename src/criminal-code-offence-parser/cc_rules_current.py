@@ -87,7 +87,6 @@ def check_prelim_available(
     Raises:
         TypeError: If indictable_maximum is not a string
     """
-    print(indictable_maximum)
     if not isinstance(indictable_maximum, str):
         raise TypeError("indictable_maximum must be a string")
 
@@ -246,22 +245,15 @@ def check_discharge_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-    print(indictable_maximum["jail"]["amount"])
     if summary_minimum["jail"]["amount"] or indictable_minimum["jail"]["amount"]:
         return standard_output(False, None, ["cc730(1)"], "mandatory minimum sentence")
 
     elif indictable_maximum["jail"]["amount"] >= 14:
         return standard_output(
-            False, None, ["cc730(1)"], "maximum term of 14y or greater"
+            False, None, ["cc730(1)"], "punishable by 14y or greater"
         )
 
-    else:
-        return standard_output(
-            True,
-            None,
-            ["cc730(1)"],
-            "no mandatory minimum, punishable by less than 14y",
-        )
+    return standard_output(True, None, ["cc730(1)"], "no mandatory minimum, punishable by less than 14y")
 
 
 def check_cso_availablity(
@@ -299,9 +291,8 @@ def check_cso_availablity(
 
     # Convert None values to a comparable integer
     # Confirm whether this is necessary since the v0.0.5 updates to the program
-    print(indictable_maximum["jail"]["amount"])
     try:
-        indictable_maximum["jail"]["amount"] = int(indictable_maximum["amount"])
+        indictable_maximum["jail"]["amount"] = int(indictable_maximum["jail"]["amount"])
     except:
         indictable_maximum["jail"]["amount"] = 0
 
@@ -761,7 +752,6 @@ def check_soira(
     same proceeding; and
     - The offender's prior criminal record.
 
-
     Args:
         section (str): The section of the Criminal Code
         mode (str): The mode of prosecution
@@ -774,102 +764,72 @@ def check_soira(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-
-    soira_list = []
-
     # Check to see whether the offence is a designated SOIRA offence
-    if section in PRIMARY_SOIRA_OFFENCES_CURRENT:
-        soira_list.append(
-            standard_output(
-                True,
-                "primary",
-                ["cc490.011[primary offence](a)"],
-                "primary designated offence",
-            )
-        )
-
-    elif section in SECONDARY_SOIRA_OFFENCES:
-        soira_list.append(
-            standard_output(
-                True,
-                "secondary",
-                ["cc490.011[secondary offence](a)"],
-                "secondary designated offence",
-            )
-        )
-    elif section in SOIRA_OFFENCES_ATTEMPTS:
-        soira_list.append(
-            standard_output(
-                True,
-                "secondary",
-                [
-                    "cc490.011[primary offence](f)",
-                    "cc490.011[secondary offence](b)",
-                ],
-                "attempted designated offence",
-            )
-        )
-    elif section in SOIRA_OFFENCES_CONSPIRACY:
-        soira_list.append(
-            standard_output(
-                True,
-                "secondary",
-                [
-                    "cc490.011[primary offence](f)",
-                    "cc490.011[secondary offence](b)",
-                ],
-                "conspiracy to commit designated offence",
-            )
-        )
-    else:
-        return standard_output(
+    if section not in (PRIMARY_SOIRA_OFFENCES_CURRENT + SECONDARY_SOIRA_OFFENCES + 
+                      SOIRA_OFFENCES_ATTEMPTS + SOIRA_OFFENCES_CONSPIRACY):
+        return [standard_output(
             False,
             None,
-            [
-                "cc490.011[primary offence](f)",
-                "cc490.011[secondary offence](b)",
-            ],
-            "not a designated offence",
-        )
+            ["cc490.011"],
+            "not a designated offence"
+        )]
+
+    soira_list = [{
+        "status": {"available": True, "notes": None},
+        "sections": [],
+        "notes": "designated offence",
+        "duration": {"amount": None, "unit": None}
+    }]
 
     # Determine the duration of the SOIRA order
-    # Rework this code after recent re-writes, and adapt to use the standard
-    # output function
-    # cc490.011(2)
     if mode == "summary":
-        soira_list[0]["section"].append("cc490.011(2)(a)")
+        soira_list[0]["sections"].append("cc490.011(2)(a)")
         soira_list[0]["duration"] = {
             "amount": 10,
             "unit": "years",
         }
 
-    elif (
-        indictable_maximum
-        and isinstance(indictable_maximum, dict)
-        and "amount" in indictable_maximum
-    ):
-        max_amount = int(indictable_maximum["amount"])
-
+    elif indictable_maximum and isinstance(indictable_maximum, dict) and "jail" in indictable_maximum:
+        max_amount = int(indictable_maximum["jail"]["amount"])
+        
         if max_amount in [2, 5]:
-            soira_list[0]["section"].append("cc490.011(2)(a)")
+            soira_list[0]["sections"].append("cc490.011(2)(a)")
             soira_list[0]["duration"] = {
                 "amount": 10,
                 "unit": "years",
             }
         elif max_amount in [10, 14]:
-            soira_list[0]["section"].append("cc490.011(2)(b)")
+            soira_list[0]["sections"].append("cc490.011(2)(b)")
             soira_list[0]["duration"] = {
                 "amount": 20,
                 "unit": "years",
             }
         elif max_amount > 14:
-            soira_list[0]["section"].append("cc490.011(2)(c)")
+            soira_list[0]["sections"].append("cc490.011(2)(c)")
             soira_list[0]["duration"] = {
                 "amount": "life",
                 "unit": None,
             }
-    # cc490.13(3) & (5) are implementable once we have data for an offender's
-    # criminal record
+
+    # Add specific designation type to notes
+    if section in PRIMARY_SOIRA_OFFENCES_CURRENT:
+        soira_list[0]["notes"] = "primary designated offence"
+        soira_list[0]["sections"].append("cc490.011[primary offence](a)")
+    elif section in SECONDARY_SOIRA_OFFENCES:
+        soira_list[0]["notes"] = "secondary designated offence"
+        soira_list[0]["sections"].append("cc490.011[secondary offence](a)")
+    elif section in SOIRA_OFFENCES_ATTEMPTS:
+        soira_list[0]["notes"] = "attempted designated offence"
+        soira_list[0]["sections"].extend([
+            "cc490.011[primary offence](f)",
+            "cc490.011[secondary offence](b)"
+        ])
+    elif section in SOIRA_OFFENCES_CONSPIRACY:
+        soira_list[0]["notes"] = "conspiracy to commit designated offence"
+        soira_list[0]["sections"].extend([
+            "cc490.011[primary offence](f)",
+            "cc490.011[secondary offence](b)"
+        ])
 
     return soira_list
 
