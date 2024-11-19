@@ -245,22 +245,15 @@ def check_discharge_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-
     if summary_minimum["jail"]["amount"] or indictable_minimum["jail"]["amount"]:
         return standard_output(False, None, ["cc730(1)"], "mandatory minimum sentence")
 
     elif indictable_maximum["jail"]["amount"] >= 14:
         return standard_output(
-            False, None, ["cc730(1)"], "maximum term of 14y or greater"
+            False, None, ["cc730(1)"], "punishable by 14y or greater"
         )
 
-    else:
-        return standard_output(
-            True,
-            None,
-            ["cc730(1)"],
-            "no mandatory minimum, punishable by less than 14y",
-        )
+    return standard_output(True, None, ["cc730(1)"], "no mandatory minimum, punishable by less than 14y")
 
 
 def check_cso_availablity(
@@ -299,7 +292,7 @@ def check_cso_availablity(
     # Convert None values to a comparable integer
     # Confirm whether this is necessary since the v0.0.5 updates to the program
     try:
-        indictable_maximum["jail"]["amount"] = int(indictable_maximum["amount"])
+        indictable_maximum["jail"]["amount"] = int(indictable_maximum["jail"]["amount"])
     except:
         indictable_maximum["jail"]["amount"] = 0
 
@@ -408,31 +401,34 @@ def check_intermittent_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
+    # Convert minimums to days for comparison
+    summary_days = 0
+    indictable_days = 0
 
-    if (
-        summary_minimum["jail"]["amount"] == 0
-        and indictable_minimum["jail"]["amount"] == 0
-    ):
+    if summary_minimum["jail"]["amount"]:
+        if summary_minimum["jail"]["unit"] == "years":
+            summary_days = int(summary_minimum["jail"]["amount"]) * 365
+        elif summary_minimum["jail"]["unit"] == "months":
+            summary_days = int(summary_minimum["jail"]["amount"]) * 30
+        else:  # days
+            summary_days = int(summary_minimum["jail"]["amount"])
+
+    if indictable_minimum["jail"]["amount"]:
+        if indictable_minimum["jail"]["unit"] == "years":
+            indictable_days = int(indictable_minimum["jail"]["amount"]) * 365
+        elif indictable_minimum["jail"]["unit"] == "months":
+            indictable_days = int(indictable_minimum["jail"]["amount"]) * 30
+        else:  # days
+            indictable_days = int(indictable_minimum["jail"]["amount"])
+
+    if summary_days == 0 and indictable_days == 0:
         return standard_output(
             True, None, ["cc732(1)"], "no minimum term of imprisonment"
         )
-
-    elif (
-        summary_minimum["jail"]["amount"]
-        and int(summary_minimum["jail"]["amount"]) <= 90
-    ):
+    elif summary_days <= 90 and indictable_days <= 90:
         return standard_output(
             True, None, ["cc732(1)"], "minimum does not exceed 90 days"
         )
-
-    elif (
-        indictable_minimum["jail"]["amount"]
-        and int(indictable_minimum["jail"]["amount"]) <= 90
-    ):
-        return standard_output(
-            True, None, ["cc732(1)"], "minimum does not exceed 90 days"
-        )
-
     else:
         return standard_output(
             False,
@@ -660,23 +656,33 @@ def check_fine_and_probation(
         Dict: A dictionary containing:
             - available (bool): Whether fine and probation is available
             - quantum (Optional[str]): The quantum of sentence, if applicable
-            - sections (List[str]): Relevant Criminal Code sections
+            - sections (List[str]]: Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
+    # Convert minimum to days for comparison with 2 years (730 days)
+    indictable_days = 0
 
-    if int(indictable_minimum["jail"]["amount"]) == 0:
+    if indictable_minimum["jail"]["amount"]:
+        if indictable_minimum["jail"]["unit"] == "years":
+            indictable_days = int(indictable_minimum["jail"]["amount"]) * 365
+        elif indictable_minimum["jail"]["unit"] == "months":
+            indictable_days = int(indictable_minimum["jail"]["amount"]) * 30
+        else:  # days
+            indictable_days = int(indictable_minimum["jail"]["amount"])
+
+    if indictable_days == 0:
         return standard_output(
-            True, None, ["cc732(1)"], "no minimum term of imprionment"
+            True, None, ["cc732(1)"], "no minimum term of imprisonment"
         )
 
-    if int(indictable_minimum["jail"]["amount"]) < 730:
+    if indictable_days < 730:  # Less than 2 years
         return standard_output(True, None, ["cc732(1)"], None)
 
     else:
         return standard_output(
             False,
             None,
-            ["cc732(1)"],
+            ["cc732"],
             "mandatory minimum term of imprisonment exceeds two years",
         )
 
@@ -686,10 +692,9 @@ def check_fine_probation_intermittent(
     indictable_minimum: Dict[str, Dict[str, Union[int, str]]],
 ) -> Dict[str, Union[bool, None, List[str], str]]:
     """
-    Check to see if an intermittent sentence is available. If it is, the court
-    can also impose the fine and probation order. The only offences excluded
-    from this are those with a mandatory minimum term of imprisonment exceeding
-    90 days.
+    Check to see whether the offence has a mandatory minimum term of
+    imprisonment exceeding 90 days. If so, an intermittent sentence is not
+    available. Otherwise, it is.
 
     Args:
         summary_minimum (Dict): The minimum sentence for summary proceedings
@@ -760,7 +765,6 @@ def check_soira(
     same proceeding; and
     - The offender's prior criminal record.
 
-
     Args:
         section (str): The section of the Criminal Code
         mode (str): The mode of prosecution
@@ -773,103 +777,72 @@ def check_soira(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-
-    soira_list = []
-
     # Check to see whether the offence is a designated SOIRA offence
-    if section in PRIMARY_SOIRA_OFFENCES_CURRENT:
-        soira_list.append(
-            standard_output(
-                True,
-                "primary",
-                ["cc490.011[primary offence](a)"],
-                "primary designated offence",
-            )
-        )
-
-    elif section in SECONDARY_SOIRA_OFFENCES:
-        soira_list.append(
-            standard_output(
-                True,
-                "secondary",
-                ["cc490.011[secondary offence](a)"],
-                "secondary designated offence",
-            )
-        )
-    elif section in SOIRA_OFFENCES_ATTEMPTS:
-        soira_list.append(
-            standard_output(
-                True,
-                "secondary",
-                [
-                    "cc490.011[primary offence](f)",
-                    "cc490.011[secondary offence](b)",
-                ],
-                "attempted designated offence",
-            )
-        )
-    elif section in SOIRA_OFFENCES_CONSPIRACY:
-        soira_list.append(
-            standard_output(
-                True,
-                "secondary",
-                [
-                    "cc490.011[primary offence](f)",
-                    "cc490.011[secondary offence](b)",
-                ],
-                "conspiracy to commit designated offence",
-            )
-        )
-    else:
-        return standard_output(
+    if section not in (PRIMARY_SOIRA_OFFENCES_CURRENT + SECONDARY_SOIRA_OFFENCES + 
+                      SOIRA_OFFENCES_ATTEMPTS + SOIRA_OFFENCES_CONSPIRACY):
+        return [standard_output(
             False,
             None,
-            [
-                "cc490.011[primary offence](f)",
-                "cc490.011[secondary offence](b)",
-            ],
-            "not a designated offence",
-        )
+            ["cc490.011"],
+            "not a designated offence"
+        )]
+
+    soira_list = [{
+        "status": {"available": True, "notes": None},
+        "sections": [],
+        "notes": "designated offence",
+        "duration": {"amount": None, "unit": None}
+    }]
 
     # Determine the duration of the SOIRA order
-    # Rework this code after recent re-writes, and adapt to use the standard
-    # output function
-    # cc490.011(2)
     if mode == "summary":
-        soira_list[0]["section"].append("cc490.011(2)(a)")
+        soira_list[0]["sections"].append("cc490.011(2)(a)")
         soira_list[0]["duration"] = {
             "amount": 10,
             "unit": "years",
         }
 
-    elif int(
-        indictable_maximum["amount"] == 2 or int(indictable_maximum["amount"]) == 5
-    ):
-        soira_list[0]["section"].append("cc490.011(2)(a)")
-        soira_list[0]["duration"] = {
-            "amount": 10,
-            "unit": "years",
-        }
+    elif indictable_maximum and isinstance(indictable_maximum, dict) and "jail" in indictable_maximum:
+        max_amount = int(indictable_maximum["jail"]["amount"])
+        
+        if max_amount in [2, 5]:
+            soira_list[0]["sections"].append("cc490.011(2)(a)")
+            soira_list[0]["duration"] = {
+                "amount": 10,
+                "unit": "years",
+            }
+        elif max_amount in [10, 14]:
+            soira_list[0]["sections"].append("cc490.011(2)(b)")
+            soira_list[0]["duration"] = {
+                "amount": 20,
+                "unit": "years",
+            }
+        elif max_amount > 14:
+            soira_list[0]["sections"].append("cc490.011(2)(c)")
+            soira_list[0]["duration"] = {
+                "amount": "life",
+                "unit": None,
+            }
 
-    elif (
-        int(indictable_maximum["amount"]) == 10
-        or int(indictable_maximum["amount"]) == 14
-    ):
-        soira_list[0]["section"].append("cc490.011(2)(b)")
-        soira_list[0]["duration"] = {
-            "amount": 20,
-            "unit": "years",
-        }
-
-    elif int(indictable_maximum["amount"]) == 255:
-        soira_list[0]["section"].append("cc490.011(2)(c)")
-        soira_list[0]["duration"] = {
-            "amount": 255,
-            "unit": "years",
-        }
-
-    # cc490.13(3) & (5) are implementable once we have data for an offender's
-    # criminal record
+    # Add specific designation type to notes
+    if section in PRIMARY_SOIRA_OFFENCES_CURRENT:
+        soira_list[0]["notes"] = "primary designated offence"
+        soira_list[0]["sections"].append("cc490.011[primary offence](a)")
+    elif section in SECONDARY_SOIRA_OFFENCES:
+        soira_list[0]["notes"] = "secondary designated offence"
+        soira_list[0]["sections"].append("cc490.011[secondary offence](a)")
+    elif section in SOIRA_OFFENCES_ATTEMPTS:
+        soira_list[0]["notes"] = "attempted designated offence"
+        soira_list[0]["sections"].extend([
+            "cc490.011[primary offence](f)",
+            "cc490.011[secondary offence](b)"
+        ])
+    elif section in SOIRA_OFFENCES_CONSPIRACY:
+        soira_list[0]["notes"] = "conspiracy to commit designated offence"
+        soira_list[0]["sections"].extend([
+            "cc490.011[primary offence](f)",
+            "cc490.011[secondary offence](b)"
+        ])
 
     return soira_list
 
