@@ -756,3 +756,57 @@ SK_FIREARMS_ACT_SUSPENSION_OFFENCES = [
     "cc_272(2)(a.2)",
     "cc_272(2)(b)",
 ]
+
+COMMERCIAL_VEHICLE_DRIVERS_RECORD_KEEPING_APPENDIX_A_1_OFFENCES = [
+    "cc_151",
+    "cc_152",
+    "cc_153",
+    "cc_153.1",
+    "cc_162(1)",
+    "cc_162(4)",
+    "cc_163",
+    "cc_163.1(2)",
+    "cc_163.1(3)",
+    "cc_163.1(4)",
+    "cc_163.1(4.1)",
+    "cc_170",
+    "cc_171",
+    "cc_171.1",
+    "cc_172.1",
+    "cc_172.2",
+    "cc_173(1)",
+    "cc_173(2)",
+    "cc_271(a)",
+    "cc_271(b)",
+    "cc_272(2)(a)#1",
+    "cc_272(2)(a)#s",
+    "cc_272(2)(a.1)",
+    "cc_272(2)(a.2)",
+    "cc_272(2)(b)",
+    "cc_273(2)(a)#1",
+    "cc_273(2)(a)#s",
+    "cc_273(2)(a.1)",
+    "cc_273(2)(a.2)",
+    "cc_273(2)(b)",
+    "cc_273.3",
+    "cc_286.1(1)(a)(i)#1",
+    "cc_286.1(1)(a)(i)#s",
+    "cc_286.1(1)(a)(ii)#1",
+    "cc_286.1(1)(a)(ii)#s",
+    "cc_286.2(1)",
+    "cc_286.2(2)",
+    "cc_286.3(1)",
+    "cc_286.3(2)",
+]
+
+COMMERCIAL_VEHICLE_DRIVERS_RECORD_KEEPING_APPENDIX_A_2_OFFENCES = [
+]
+
+COMMERCIAL_VEHICLE_DRIVERS_RECORD_KEEPING_APPENDIX_A_3_OFFENCES = [
+]
+
+COMMERCIAL_VEHICLE_DRIVERS_RECORD_KEEPING_APPENDIX_A_4_OFFENCES = [
+]
+
+COMMERCIAL_VEHICLE_DRIVERS_RECORD_KEEPING_APPENDIX_A_5_OFFENCES = [
+]
