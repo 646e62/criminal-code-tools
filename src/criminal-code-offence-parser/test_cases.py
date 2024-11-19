@@ -3,7 +3,7 @@ Test cases for the Criminal Code Offence Parser.
 This script runs through various offence types to verify correct parsing and reporting.
 """
 
-from main import report
+from main import report, parse_offence
 
 def run_test_cases():
     """Run through all test cases and generate reports."""
@@ -87,5 +87,43 @@ def run_test_cases():
     print("8. Mandatory minimums are clearly displayed")
     print("9. Section 469 offences are properly identified")
 
+def test_all_offences():
+    """Test parsing of all offences in the CSV file for errors."""
+    import csv
+    
+    # Keep track of errors
+    errors = []
+    total_offences = 0
+    
+    # Read the CSV file and create a list of all the offences (index 0)
+    with open("/home/daniel/TresoritDrive/jurimetrics/criminal-code-offence-parser/src/criminal-code-offence-parser/data/cc-offences-2024-09-16.csv", "r") as f:
+        # Skip header row
+        all_offences = [row[0] for row in csv.reader(f)][1:]
+    
+    print(f"\nTesting {len(all_offences)} offences...")
+    
+    # Try parsing each offence and collect any errors
+    for offence in all_offences:
+        try:
+            total_offences += 1
+            # Try parsing with full=True to test all parsing functions
+            parse_offence(offence, full=True)
+        except Exception as e:
+            errors.append(f"{offence}: {str(e)}")
+    
+    # Print summary
+    print("\n=== Test Results ===")
+    print(f"Total offences tested: {total_offences}")
+    print(f"Successful: {total_offences - len(errors)}")
+    print(f"Failed: {len(errors)}")
+    
+    # If there were any errors, print them
+    if errors:
+        print("\nErrors encountered:")
+        for error in errors:
+            print(f"- {error}")
+    else:
+        print("\nAll offences parsed successfully!")
+
 if __name__ == "__main__":
-    run_test_cases()
+    test_all_offences()
