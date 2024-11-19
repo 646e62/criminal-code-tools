@@ -401,31 +401,34 @@ def check_intermittent_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
+    # Convert minimums to days for comparison
+    summary_days = 0
+    indictable_days = 0
 
-    if (
-        summary_minimum["jail"]["amount"] == 0
-        and indictable_minimum["jail"]["amount"] == 0
-    ):
+    if summary_minimum["jail"]["amount"]:
+        if summary_minimum["jail"]["unit"] == "years":
+            summary_days = int(summary_minimum["jail"]["amount"]) * 365
+        elif summary_minimum["jail"]["unit"] == "months":
+            summary_days = int(summary_minimum["jail"]["amount"]) * 30
+        else:  # days
+            summary_days = int(summary_minimum["jail"]["amount"])
+
+    if indictable_minimum["jail"]["amount"]:
+        if indictable_minimum["jail"]["unit"] == "years":
+            indictable_days = int(indictable_minimum["jail"]["amount"]) * 365
+        elif indictable_minimum["jail"]["unit"] == "months":
+            indictable_days = int(indictable_minimum["jail"]["amount"]) * 30
+        else:  # days
+            indictable_days = int(indictable_minimum["jail"]["amount"])
+
+    if summary_days == 0 and indictable_days == 0:
         return standard_output(
             True, None, ["cc732(1)"], "no minimum term of imprisonment"
         )
-
-    elif (
-        summary_minimum["jail"]["amount"]
-        and int(summary_minimum["jail"]["amount"]) <= 90
-    ):
+    elif summary_days <= 90 and indictable_days <= 90:
         return standard_output(
             True, None, ["cc732(1)"], "minimum does not exceed 90 days"
         )
-
-    elif (
-        indictable_minimum["jail"]["amount"]
-        and int(indictable_minimum["jail"]["amount"]) <= 90
-    ):
-        return standard_output(
-            True, None, ["cc732(1)"], "minimum does not exceed 90 days"
-        )
-
     else:
         return standard_output(
             False,
@@ -653,23 +656,33 @@ def check_fine_and_probation(
         Dict: A dictionary containing:
             - available (bool): Whether fine and probation is available
             - quantum (Optional[str]): The quantum of sentence, if applicable
-            - sections (List[str]): Relevant Criminal Code sections
+            - sections (List[str]]: Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
+    # Convert minimum to days for comparison with 2 years (730 days)
+    indictable_days = 0
 
-    if int(indictable_minimum["jail"]["amount"]) == 0:
+    if indictable_minimum["jail"]["amount"]:
+        if indictable_minimum["jail"]["unit"] == "years":
+            indictable_days = int(indictable_minimum["jail"]["amount"]) * 365
+        elif indictable_minimum["jail"]["unit"] == "months":
+            indictable_days = int(indictable_minimum["jail"]["amount"]) * 30
+        else:  # days
+            indictable_days = int(indictable_minimum["jail"]["amount"])
+
+    if indictable_days == 0:
         return standard_output(
-            True, None, ["cc732(1)"], "no minimum term of imprionment"
+            True, None, ["cc732(1)"], "no minimum term of imprisonment"
         )
 
-    if int(indictable_minimum["jail"]["amount"]) < 730:
+    if indictable_days < 730:  # Less than 2 years
         return standard_output(True, None, ["cc732(1)"], None)
 
     else:
         return standard_output(
             False,
             None,
-            ["cc732(1)"],
+            ["cc732"],
             "mandatory minimum term of imprisonment exceeds two years",
         )
 
