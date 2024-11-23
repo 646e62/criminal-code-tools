@@ -247,7 +247,9 @@ cc_264.1(a),uttering threats — death or bodily harm,,5y,,sc
 cc_264.1(b),uttering threats — damage property,,2y,,sc
 cc_264.1(c),uttering threats — kill animal,,2y,,sc
 cc_266,assault,,5y,,sc
-cc_267,assault with a weapon or causing bodily harm,,10y,,sc
+cc_267(a),assault with a weapon,,10y,,sc
+cc_267(b),assault causing bodily harm,,10y,,sc
+cc_267(c),assault and choking suffocating or strangling,,10y,,sc
 cc_268,aggravated assault,,14y,,
 cc_269,unlawfully causing bodily harm,,10y,,sc
 cc_269.1,torture,,14y,,
