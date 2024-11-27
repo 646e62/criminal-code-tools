@@ -30,3 +30,5 @@ uid,offence,date,jail,mode,conditions,fine,appeal
 2024mbpc73_2,cc_88,2022-08-15,6m,jail-concurrent,,,
 2024mbpc73_3,cc_91(1),2022-08-15,1y,jail-concurrent,,,
 2024mbpc73_4,cc_86(1),2022-08-15,1y,jail-concurrent,,,
+2024mbpc70_1,cc_151,2015-04-01&2015-11-30,5y,jail-consecutive,,,
+2024mbpc70_2,cc_271,2015-04-01&2015-11-30,5y,jail-concurrent,,,
