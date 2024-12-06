@@ -1,5 +1,9 @@
 uid,offence,date,jail,mode,conditions,fine,appeal
+2024abcj246_221211956P1_1,cc_162.1,2022-04-01&2022-10-31,90d,jail-intermittent,12m-probation,,
 2024abcj227_230175168P1_1,cdsa_5(2),2022-04-21,729d,cso-consecutive,,,
-2024abcj228_221069834P1_1,
-2024abcj228_221069834P1_3,
-2024abcj228_221069834P1_4,
+2024abcj228_221069834P1_1,cc_271(a),2022-06-15,5.5y,jail-consecutive,,,
+2024abcj228_221069834P1_2,cc_344(1)(b),2022-06-15,5.5y,jail-concurrent,,,
+2024abcj228_221069834P1_3,cc_145(5),2022-06-15,30d,jail-concurrent,,,
+2024abcj228_221069834P1_4,cc_145(2),2022-12-08,5d,jail-concurrent,,,
+2024abcj231_220901912P1_1,cc_153,2024-11-12,1y,cso-consecutive,,,
+2024abcj231_220901912P1_2,cc_271(a),2024-11-12,1y,cso-concurrent,,,
