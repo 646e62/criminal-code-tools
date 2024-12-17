@@ -233,7 +233,8 @@ cc_244.2(3)(a)#s,discharging firearm — recklessness — restricted or prohibit
 cc_244.2(3)(b),discharging firearm — recklessness,,14y,,
 cc_245(1)(a),administering noxious thing — intent to cause bodily harm or endanger 255y,,14y,,
 cc_245(1)(b),administering noxious thing — intent to aggrieve or annoy,,2y,,
-cc_246,overcoming resistance to commission of offence,,255y,,
+cc_246(a),overcoming resistance to commission of offence — choking,,255y,,
+cc_246(b),overcoming resistance to commission of offence — noxious substance,,255y,,
 cc_247(1),traps likely to cause bodily harm,,5y,,sc
 cc_247(2),traps likely to cause bodily harm — causing bodily harm,,10y,,sc
 cc_247(3),traps likely to cause bodily harm — offence-related place,,10y,,sc
@@ -243,9 +244,9 @@ cc_248,interfering with transportation facility,,255y,,
 cc_262,impeding attempt to save life,,10y,,sc
 cc_263(3)(c),offences — duty to safeguard opening in ice or excavation on land,,,,sc
 cc_264,criminal harassment,,10y,,sc
-cc_264.1(a),uttering threats — death or bodily harm,,5y,,sc
-cc_264.1(b),uttering threats — damage property,,2y,,sc
-cc_264.1(c),uttering threats — kill animal,,2y,,sc
+cc_264.1(1)(a),uttering threats — death or bodily harm,,5y,,sc
+cc_264.1(1)(b),uttering threats — damage property,,2y,,sc
+cc_264.1(1)(c),uttering threats — kill animal,,2y,,sc
 cc_266,assault,,5y,,sc
 cc_267(a),assault with a weapon,,10y,,sc
 cc_267(b),assault causing bodily harm,,10y,,sc
