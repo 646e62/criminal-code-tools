@@ -12,11 +12,11 @@ UNAVAILABLE_COURT_DECISIONS = [
 
 LATEST_CASE_CHECKED = {
     "bcpc": "2024bcpc230",
-    "abcj": "2024abcj257",
+    "abcj": "2024abcj261",
     "skpc": "2024skpc40",
     "mbpc": "2024mbpc96",
-    "oncj": "2024oncj643",
-    "qccq": "2024qccq7210",
+    "oncj": "2024oncj645",
+    "qccq": "2024qccq7422",
     "nbpc": "2024nbpc8",
     "nspc": "2024nspc50",
     "pepc": "2009canlii101169",
@@ -39,5 +39,13 @@ PROBLEM_CASES = {
     "2024bcpc82": (
         "offence date not included, unclear if the court ordered probation",
         "used the decision date as the offence date, assumed no probation"
-    )
+    ),
+    "2024bcpc37": (
+        "offence date unclear",
+        "inferred between dates from the decision text (para 4)"
+    ),
+    "2024bcpc56": (
+        "offence date not included",
+        "used the decision date as the offence date"
+    ),
 }

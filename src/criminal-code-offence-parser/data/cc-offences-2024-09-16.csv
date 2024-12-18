@@ -144,7 +144,8 @@ cc_147,rescue or permitting escape,,5y,,sc
 cc_148,assisting prisoner of war to escape,,5y,,sc
 cc_151,sexual interference,1y,14y,90d,729d
 cc_152,invitation to sexual touching,1y,14y,90d,729d
-cc_153,sexual exploitation,1y,14y,90d,729d
+cc_153(1)(a),sexual exploitation — touching,1y,14y,90d,729d
+cc_153(1)(b),sexual exploitation — invitation to touching,1y,14y,90d,729d
 cc_153.1,sexual exploitation of person with disability,,10y,,sc
 cc_155#a,incest — under 16,5y,14y,,
 cc_155#b,incest — other,,14y,,
