@@ -6,13 +6,13 @@ UNAVAILABLE_COURT_DECISIONS = [
     "2024canlii98004", "2024canlii93152", "2024canlii93149",
     "2024canlii92654", "2024canlii90910", "2024canlii77399",
     "2024canlii27145", "2024canlii344", "2024canlii343", "2024abcj58",
-    "2024canlii122870",
+    "2024canlii122870", "2024oncj629", "2024oncj574", "2024oncj555",
 
 ]
 
 LATEST_CASE_CHECKED = {
-    "bcpc": "2024bcpc230",
-    "abcj": "2024abcj261",
+    "bcpc": "2024bcpc237",
+    "abcj": "2024abcj264",
     "skpc": "2024skpc40",
     "mbpc": "2024mbpc96",
     "oncj": "2024oncj645",
@@ -20,7 +20,7 @@ LATEST_CASE_CHECKED = {
     "nbpc": "2024nbpc8",
     "nspc": "2024nspc50",
     "pepc": "2009canlii101169",
-    "nlpc": "2024canlii123250",
+    "nlpc": "2024canlii124075",
     "yktc": "2024yktc42",
     "nttc": "2024nwttc7",
     "nucj": "2024nucj34",
@@ -48,4 +48,16 @@ PROBLEM_CASES = {
         "offence date not included",
         "used the decision date as the offence date"
     ),
+    "2024abcj264": (
+        "offence date not included",
+        "used the decision date as the offence date"
+    ),
+    "2024oncj614": (
+        "the decision doesn't clearly specify the offences",
+        "didn't record the case"
+    ),
+    "2024oncj572": (
+        "the decision doesn't specify the offence dates",
+        "used the arrest date as the offence date for the substantive offences"
+    )
 }
