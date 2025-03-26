@@ -48,12 +48,14 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'corsheaders',
+    'django_filters',
+    'drf_spectacular',
     
     # Local apps
-    'search.apps.SearchConfig',
-    'data_processing.apps.DataProcessingConfig',
-    'ai_agent.apps.AiAgentConfig',
-    'api.apps.ApiConfig',
+    'apps.search.apps.SearchConfig',
+    'apps.data_processing.apps.DataProcessingConfig',
+    'apps.ai_agent.apps.AiAgentConfig',
+    'apps.api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
@@ -72,7 +74,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -142,13 +144,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # REST Framework settings
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Criminal Code Tools API',
+    'DESCRIPTION': 'API for managing legal case data and analysis',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }
 
 # CORS settings
