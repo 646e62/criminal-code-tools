@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Criminal Code Tools{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+        <div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200">
+            <div class="px-4 py-5 sm:px-6">
+                <h1 class="text-2xl font-bold text-gray-900">Criminal Code Tools</h1>
+                <p class="mt-1 text-sm text-gray-500">Tools for analyzing criminal code cases and patterns</p>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div class="bg-gray-50 overflow-hidden shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h2 class="text-lg font-medium text-gray-900">Case Ingestion</h2>
+                            <p class="mt-1 text-sm text-gray-500">Add new cases to the database by entering CanLII citations.</p>
+                            <div class="mt-4">
+                                <a href="{% url 'ingest_case' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Ingest Cases
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 overflow-hidden shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h2 class="text-lg font-medium text-gray-900">Case Search</h2>
+                            <p class="mt-1 text-sm text-gray-500">Search and analyze ingested cases in the database.</p>
+                            <div class="mt-4">
+                                <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                    Search Cases
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -9,3 +9,4 @@ markdown>=3.5.1  # For API documentation
 pyyaml>=6.0.1   # For OpenAPI schema
 uritemplate>=4.1.1  # For OpenAPI schema
 inflection>=0.5.1  # For OpenAPI schema
+legal-citation-parser>=1.0.0  # For parsing legal citations

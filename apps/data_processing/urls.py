@@ -1,16 +1,11 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
+from django.urls import path
 from apps.data_processing.views import (
-    CaseMetadataViewSet,
-    FactPatternViewSet,
-    SentencingRangeViewSet,
-    OffenceViewSet
+    ingest_case_view,
+    view_case
 )
 
-router = DefaultRouter()
-router.register(r'cases', CaseMetadataViewSet, basename='casemetadata')
-router.register(r'fact-patterns', FactPatternViewSet, basename='factpattern')
-router.register(r'sentencing-ranges', SentencingRangeViewSet, basename='sentencingrange')
-router.register(r'offences', OffenceViewSet, basename='offence')
-
-urlpatterns = router.urls
+# Main URL patterns for views
+urlpatterns = [
+    path('ingest/', ingest_case_view, name='ingest_case'),
+    path('case/<str:case_id>/', view_case, name='view_case'),
+]
