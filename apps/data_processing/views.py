@@ -15,7 +15,8 @@ from apps.data_processing.ingestion.case_metadata import (
     CaseMetadataIngester,
     InvalidCitationError,
     CaseNotFoundError,
-    CaseIngestionError
+    CaseIngestionError,
+    CaseAlreadyExistsError
 )
 
 # Create your views here.
@@ -32,6 +33,7 @@ def ingest_case_view(request):
 
     if request.method == 'POST':
         citation = request.POST.get('citation', '').strip()
+        force = request.POST.get('force', '').lower() == 'true'
         
         if not citation:
             messages.error(request, 'Please enter a citation')
@@ -39,13 +41,18 @@ def ingest_case_view(request):
         
         try:
             ingester = CaseMetadataIngester()
-            case = ingester.ingest_citation(citation)
+            case, created = ingester.ingest_citation(citation, force=force)
             context['case'] = case
-            messages.success(request, 'Case metadata ingested successfully')
+            if created:
+                messages.success(request, 'Case metadata ingested successfully')
+            else:
+                messages.success(request, 'Case metadata updated successfully')
         except InvalidCitationError as e:
             messages.error(request, f'Invalid citation format: {str(e)}')
         except CaseNotFoundError as e:
             messages.error(request, f'Case not found: {str(e)}')
+        except CaseAlreadyExistsError as e:
+            messages.warning(request, f'Case already exists: {str(e)}. Check "Force Update" to overwrite.')
         except CaseIngestionError as e:
             messages.error(request, f'Error ingesting case metadata: {str(e)}')
         except Exception as e:
