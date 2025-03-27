@@ -13,25 +13,49 @@ git clone https://github.com/yourusername/criminal-code-offence-parser.git
 cd criminal-code-offence-parser
 ```
 
-2. Install dependencies:
+2. Create and activate a virtual environment:
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
+4. Set up PostgreSQL database:
+- Create a new PostgreSQL database
+- Copy `.env.example` to `.env` and update the database credentials
+
+5. Run migrations:
+```bash
+python manage.py migrate
+```
+
+6. Create a superuser (optional):
+```bash
+python manage.py createsuperuser
+```
+
+7. Run the development server:
+```bash
+python manage.py runserver
+```
+
+The API will be available at http://localhost:8000/api/
+
 ## Project Structure
 
 ```
-criminal-code-offence-parser/
-├── src/
-│   └── criminal-code-offence-parser/
-│       ├── main.py              # Main parsing functionality
-│       ├── cc_rules_current.py  # Current Criminal Code rules
-│       ├── constants.py         # Constant definitions
-│       ├── utils.py            # Utility functions
-│       └── map.py              # Mapping definitions
-├── data/
-│   └── cc-offences-2024-09-16.csv  # Offence data
-├── tests/                      # Unit tests
+criminal-code-tools/
+├── apps/
+│   ├── search/             # Search functionality
+│   ├── data_processing/    # Data processing and analysis
+│   ├── ai_agent/          # AI agent functionality
+│   └── api/               # API endpoints
+├── core/                  # Django project settings
+├── _legacy/              # Legacy code for reference
 ├── README.md
 └── requirements.txt
 ```

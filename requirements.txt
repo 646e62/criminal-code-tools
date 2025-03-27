@@ -1,0 +1,12 @@
+Django>=4.2.0
+psycopg2-binary>=2.9.9
+python-dotenv>=1.0.0
+djangorestframework>=3.14.0
+django-cors-headers>=4.3.0
+django-filter>=23.5
+drf-spectacular>=0.27.0  # Modern OpenAPI 3 documentation
+markdown>=3.5.1  # For API documentation
+pyyaml>=6.0.1   # For OpenAPI schema
+uritemplate>=4.1.1  # For OpenAPI schema
+inflection>=0.5.1  # For OpenAPI schema
+legal-citation-parser>=1.0.0  # For parsing legal citations

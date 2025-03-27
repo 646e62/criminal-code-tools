@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}{{ case.style_of_cause }} - Criminal Code Tools{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+        <div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200">
+            <div class="px-4 py-5 sm:px-6">
+                <h1 class="text-2xl font-bold text-gray-900">Case Details</h1>
+                <p class="mt-1 text-sm text-gray-500">Viewing details for case: {{ case.citation }}</p>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <div class="mt-4 bg-gray-50 p-4 rounded-md">
+                    <!-- Basic Details -->
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Style of Cause</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.style_of_cause }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Citation</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.citation }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Citation Type</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.get_citation_type_display }}</dd>
+                        </div>
+                    </dl>
+
+                    <!-- Extended Details -->
+                    <dl class="mt-6 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 border-t border-gray-200 pt-6">
+                        {% if case.official_reporter_citation %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Official Reporter Citation</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.official_reporter_citation }}</dd>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Year</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.year }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Court</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.court }}</dd>
+                        </div>
+                        {% if case.decision_number %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Decision Number</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.decision_number }}</dd>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Jurisdiction</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.jurisdiction }}</dd>
+                        </div>
+                        {% if case.court_name %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Court Name</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.court_name }}</dd>
+                        </div>
+                        {% endif %}
+                        {% if case.court_level %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Court Level</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.court_level }}</dd>
+                        </div>
+                        {% endif %}
+                        {% if case.docket_number %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Docket Number</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.docket_number }}</dd>
+                        </div>
+                        {% endif %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Language</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.language }}</dd>
+                        </div>
+                        {% if case.decision_date %}
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Decision Date</dt>
+                            <dd class="mt-1 text-sm text-gray-900">{{ case.decision_date|date:"Y-m-d" }}</dd>
+                        </div>
+                        {% endif %}
+                        {% if case.keywords or case.categories %}
+                        <div class="sm:col-span-2 grid grid-cols-2 gap-x-4">
+                            {% if case.keywords %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Keywords</dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    <ul class="list-disc pl-5">
+                                        {% for keyword in case.keywords %}
+                                        <li>{{ keyword }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </dd>
+                            </div>
+                            {% endif %}
+                            {% if case.categories %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Categories</dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    <ul class="list-disc pl-5">
+                                        {% for category in case.categories %}
+                                        <li>{{ category }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </dd>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        {% if case.cited_cases %}
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Cited Cases</dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                <ul class="list-disc pl-5">
+                                    {% for cited in case.cited_cases %}
+                                    <li>{{ cited }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                        </div>
+                        {% endif %}
+                        {% if case.citing_cases %}
+                        <div class="sm:col-span-2">
+                            <dt class="text-sm font-medium text-gray-500">Citing Cases</dt>
+                            <dd class="mt-1 text-sm text-gray-900">
+                                <ul class="list-disc pl-5">
+                                    {% for citing in case.citing_cases %}
+                                    <li>{{ citing }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </dd>
+                        </div>
+                        {% endif %}
+                        {% if case.source_url or case.short_url %}
+                        <div class="sm:col-span-2 grid grid-cols-2 gap-x-4">
+                            {% if case.source_url %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Source URL</dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    <a href="{{ case.source_url }}" target="_blank" class="text-indigo-600 hover:text-indigo-500">{{ case.source_url }}</a>
+                                </dd>
+                            </div>
+                            {% endif %}
+                            {% if case.short_url %}
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500">Short URL</dt>
+                                <dd class="mt-1 text-sm text-gray-900">
+                                    <a href="{{ case.short_url }}" target="_blank" class="text-indigo-600 hover:text-indigo-500">{{ case.short_url }}</a>
+                                </dd>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
