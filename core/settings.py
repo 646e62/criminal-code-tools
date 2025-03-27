@@ -52,8 +52,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     
     # Local apps
-    'apps.search.apps.SearchConfig',
     'apps.data_processing.apps.DataProcessingConfig',
+    'apps.search.apps.SearchConfig',
     'apps.ai_agent.apps.AiAgentConfig',
     'apps.api.apps.ApiConfig',
 ]
@@ -95,8 +95,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'criminal_code_tools',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

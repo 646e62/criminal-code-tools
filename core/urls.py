@@ -24,6 +24,7 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html'), name='home'),
     path('admin/', admin.site.urls),
     path('', include('apps.data_processing.urls')),  # Include main URLs at root
+    path('search/', include('apps.search.urls')),  # Include search URLs
     path('api/v1/data/', include('apps.data_processing.urls_api')),  # Include API URLs under /api/v1/data/
     path('api/auth/', include('rest_framework.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

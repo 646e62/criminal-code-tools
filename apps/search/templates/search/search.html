@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Search Cases - Criminal Code Tools{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+        <div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200">
+            <div class="px-4 py-5 sm:px-6">
+                <h1 class="text-2xl font-bold text-gray-900">Search Cases by Category</h1>
+                <p class="mt-1 text-sm text-gray-500">Select one or more categories to filter cases.</p>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <form method="get" class="space-y-6">
+                    <div>
+                        <label class="text-base font-medium text-gray-900">Categories</label>
+                        <p class="text-sm leading-5 text-gray-500">Select categories to filter cases</p>
+                        <div class="mt-4 flex flex-wrap gap-4">
+                            {% for category in categories %}
+                            <div class="relative flex items-start">
+                                <div class="flex h-6 items-center">
+                                    <input type="checkbox" 
+                                           name="categories" 
+                                           value="{{ category.name }}"
+                                           {% if category.name in selected_categories %}checked{% endif %}
+                                           class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                                </div>
+                                <div class="ml-3 text-sm leading-6">
+                                    <label class="font-medium text-gray-900">{{ category.name }}</label>
+                                    <p class="text-gray-500">({{ category.case_count }} cases)</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            Search
+                        </button>
+                        {% if selected_categories %}
+                        <a href="{% url 'search' %}" class="ml-3 inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                            Clear Filters
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+            {% if selected_categories %}
+            <div class="px-4 py-5 sm:p-6">
+                <h2 class="text-lg font-medium text-gray-900">Search Results</h2>
+                <p class="mt-1 text-sm text-gray-500">Found {{ cases|length }} cases matching selected categories</p>
+                <div class="mt-4 overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Style of Cause</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Citation</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Court</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Decision Date</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for case in cases %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600 hover:text-indigo-900">
+                                    <a href="{% url 'view_case' case.case_id %}">{{ case.style_of_cause }}</a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ case.citation }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ case.court }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ case.decision_date|date:"Y-m-d"|default:"N/A" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                    No cases found matching the selected categories.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
