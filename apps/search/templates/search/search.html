@@ -7,14 +7,39 @@
     <div class="px-4 py-6 sm:px-0">
         <div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200">
             <div class="px-4 py-5 sm:px-6">
-                <h1 class="text-2xl font-bold text-gray-900">Search Cases by Category</h1>
-                <p class="mt-1 text-sm text-gray-500">Select one or more categories to filter cases.</p>
+                <h1 class="text-2xl font-bold text-gray-900">Search Cases</h1>
+                <p class="mt-1 text-sm text-gray-500">Search by text and categories to find relevant cases.</p>
             </div>
             <div class="px-4 py-5 sm:p-6">
                 <form method="get" class="space-y-6">
+                    <!-- Text Search -->
                     <div>
-                        <label class="text-base font-medium text-gray-900">Categories</label>
-                        <p class="text-sm leading-5 text-gray-500">Select categories to filter cases</p>
+                        <label for="q" class="block text-lg font-semibold text-gray-700">Search Query</label>
+                        <div class="mt-2">
+                            <input type="text" 
+                                   name="q" 
+                                   id="q"
+                                   value="{{ search_query }}"
+                                   placeholder='Example: assault AND ("grievous bodily" OR battery) -domestic'
+                                   class="shadow-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full text-lg border-2 border-gray-300 rounded-lg p-4"
+                                   autofocus>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-500">
+                            <p class="font-medium mb-1">Search operators:</p>
+                            <ul class="list-disc list-inside space-y-1 ml-2">
+                                <li>Use AND or space between terms for AND operation</li>
+                                <li>Use | or OR between terms for OR operation</li>
+                                <li>Use - before a term to exclude it (NOT)</li>
+                                <li>Use "quotes" for exact phrases</li>
+                                <li>Use (parentheses) to group terms</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="pt-6 border-t border-gray-200">
+                        <label class="text-lg font-semibold text-gray-700">Categories</label>
+                        <p class="mt-1 text-sm text-gray-500">Filter results by selecting one or more categories</p>
                         <div class="mt-4 flex flex-wrap gap-4">
                             {% for category in categories %}
                             <div class="relative flex items-start">
@@ -33,22 +58,31 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div>
-                        <button type="submit" class="inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            Search
+
+                    <div class="pt-6">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Search Cases
                         </button>
-                        {% if selected_categories %}
-                        <a href="{% url 'search' %}" class="ml-3 inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                            Clear Filters
+                        {% if selected_categories or search_query %}
+                        <a href="{% url 'search' %}" class="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Clear All
                         </a>
                         {% endif %}
                     </div>
                 </form>
             </div>
-            {% if selected_categories %}
+
+            {% if selected_categories or search_query %}
             <div class="px-4 py-5 sm:p-6">
                 <h2 class="text-lg font-medium text-gray-900">Search Results</h2>
-                <p class="mt-1 text-sm text-gray-500">Found {{ cases|length }} cases matching selected categories</p>
+                <p class="mt-1 text-sm text-gray-500">
+                    Found {{ cases|length }} cases
+                    {% if selected_categories %}matching selected categories{% endif %}
+                    {% if search_query %}
+                        {% if selected_categories %}and {% endif %}
+                        matching query: "{{ search_query }}"
+                    {% endif %}
+                </p>
                 <div class="mt-4 overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
@@ -72,7 +106,7 @@
                             {% empty %}
                             <tr>
                                 <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                    No cases found matching the selected categories.
+                                    No cases found matching your search criteria.
                                 </td>
                             </tr>
                             {% endfor %}

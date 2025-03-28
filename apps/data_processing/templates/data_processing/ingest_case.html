@@ -14,11 +14,16 @@
                 <form method="post">
                     {% csrf_token %}
                     <div>
-                        <label for="citation" class="block text-sm font-medium text-gray-700">Case Citation</label>
-                        <div class="mt-1">
-                            <input type="text" name="citation" id="citation" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="e.g., R v Sutherland, 2022 MBCA 23 (CanLII)" required>
+                        <label for="citation" class="block text-lg font-semibold text-gray-700">Case Citation</label>
+                        <div class="mt-2">
+                            <input type="text" 
+                                   name="citation" 
+                                   id="citation" 
+                                   class="shadow-lg focus:ring-2 block w-full text-lg border-2 border-black-100 rounded-lg p-4" 
+                                   placeholder="e.g., R v Sutherland, 2022 MBCA 23 (CanLII)" 
+                                   required
+                                   autofocus>
                         </div>
-                        <p class="mt-2 text-sm text-gray-500">Include '(CanLII)' at the end of the citation if available.</p>
                     </div>
                     <div class="mt-4">
                         <div class="flex items-center">
