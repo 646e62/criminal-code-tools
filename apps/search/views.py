@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.db.models import Q
+from django.db.models import Q, Count
+from django.contrib.postgres.aggregates import ArrayAgg
 from apps.data_processing.models import CaseMetadata, FactPattern
 from apps.search.models import Category
 import re
@@ -121,35 +122,68 @@ def parse_search_query(query_string):
     return parse_expression(tokens)
 
 def search_view(request):
-    """View for searching cases by categories and text query."""
-    # Get all available categories
-    categories = Category.objects.all().order_by('name')
+    """View for searching cases."""
+    # Get all unique categories
+    categories = (
+        CaseMetadata.objects
+        .exclude(categories__len=0)
+        .values('categories')
+        .annotate(count=Count('id'))
+        .order_by('categories')
+    )
     
-    # Get selected categories from request
-    selected_categories = request.GET.getlist('categories')
+    # Get all keywords and their counts
+    all_cases = CaseMetadata.objects.exclude(keywords__len=0)
+    keyword_counts = {}
     
-    # Get search query from request
-    search_query = request.GET.get('q', '').strip()
+    # Count occurrences of each keyword
+    for case in all_cases:
+        for keyword in case.keywords:
+            keyword_counts[keyword] = keyword_counts.get(keyword, 0) + 1
     
-    # Initialize queryset with all cases
-    cases = CaseMetadata.objects.all().order_by('-decision_date')
+    # Filter to keywords that appear more than once and format for template
+    keyword_list = [
+        {'name': k, 'count': v}
+        for k, v in keyword_counts.items()
+        if v > 1  # Only include keywords that appear more than once
+    ]
     
-    # Filter cases if categories are selected
-    if selected_categories:
-        category_filters = Q()
-        for category in selected_categories:
-            category_filters |= Q(categories__contains=[category])
-        cases = cases.filter(category_filters)
+    # Sort by count (descending) and name
+    keyword_list.sort(key=lambda x: (-x['count'], x['name']))
+    
+    # Get search parameters
+    query = request.GET.get('q', '').strip()
+    selected_category = request.GET.get('category', '')
+    selected_keyword = request.GET.get('keyword', '')
+    
+    # Filter cases
+    cases = CaseMetadata.objects.all()
     
     # Apply text search if query exists
-    if search_query:
-        cases = cases.filter(parse_search_query(search_query)).distinct()
+    if query:
+        cases = cases.filter(parse_search_query(query))
     
-    context = {
-        'categories': categories,
-        'selected_categories': selected_categories,
-        'search_query': search_query,
+    if selected_category:
+        cases = cases.filter(categories__contains=[selected_category])
+    
+    if selected_keyword:
+        cases = cases.filter(keywords__contains=[selected_keyword])
+    
+    cases = cases.order_by('-decision_date')
+    
+    # Process categories into a list
+    category_list = []
+    for cat in categories:
+        if cat['categories']:
+            for c in cat['categories']:
+                if c not in category_list:
+                    category_list.append(c)
+    
+    return render(request, 'search/search.html', {
         'cases': cases,
-    }
-    
-    return render(request, 'search/search.html', context)
+        'query': query,
+        'categories': sorted(category_list),
+        'selected_category': selected_category,
+        'keywords': keyword_list,
+        'selected_keyword': selected_keyword
+    })

@@ -18,6 +18,9 @@ from apps.data_processing.ingestion.case_metadata import (
     CaseIngestionError,
     CaseAlreadyExistsError
 )
+from django.db.models import Count
+from django.db.models.functions import Cast, JSONObject
+from django.contrib.postgres.aggregates import ArrayAgg
 
 # Create your views here.
 
@@ -59,6 +62,58 @@ def ingest_case_view(request):
             messages.error(request, f'Unexpected error: {str(e)}')
     
     return render(request, 'data_processing/ingest_case.html', context)
+
+def popular_citations_view(request):
+    """View to display the most frequently cited cases."""
+    # Get all cases with cited cases
+    cases = CaseMetadata.objects.filter(cited_cases__isnull=False)
+    
+    # Count citations and collect case_ids
+    citation_counts = {}
+    case_ids = set()
+    citation_info = {}  # Store citation info for each case
+    
+    for case in cases:
+        for cited in case.cited_cases:
+            if isinstance(cited, dict) and 'citation' in cited and 'case_id' in cited:
+                key = (cited['citation'], cited['case_id'])
+                citation_counts[key] = citation_counts.get(key, 0) + 1
+                case_ids.add(cited['case_id'])
+                # Store the citation info if we haven't seen it before
+                if key not in citation_info:
+                    citation_info[key] = {
+                        'title': cited.get('title', ''),  # This might be empty for older citations
+                        'citation': cited['citation'],
+                        'case_id': cited['case_id']
+                    }
+    
+    # Get style of cause for cases in our database (these take precedence)
+    style_of_cause_map = {
+        case.case_id: case.style_of_cause
+        for case in CaseMetadata.objects.filter(case_id__in=case_ids)
+    }
+    
+    # Convert to list and sort by count
+    popular_cases = []
+    for (citation, case_id), count in sorted(citation_counts.items(), key=lambda x: x[1], reverse=True):
+        info = citation_info.get((citation, case_id))
+        if info:
+            # Try to get style of cause from database first, then title from citation, then use citation
+            style = (
+                style_of_cause_map.get(info['case_id']) or 
+                info['title'] or 
+                info['citation']
+            )
+            popular_cases.append({
+                'citation': info['citation'],
+                'case_id': info['case_id'],
+                'count': count,
+                'style_of_cause': style
+            })
+
+    return render(request, 'data_processing/popular_citations.html', {
+        'popular_cases': popular_cases[:50]  # Show top 50 cases
+    })
 
 class CaseMetadataViewSet(viewsets.ModelViewSet):
     queryset = CaseMetadata.objects.all()

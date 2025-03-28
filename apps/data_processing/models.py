@@ -34,8 +34,8 @@ class CaseMetadata(models.Model):
     decision_date = models.DateTimeField(null=True, blank=True)  
     keywords = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     categories = ArrayField(models.CharField(max_length=255), blank=True, default=list)
-    cited_cases = models.JSONField(blank=True, default=list)
-    citing_cases = models.JSONField(blank=True, default=list)
+    cited_cases = models.JSONField(blank=True, null=True, default=list)  
+    citing_cases = models.JSONField(blank=True, null=True, default=list)  
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 
