@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'apps.search.apps.SearchConfig',
     'apps.ai_agent.apps.AiAgentConfig',
     'apps.api.apps.ApiConfig',
+    'offence_grid',
 ]
 
 MIDDLEWARE = [
