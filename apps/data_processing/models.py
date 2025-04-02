@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class CaseMetadata(models.Model):
@@ -31,10 +32,10 @@ class CaseMetadata(models.Model):
     language = models.CharField(max_length=50)
     docket_number = models.CharField(max_length=100, blank=True, null=True)  
     decision_date = models.DateTimeField(null=True, blank=True)  
-    keywords = models.JSONField(blank=True, default=list)
-    categories = models.JSONField(blank=True, default=list)
-    cited_cases = models.JSONField(blank=True, default=list)
-    citing_cases = models.JSONField(blank=True, default=list)
+    keywords = ArrayField(models.CharField(max_length=255), blank=True, default=list)
+    categories = ArrayField(models.CharField(max_length=255), blank=True, default=list)
+    cited_cases = models.JSONField(blank=True, null=True, default=list)  
+    citing_cases = models.JSONField(blank=True, null=True, default=list)  
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
 
@@ -47,10 +48,9 @@ class CaseMetadata(models.Model):
 class FactPattern(models.Model):
     case = models.OneToOneField(CaseMetadata, on_delete=models.CASCADE, primary_key=True)
 
-    canlii_keywords = models.JSONField(blank=True, default=list)
-    canlii_categories = models.JSONField(blank=True, default=list)
+    canlii_keywords = ArrayField(models.CharField(max_length=255), blank=True, default=list)
+    canlii_categories = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     local_categories = models.JSONField(blank=True, default=list)
-
     canlii_ai_summary = models.JSONField(blank=True, null=True)
     local_ai_summary = models.JSONField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -72,7 +72,6 @@ class SentencingRange(models.Model):
     mode = models.CharField(max_length=255, blank=True)
     conditions = models.TextField(blank=True)
     fine = models.CharField(max_length=100, blank=True)
-
     appeal = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)

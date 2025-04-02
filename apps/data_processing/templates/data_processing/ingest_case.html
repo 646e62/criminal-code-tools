@@ -14,11 +14,16 @@
                 <form method="post">
                     {% csrf_token %}
                     <div>
-                        <label for="citation" class="block text-sm font-medium text-gray-700">Case Citation</label>
-                        <div class="mt-1">
-                            <input type="text" name="citation" id="citation" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="e.g., R v Sutherland, 2022 MBCA 23 (CanLII)" required>
+                        <label for="citation" class="block text-lg font-semibold text-gray-700">Case Citation</label>
+                        <div class="mt-2">
+                            <input type="text" 
+                                   name="citation" 
+                                   id="citation" 
+                                   class="shadow-lg focus:ring-2 block w-full text-lg border-2 border-black-100 rounded-lg p-4" 
+                                   placeholder="e.g., R v Sutherland, 2022 MBCA 23 (CanLII)" 
+                                   required
+                                   autofocus>
                         </div>
-                        <p class="mt-2 text-sm text-gray-500">Include '(CanLII)' at the end of the citation if available.</p>
                     </div>
                     <div class="mt-4">
                         <div class="flex items-center">
@@ -143,12 +148,18 @@
                         {% if case.cited_cases %}
                         <div class="sm:col-span-2">
                             <dt class="text-sm font-medium text-gray-500">Cited Cases</dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                <ul class="list-disc pl-5">
-                                    {% for cited in case.cited_cases %}
-                                    <li>{{ cited }}</li>
-                                    {% endfor %}
-                                </ul>
+                            <dd class="mt-1">
+                                <div class="bg-white shadow overflow-hidden rounded-md">
+                                    <ul class="divide-y divide-gray-200">
+                                        {% for cited in case.cited_cases %}
+                                        <li class="px-4 py-3">
+                                            <div class="text-sm text-gray-900">{{ cited.citation }}</div>
+                                            <div class="text-xs text-gray-500">ID: {{ cited.case_id }}</div>
+                                            <a href="https://www.canlii.org/en/ca/{{ cited.case_id }}" target="_blank" class="text-xs text-indigo-600 hover:text-indigo-500">View on CanLII</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </dd>
                         </div>
                         {% endif %}

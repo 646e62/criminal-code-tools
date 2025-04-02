@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Popular Citations - Criminal Code Tools{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+        <div class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200">
+            <div class="px-4 py-5 sm:px-6">
+                <h1 class="text-2xl font-bold text-gray-900">Popular Citations</h1>
+                <p class="mt-1 text-sm text-gray-500">Most frequently cited cases in our database</p>
+            </div>
+            <div class="px-4 py-5 sm:p-6">
+                <div class="bg-white shadow overflow-hidden rounded-md">
+                    <ul class="divide-y divide-gray-200">
+                        {% for case in popular_cases %}
+                        <li class="px-4 py-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    {% if case.style_of_cause %}
+                                    <div class="text-sm font-medium text-gray-900">{{ case.style_of_cause }}</div>
+                                    <div class="text-xs text-gray-600 mt-1">{{ case.citation }}</div>
+                                    {% else %}
+                                    <div class="text-sm font-medium text-gray-900">{{ case.citation }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-4">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                        Cited {{ case.count }} time{{ case.count|pluralize }}
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                        {% empty %}
+                        <li class="px-4 py-4 text-sm text-gray-500">
+                            No citations found in the database.
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

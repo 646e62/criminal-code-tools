@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-white shadow sm:rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h1 class="text-2xl font-semibold text-gray-900">Offence Grid</h1>
+            
+            <!-- Collateral Consequences Section -->
+            <div class="mt-6">
+                <h2 class="text-xl font-medium text-gray-900">Collateral Consequences Search</h2>
+                <p class="mt-2 text-sm text-gray-500">
+                    Select an offence to view its potential immigration consequences under IRPA.
+                </p>
+                
+                <form method="get" class="mt-4">
+                    <div class="max-w-xl">
+                        <label for="offence" class="block text-sm font-medium text-gray-700">Select Offence</label>
+                        <select name="offence" id="offence" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="">Choose an offence...</option>
+                            {% for section, name in offences %}
+                            <option value="{{ section }}" {% if section == selected_offence %}selected{% endif %}>
+                                {{ section }} - {{ name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Check Consequences
+                    </button>
+                </form>
+                
+                {% if result %}
+                <div class="mt-6">
+                    <h3 class="text-lg font-medium text-gray-900">Immigration Consequences</h3>
+                    <div class="mt-2 p-4 bg-gray-50 rounded-md">
+                        <div class="space-y-4">
+                            <div>
+                                <p class="font-medium text-gray-700">Result:</p>
+                                <p class="mt-1 text-sm text-gray-900">
+                                    {% if result.available %}
+                                    This offence may trigger inadmissibility under IRPA.
+                                    {% else %}
+                                    This offence does not appear to trigger inadmissibility under IRPA.
+                                    {% endif %}
+                                </p>
+                            </div>
+                            
+                            {% if result.sections %}
+                            <div>
+                                <p class="font-medium text-gray-700">Relevant Sections:</p>
+                                <ul class="mt-1 text-sm text-gray-900 list-disc list-inside">
+                                    {% for section in result.sections %}
+                                    <li>{{ section }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            
+                            {% if result.reason %}
+                            <div>
+                                <p class="font-medium text-gray-700">Reason:</p>
+                                <p class="mt-1 text-sm text-gray-900">{{ result.reason }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

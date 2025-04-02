@@ -2,6 +2,7 @@
 Module for ingesting case metadata using legal-citation-parser.
 """
 import os
+import time
 from typing import Dict, Any, Optional, List, Tuple
 from datetime import datetime
 from django.utils import timezone
@@ -38,6 +39,8 @@ class CaseMetadataIngester:
         self.api_key = os.getenv('CANLII_API_KEY')
         if not self.api_key:
             raise ValueError("CANLII_API_KEY environment variable is required")
+        # Set the API key for the static CanLIIAPI class
+        CanLIIAPI.api_key = self.api_key
 
     def check_case_exists(self, citation_text: str) -> Optional[CaseMetadata]:
         """
@@ -70,6 +73,32 @@ class CaseMetadataIngester:
                 return None
         return None
 
+    def format_cited_cases(self, cited_cases_data: Dict) -> List[Dict[str, str]]:
+        """
+        Format cited cases data from the parser into our standard format.
+        
+        Args:
+            cited_cases_data: The cited_cases data from the parser.
+            
+        Returns:
+            List of dictionaries containing citation information.
+            Each dictionary contains 'citation', 'case_id', and 'title' keys.
+        """
+        formatted_cases = []
+        if cited_cases_data and 'citedCases' in cited_cases_data:
+            for cite in cited_cases_data['citedCases']:
+                if isinstance(cite, dict):
+                    case_id = cite.get('caseId', {}).get('en', '')
+                    citation = cite.get('citation', '')
+                    title = cite.get('title', '')
+                    if case_id and citation:
+                        formatted_cases.append({
+                            'citation': citation,
+                            'case_id': case_id,
+                            'title': title
+                        })
+        return formatted_cases
+
     def parse_citation(self, citation_text: str) -> Dict[str, Any]:
         """
         Parse a legal citation and extract metadata.
@@ -85,12 +114,13 @@ class CaseMetadataIngester:
             CaseNotFoundError: If the case cannot be found in CanLII.
         """
         try:
-            # Parse the citation with metadata and URL verification
+            # Parse the citation with metadata and cited cases
             parsed = parse_citation(
                 citation_text,
                 citation_type="canlii",
                 metadata=True,
-                verify_url=True
+                verify_url=True,
+                cited=True  # Get cited cases
             )
             
             if not parsed:
@@ -99,6 +129,9 @@ class CaseMetadataIngester:
             if not parsed.get('uid') or not parsed.get('court'):
                 raise InvalidCitationError(f"Missing required fields in citation: {citation_text}")
             
+            # Format cited cases
+            cited_cases = self.format_cited_cases(parsed.get('cited_cases', {}))
+            
             # Get metadata from CanLII API
             metadata = CanLIIAPI.api_call(
                 case_id=parsed['uid'],
@@ -106,25 +139,15 @@ class CaseMetadataIngester:
                 decision_metadata=True
             )
             
-            if not metadata:
-                raise CaseNotFoundError(f"Case not found in CanLII: {citation_text}")
-            
-            if metadata.get('error'):
-                raise CaseNotFoundError(f"CanLII API error: {metadata['error']}")
-            
+            # Add metadata from CanLII API
             parsed.update(metadata)
             
+            # Format the metadata for our model
             now = timezone.now()
-            
-            # Use the cleaned citation from the parser if available
-            cleaned_citation = parsed.get('citation', citation_text)
-            if ' (CanLII)' in cleaned_citation:
-                cleaned_citation = cleaned_citation.replace(' (CanLII)', '')
-            
-            return {
-                'case_id': parsed.get('uid'),
-                'style_of_cause': parsed.get('style_of_cause'),
-                'citation': cleaned_citation,
+            result = {
+                'case_id': parsed['uid'],
+                'style_of_cause': parsed.get('style_of_cause', ''),
+                'citation': citation_text,
                 'citation_type': CaseMetadata.CitationType.CANLII,
                 'year': parsed.get('year'),
                 'court': parsed.get('court'),
@@ -138,13 +161,15 @@ class CaseMetadataIngester:
                 'language': parsed.get('language', 'en'),  # Default to English
                 'keywords': parsed.get('keywords', []),
                 'categories': parsed.get('categories', []),
-                'cited_cases': parsed.get('cited_cases', []),
+                'cited_cases': cited_cases,
                 'citing_cases': parsed.get('citing_cases', []),
                 'source_url': parsed.get('long_url'),
                 'short_url': parsed.get('short_url'),
                 'created_at': now,
                 'updated_at': now,
             }
+            return result
+            
         except Exception as e:
             if isinstance(e, CaseIngestionError):
                 raise
@@ -195,16 +220,21 @@ class CaseMetadataIngester:
         if existing_case and not force:
             raise CaseAlreadyExistsError(f"Case already exists: {citation_text}")
 
+        # Parse the citation and get metadata
         metadata = self.parse_citation(citation_text)
+        
+        # Get case_id from metadata
         case_id = metadata.pop('case_id')
         
         # Try to find existing case or create new one
-        case, created = CaseMetadata.objects.update_or_create(
-            case_id=case_id,
-            defaults=metadata
-        )
-        
-        return case, created
+        try:
+            case, created = CaseMetadata.objects.update_or_create(
+                case_id=case_id,
+                defaults=metadata
+            )
+            return case, created
+        except Exception as e:
+            raise CaseIngestionError(f"Error saving case metadata: {str(e)}")
 
     def ingest_citations(self, citation_texts: List[str], force: bool = False) -> List[Tuple[CaseMetadata, bool]]:
         """

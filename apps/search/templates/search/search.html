@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Search - Criminal Code Tools{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="px-4 py-6 sm:px-0">
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <form method="get" action="{% url 'search' %}" class="space-y-6">
+                    <div>
+                        <label for="q" class="block text-sm font-medium text-gray-700">Search</label>
+                        <div class="mt-1">
+                            <input type="text" name="q" id="q" value="{{ query }}"
+                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                placeholder='Example: assault AND ("grievous bodily" OR battery) -domestic'>
+                        </div>
+                        <div class="mt-2 text-xs text-gray-500">
+                            <p class="font-medium mb-1">Search operators:</p>
+                            <ul class="list-disc list-inside space-y-1 ml-2">
+                                <li>Use AND or space between terms for AND operation</li>
+                                <li>Use | or OR between terms for OR operation</li>
+                                <li>Use - before a term to exclude it (NOT)</li>
+                                <li>Use "quotes" for exact phrases</li>
+                                <li>Use (parentheses) to group terms</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <!-- Categories -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Categories</label>
+                            <div class="mt-2 space-y-2">
+                                {% for category in categories %}
+                                <div class="flex items-center">
+                                    <input type="radio" name="category" value="{{ category }}" 
+                                        {% if category == selected_category %}checked{% endif %}
+                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                    <label class="ml-3 block text-sm text-gray-700">
+                                        {{ category }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                                {% if selected_category %}
+                                <div class="flex items-center">
+                                    <input type="radio" name="category" value="" checked
+                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                    <label class="ml-3 block text-sm text-gray-700">
+                                        Clear Selection
+                                    </label>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Keywords -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Common Keywords</label>
+                            <div class="mt-2 space-y-2">
+                                {% for keyword in keywords %}
+                                <div class="flex items-center">
+                                    <input type="radio" name="keyword" value="{{ keyword.name }}" 
+                                        {% if keyword.name == selected_keyword %}checked{% endif %}
+                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                    <label class="ml-3 block text-sm text-gray-700">
+                                        {{ keyword.name }} ({{ keyword.count }})
+                                    </label>
+                                </div>
+                                {% endfor %}
+                                {% if selected_keyword %}
+                                <div class="flex items-center">
+                                    <input type="radio" name="keyword" value="" checked
+                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300">
+                                    <label class="ml-3 block text-sm text-gray-700">
+                                        Clear Selection
+                                    </label>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="mt-6">
+            <div class="bg-white shadow overflow-hidden sm:rounded-md">
+                <ul class="divide-y divide-gray-200">
+                    {% for case in cases %}
+                    <li>
+                        <div class="px-4 py-4 sm:px-6">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-medium truncate">
+                                    <a href="{% url 'view_case' case.case_id %}" class="text-indigo-600 hover:text-indigo-900">
+                                        {{ case.style_of_cause }}
+                                    </a>
+                                </p>
+                                <div class="ml-2 flex-shrink-0 flex">
+                                    <p class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        {{ case.decision_date|date:"Y-m-d" }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-2 sm:flex sm:justify-between">
+                                <div class="sm:flex">
+                                    <p class="flex items-center text-sm text-gray-500">
+                                        {{ case.citation }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="px-4 py-4 sm:px-6">
+                        <p class="text-sm text-gray-500">No cases found matching your criteria.</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

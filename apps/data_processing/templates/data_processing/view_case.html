@@ -113,12 +113,18 @@
                         {% if case.cited_cases %}
                         <div class="sm:col-span-2">
                             <dt class="text-sm font-medium text-gray-500">Cited Cases</dt>
-                            <dd class="mt-1 text-sm text-gray-900">
-                                <ul class="list-disc pl-5">
-                                    {% for cited in case.cited_cases %}
-                                    <li>{{ cited }}</li>
-                                    {% endfor %}
-                                </ul>
+                            <dd class="mt-1">
+                                <div class="bg-white shadow overflow-hidden rounded-md">
+                                    <ul class="divide-y divide-gray-200">
+                                        {% for cited in case.cited_cases %}
+                                        <li class="px-4 py-3">
+                                            <div class="text-sm text-gray-900">{{ cited.citation }}</div>
+                                            <div class="text-xs text-gray-500">ID: {{ cited.case_id }}</div>
+                                            <a href="https://www.canlii.org/en/ca/{{ cited.case_id }}" target="_blank" class="text-xs text-indigo-600 hover:text-indigo-500">View on CanLII</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
                             </dd>
                         </div>
                         {% endif %}
