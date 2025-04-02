@@ -25,7 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.data_processing.urls')),  # Include main URLs at root
     path('search/', include('apps.search.urls')),  # Include search URLs
-    path('offence-grid/', include('offence_grid.urls')),  # Include offence grid URLs
+    path('offence-grid/', include('apps.offence_grid.urls')),  # Include offence grid URLs
     path('api/v1/data/', include('apps.data_processing.urls_api')),  # Include API URLs under /api/v1/data/
     path('api/auth/', include('rest_framework.urls')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

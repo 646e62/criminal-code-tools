@@ -52,11 +52,11 @@ INSTALLED_APPS = [
     'drf_spectacular',
     
     # Local apps
-    'apps.data_processing.apps.DataProcessingConfig',
-    'apps.search.apps.SearchConfig',
-    'apps.ai_agent.apps.AiAgentConfig',
-    'apps.api.apps.ApiConfig',
-    'offence_grid',
+    'apps.data_processing',
+    'apps.search',
+    'apps.ai_agent',
+    'apps.api',
+    'apps.offence_grid',
 ]
 
 MIDDLEWARE = [

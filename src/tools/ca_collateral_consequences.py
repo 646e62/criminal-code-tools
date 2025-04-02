@@ -4,11 +4,11 @@
 ##                         ##
 #############################
 
-from constants import (
+from .constants import (
     TERRORISM_OFFENCES,
 )
 
-from utils import (
+from .utils import (
     standard_output,
 )
 
