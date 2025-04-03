@@ -20,9 +20,9 @@
                         <label for="offence" class="block text-sm font-medium text-gray-700">Select Offence</label>
                         <select name="offence" id="offence" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                             <option value="">Choose an offence...</option>
-                            {% for section, name in offences %}
+                            {% for section, display in formatted_offences %}
                             <option value="{{ section }}" {% if section == selected_offence %}selected{% endif %}>
-                                {{ section }} - {{ name }}
+                                {{ display }}
                             </option>
                             {% endfor %}
                         </select>

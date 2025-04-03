@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import pandas as pd
 import sys
+import re
 from pathlib import Path
 
 # Add src to Python path for importing tools
@@ -9,11 +10,19 @@ sys.path.append(str(src_path))
 
 from tools import ca_collateral_consequences
 
+def format_section(section):
+    """Format section numbers for display by replacing prefix with § symbol."""
+    if not section:
+        return section
+    # Replace any prefix (like cc_, ycja_, cdsa_) and underscore with "§ "
+    return re.sub(r'^[a-z]+_', '§ ', section)
+
 def load_offences():
     """Load offences from the CSV file."""
     csv_path = src_path / 'data/offence/cc-offences-2024-09-16.csv'
     df = pd.read_csv(csv_path)
-    return [(row['section'], row['offence_name'], row['maximum_indictable'], row['maximum_sc']) 
+    return [(row['section'], format_section(row['section']), row['offence_name'], 
+             row['maximum_indictable'], row['maximum_sc']) 
             for _, row in df.iterrows()]
 
 def parse_maximum(max_value):
@@ -54,8 +63,9 @@ def get_collateral_consequences(section, max_indictable, max_sc):
     all_reasons = []
     for result in results:
         if result.get('sections'):
-            all_sections.extend(result['sections'])
-        if result.get('notes'):  # Get the explanation from notes field
+            # Format each section before adding to the list
+            all_sections.extend([format_section(s) for s in result['sections']])
+        if result.get('notes'):
             all_reasons.append(result['notes'])
     
     return {
@@ -78,12 +88,13 @@ def offence_grid(request):
         )
         
         if offence_details:
-            section, name, max_indictable, max_sc = offence_details
+            section, formatted_section, name, max_indictable, max_sc = offence_details
             result = get_collateral_consequences(section, max_indictable, max_sc)
     
     return render(request, 'offence_grid/index.html', {
         'title': 'Offence Grid',
-        'offences': [(o[0], o[1]) for o in offences],  # Only pass section and name to template
+        'offences': [(o[0], o[2]) for o in offences],  # Pass raw section for value, name for display
+        'formatted_offences': [(o[0], f"{o[1]} - {o[2]}") for o in offences],  # Include formatted version
         'selected_offence': selected_offence,
         'result': result,
     })
