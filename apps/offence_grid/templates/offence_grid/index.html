@@ -7,6 +7,15 @@
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
 <!-- Tom Select JS -->
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+<style>
+.ts-wrapper {
+    min-height: 42px;
+}
+.ts-control {
+    min-height: 42px;
+    padding: 8px !important;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -19,16 +28,15 @@
             <div class="mt-6">
                 <h2 class="text-xl font-medium text-gray-900">Collateral Consequences Search</h2>
                 <p class="mt-2 text-sm text-gray-500">
-                    Search for an offence to view its potential immigration consequences under IRPA.
+                    Search and select multiple offences to view their potential immigration consequences under IRPA.
                 </p>
                 
                 <form method="get" class="mt-4">
                     <div class="max-w-xl">
-                        <label for="offence" class="block text-sm font-medium text-gray-700">Search Offences</label>
-                        <select name="offence" id="offence" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                            <option value="">Search for an offence...</option>
-                            {% for section, display in formatted_offences %}
-                            <option value="{{ section }}" {% if section == selected_offence %}selected{% endif %}>
+                        <label for="offences" class="block text-sm font-medium text-gray-700">Search Offences</label>
+                        <select name="offences" id="offences" multiple class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            {% for section, display in offences %}
+                            <option value="{{ section }}" {% if section in selected_offences %}selected{% endif %}>
                                 {{ display }}
                             </option>
                             {% endfor %}
@@ -40,40 +48,48 @@
                     </button>
                 </form>
                 
-                {% if result %}
+                {% if results %}
                 <div class="mt-6">
                     <h3 class="text-lg font-medium text-gray-900">Immigration Consequences</h3>
-                    <div class="mt-2 p-4 bg-gray-50 rounded-md">
-                        <div class="space-y-4">
-                            <div>
-                                <p class="font-medium text-gray-700">Result:</p>
-                                <p class="mt-1 text-sm text-gray-900">
-                                    {% if result.available %}
-                                    This offence may trigger inadmissibility under IRPA.
-                                    {% else %}
-                                    This offence does not appear to trigger inadmissibility under IRPA.
-                                    {% endif %}
-                                </p>
+                    <div class="mt-2 space-y-6">
+                        {% for offence, result in results.items %}
+                        <div class="p-4 bg-gray-50 rounded-md">
+                            <div class="space-y-4">
+                                <div>
+                                    <p class="font-medium text-gray-700">Offence:</p>
+                                    <p class="mt-1 text-sm text-gray-900">{{ offence }}</p>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-700">Result:</p>
+                                    <p class="mt-1 text-sm text-gray-900">
+                                        {% if result.available %}
+                                        This offence may trigger inadmissibility under IRPA.
+                                        {% else %}
+                                        This offence does not appear to trigger inadmissibility under IRPA.
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                
+                                {% if result.sections %}
+                                <div>
+                                    <p class="font-medium text-gray-700">Relevant Sections:</p>
+                                    <ul class="mt-1 text-sm text-gray-900 list-disc list-inside">
+                                        {% for section in result.sections %}
+                                        <li>{{ section }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+                                
+                                {% if result.reason %}
+                                <div>
+                                    <p class="font-medium text-gray-700">Reason:</p>
+                                    <p class="mt-1 text-sm text-gray-900">{{ result.reason }}</p>
+                                </div>
+                                {% endif %}
                             </div>
-                            
-                            {% if result.sections %}
-                            <div>
-                                <p class="font-medium text-gray-700">Relevant Sections:</p>
-                                <ul class="mt-1 text-sm text-gray-900 list-disc list-inside">
-                                    {% for section in result.sections %}
-                                    <li>{{ section }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            {% endif %}
-                            
-                            {% if result.reason %}
-                            <div>
-                                <p class="font-medium text-gray-700">Reason:</p>
-                                <p class="mt-1 text-sm text-gray-900">{{ result.reason }}</p>
-                            </div>
-                            {% endif %}
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
                 {% endif %}
@@ -84,18 +100,22 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    new TomSelect('#offence', {
+    new TomSelect('#offences', {
+        plugins: ['remove_button'],
         create: false,
         sortField: {
             field: 'text',
             direction: 'asc'
         },
-        placeholder: 'Search for an offence...',
-        maxOptions: null,
+        placeholder: 'Search for offences...',
+        maxItems: null,
         searchField: ['text'],
         render: {
             option: function(data, escape) {
                 return '<div class="py-2 px-3">' + escape(data.text) + '</div>';
+            },
+            item: function(data, escape) {
+                return '<div class="py-1 px-2">' + escape(data.text) + '</div>';
             }
         }
     });
