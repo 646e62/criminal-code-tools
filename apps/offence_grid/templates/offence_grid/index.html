@@ -2,6 +2,13 @@
 
 {% block title %}{{ title }}{% endblock %}
 
+{% block extra_head %}
+<!-- Tom Select CSS -->
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+<!-- Tom Select JS -->
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="bg-white shadow sm:rounded-lg">
@@ -12,17 +19,17 @@
             <div class="mt-6">
                 <h2 class="text-xl font-medium text-gray-900">Collateral Consequences Search</h2>
                 <p class="mt-2 text-sm text-gray-500">
-                    Select an offence to view its potential immigration consequences under IRPA.
+                    Search for an offence to view its potential immigration consequences under IRPA.
                 </p>
                 
                 <form method="get" class="mt-4">
                     <div class="max-w-xl">
-                        <label for="offence" class="block text-sm font-medium text-gray-700">Select Offence</label>
+                        <label for="offence" class="block text-sm font-medium text-gray-700">Search Offences</label>
                         <select name="offence" id="offence" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                            <option value="">Choose an offence...</option>
-                            {% for section, name in offences %}
+                            <option value="">Search for an offence...</option>
+                            {% for section, display in formatted_offences %}
                             <option value="{{ section }}" {% if section == selected_offence %}selected{% endif %}>
-                                {{ section }} - {{ name }}
+                                {{ display }}
                             </option>
                             {% endfor %}
                         </select>
@@ -74,4 +81,24 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    new TomSelect('#offence', {
+        create: false,
+        sortField: {
+            field: 'text',
+            direction: 'asc'
+        },
+        placeholder: 'Search for an offence...',
+        maxOptions: null,
+        searchField: ['text'],
+        render: {
+            option: function(data, escape) {
+                return '<div class="py-2 px-3">' + escape(data.text) + '</div>';
+            }
+        }
+    });
+});
+</script>
 {% endblock %}
