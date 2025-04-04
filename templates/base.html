@@ -5,74 +5,351 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Criminal Code Tools{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        monokai: {
+                            bg: '#272822',
+                            fg: '#F8F8F2',
+                            pink: '#F92672',
+                            green: '#A6E22E',
+                            orange: '#FD971F',
+                            purple: '#AE81FF',
+                            blue: '#66D9EF',
+                            yellow: '#E6DB74',
+                            gray: '#75715E',
+                            darkGray: '#1e1f1c',
+                            comment: '#88846f'
+                        }
+                    },
+                    fontFamily: {
+                        'mono': ['JetBrains Mono', 'Monaco', 'Consolas', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* Light mode defaults */
+            .card {
+                @apply bg-white shadow-sm rounded-lg overflow-hidden;
+            }
+            .card-header {
+                @apply px-4 py-5 border-b border-gray-200 sm:px-6;
+            }
+            .card-body {
+                @apply px-4 py-5 sm:p-6;
+            }
+            .card-footer {
+                @apply px-4 py-4 border-t border-gray-200 sm:px-6;
+            }
+            
+            /* Dark mode styles */
+            .dark {
+                @apply bg-gray-900;
+            }
+            .dark .card {
+                @apply bg-gray-800 border-gray-700;
+            }
+            .dark .card-header {
+                @apply border-gray-700 bg-gray-800;
+            }
+            .dark .card-body {
+                @apply bg-gray-800;
+            }
+            .dark .card-footer {
+                @apply border-gray-700 bg-gray-800;
+            }
+            .dark .dark\:bg-dark {
+                background-color: #1a1a1a;
+            }
+            .dark .dark\:text-dark {
+                color: #e5e5e5;
+            }
+            /* Dark mode form elements */
+            .dark input[type="text"],
+            .dark input[type="email"],
+            .dark input[type="password"],
+            .dark input[type="number"],
+            .dark input[type="search"],
+            .dark input[type="tel"],
+            .dark input[type="url"],
+            .dark textarea,
+            .dark select {
+                @apply bg-gray-700 border-gray-600 text-gray-100 focus:border-indigo-500 focus:ring-indigo-500;
+            }
+            .dark input::placeholder {
+                @apply text-gray-400;
+            }
+            /* Dark mode tables */
+            .dark table {
+                @apply text-gray-300;
+            }
+            .dark thead {
+                @apply bg-gray-700 text-gray-200;
+            }
+            .dark tbody tr {
+                @apply border-gray-700;
+            }
+            .dark tbody tr:hover {
+                @apply bg-gray-700;
+            }
+            /* Dark mode alerts and messages */
+            .dark .alert {
+                @apply bg-gray-700 border-gray-600;
+            }
+            .dark .alert-success {
+                @apply bg-green-800 border-green-700 text-green-100;
+            }
+            .dark .alert-error {
+                @apply bg-red-800 border-red-700 text-red-100;
+            }
+            .dark .alert-warning {
+                @apply bg-yellow-800 border-yellow-700 text-yellow-100;
+            }
+            .dark .alert-info {
+                @apply bg-blue-800 border-blue-700 text-blue-100;
+            }
+            
+            /* Monokai specific styles */
+            .monokai {
+                background-color: theme('colors.monokai.bg');
+                color: theme('colors.monokai.fg');
+                font-family: theme('fontFamily.mono');
+            }
+            .monokai .card {
+                @apply bg-monokai-darkGray border-monokai-gray;
+            }
+            .monokai .card-header {
+                @apply border-monokai-gray bg-monokai-darkGray;
+            }
+            .monokai .card-body {
+                @apply bg-monokai-darkGray;
+            }
+            .monokai .card-footer {
+                @apply border-monokai-gray bg-monokai-darkGray;
+            }
+            .monokai .monokai\:bg-dark {
+                background-color: theme('colors.monokai.darkGray');
+            }
+            /* Monokai form elements */
+            .monokai input[type="text"],
+            .monokai input[type="email"],
+            .monokai input[type="password"],
+            .monokai input[type="number"],
+            .monokai input[type="search"],
+            .monokai input[type="tel"],
+            .monokai input[type="url"],
+            .monokai textarea,
+            .monokai select {
+                @apply bg-monokai-bg border-monokai-gray text-monokai-fg focus:border-monokai-blue focus:ring-monokai-blue;
+                font-family: theme('fontFamily.mono');
+            }
+            .monokai input::placeholder {
+                @apply text-monokai-comment;
+            }
+            /* Monokai tables */
+            .monokai table {
+                @apply text-monokai-fg;
+            }
+            .monokai thead {
+                @apply bg-monokai-darkGray text-monokai-blue;
+            }
+            .monokai tbody tr {
+                @apply border-monokai-gray;
+            }
+            .monokai tbody tr:hover {
+                @apply bg-monokai-darkGray;
+            }
+            /* Monokai alerts and messages */
+            .monokai .alert {
+                @apply bg-monokai-darkGray border-monokai-gray;
+            }
+            .monokai .alert-success {
+                @apply bg-monokai-green border-monokai-gray text-monokai-fg;
+            }
+            .monokai .alert-error {
+                @apply bg-monokai-pink border-monokai-gray text-monokai-fg;
+            }
+            .monokai .alert-warning {
+                @apply bg-monokai-orange border-monokai-gray text-monokai-fg;
+            }
+            .monokai .alert-info {
+                @apply bg-monokai-blue border-monokai-gray text-monokai-fg;
+            }
+            /* Monokai syntax-like text styles */
+            .monokai .monokai\:text-keyword {
+                color: theme('colors.monokai.pink');
+                font-weight: bold;
+            }
+            .monokai .monokai\:text-function {
+                color: theme('colors.monokai.green');
+                font-style: italic;
+            }
+            .monokai .monokai\:text-string {
+                color: theme('colors.monokai.yellow');
+            }
+            .monokai .monokai\:text-number {
+                color: theme('colors.monokai.purple');
+            }
+            .monokai .monokai\:text-type {
+                color: theme('colors.monokai.blue');
+                font-style: italic;
+            }
+            .monokai .monokai\:text-comment {
+                color: theme('colors.monokai.comment');
+                font-style: italic;
+            }
+            .monokai .monokai\:text-variable {
+                color: theme('colors.monokai.orange');
+            }
+            /* Monokai hover states */
+            .monokai .monokai\:hover\:bg-dark:hover {
+                background-color: theme('colors.monokai.darkGray');
+            }
+            .monokai .monokai\:hover\:text-fg:hover {
+                color: theme('colors.monokai.fg');
+            }
+            /* Monokai borders */
+            .monokai .monokai\:border-gray {
+                border-color: theme('colors.monokai.gray');
+            }
+        }
+        /* Add JetBrains Mono font */
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+    </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="flex flex-col min-h-full bg-gray-100">
-    <nav class="bg-white shadow-sm">
+<body class="flex flex-col min-h-full bg-gray-100 dark:bg-gray-900 monokai:bg-monokai-bg transition-colors duration-200">
+    <nav class="bg-white dark:bg-gray-800 monokai:bg-monokai-darkGray shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
-                        <a href="{% url 'home' %}" class="text-xl font-bold text-indigo-600">Criminal Code Tools</a>
+                        <a href="{% url 'home' %}" class="text-xl font-bold text-indigo-600 dark:text-indigo-400 monokai:text-keyword">Criminal Code Tools</a>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="{% url 'home' %}" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{% url 'home' %}" class="border-indigo-500 text-gray-900 dark:text-gray-100 monokai:text-function inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Home
                         </a>
-                        <a href="{% url 'ingest_case' %}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{% url 'ingest_case' %}" class="border-transparent text-gray-500 dark:text-gray-300 monokai:text-comment hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-fg inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Ingest Cases
                         </a>
-                        <a href="{% url 'popular_citations' %}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{% url 'popular_citations' %}" class="border-transparent text-gray-500 dark:text-gray-300 monokai:text-comment hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-fg inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Popular Citations
                         </a>
-                        <a href="{% url 'offence_grid:index' %}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{% url 'offence_grid:index' %}" class="border-transparent text-gray-500 dark:text-gray-300 monokai:text-comment hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-fg inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Offence Grid
                         </a>
+                    </div>
+                </div>
+                <!-- Theme toggle -->
+                <div class="flex items-center space-x-2">
+                    <div class="relative">
+                        <button id="themeToggle" class="p-2 rounded-md text-gray-500 dark:text-gray-400 monokai:text-comment hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-fg focus:outline-none">
+                            <!-- Sun icon (light mode) -->
+                            <svg class="h-6 w-6 hidden light-only" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <!-- Moon icon (dark mode) -->
+                            <svg class="h-6 w-6 hidden dark-only" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                            <!-- Code icon (monokai mode) -->
+                            <svg class="h-6 w-6 hidden monokai-only" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="flex-grow py-10">
-        {% if messages %}
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {% for message in messages %}
-            <div class="rounded-md {% if message.tags == 'error' %}bg-red-50{% else %}bg-green-50{% endif %} p-4 mb-4">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        {% if message.tags == 'error' %}
-                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                        </svg>
-                        {% else %}
-                        <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                        </svg>
-                        {% endif %}
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium {% if message.tags == 'error' %}text-red-800{% else %}text-green-800{% endif %}">
-                            {{ message }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} p-4 mb-4 rounded-lg">
+            {{ message }}
         </div>
-        {% endif %}
-
-        {% block content %}
-        {% endblock %}
+        {% endfor %}
     </div>
+    {% endif %}
 
-    <!-- Footer -->
-    <footer class="bg-gray-800">
+    <main class="flex-1 py-6">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 dark:bg-gray-900 monokai:bg-monokai-darkGray">
         <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-            <p class="text-center text-gray-300 text-sm">
+            <p class="text-center text-gray-300 dark:text-gray-400 monokai:text-comment text-sm">
                 &copy; {% now "Y" %} Criminal Code Tools. All rights reserved.
             </p>
         </div>
     </footer>
+
+    <script>
+        // Theme functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            const icons = {
+                light: document.querySelector('.light-only'),
+                dark: document.querySelector('.dark-only'),
+                monokai: document.querySelector('.monokai-only')
+            };
+            
+            // Theme cycling order: light -> dark -> monokai
+            const themes = ['light', 'dark', 'monokai'];
+            
+            // Function to update icon visibility
+            function updateIcons(currentTheme) {
+                Object.keys(icons).forEach(theme => {
+                    icons[theme].classList.toggle('hidden', theme !== currentTheme);
+                });
+            }
+            
+            // Function to set theme
+            function setTheme(theme) {
+                // Remove all theme classes
+                html.classList.remove('dark', 'monokai');
+                
+                // Add appropriate theme class
+                if (theme === 'dark') {
+                    html.classList.add('dark');
+                } else if (theme === 'monokai') {
+                    html.classList.add('dark', 'monokai'); // Monokai is now a dark mode variant
+                }
+                
+                // Update icons
+                updateIcons(theme);
+                
+                // Save preference
+                localStorage.setItem('theme', theme);
+            }
+            
+            // Get initial theme
+            let currentTheme = localStorage.getItem('theme') || 'light';
+            if (!localStorage.getItem('theme')) {
+                // Check system preference
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    currentTheme = 'dark';
+                }
+            }
+            setTheme(currentTheme);
+            
+            // Toggle theme
+            themeToggle.addEventListener('click', function() {
+                const currentIndex = themes.indexOf(currentTheme);
+                const nextIndex = (currentIndex + 1) % themes.length;
+                currentTheme = themes[nextIndex];
+                setTheme(currentTheme);
+            });
+        });
+    </script>
 </body>
 </html>

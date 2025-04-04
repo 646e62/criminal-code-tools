@@ -15,26 +15,77 @@
     min-height: 42px;
     padding: 8px !important;
 }
+/* Dark mode styles for Tom Select */
+.dark .ts-control {
+    background-color: #374151 !important;
+    border-color: #4B5563 !important;
+    color: #E5E7EB !important;
+}
+.dark .ts-dropdown {
+    background-color: #374151 !important;
+    border-color: #4B5563 !important;
+    color: #E5E7EB !important;
+}
+.dark .ts-dropdown .active {
+    background-color: #4B5563 !important;
+    color: #F3F4F6 !important;
+}
+.dark .ts-dropdown .option:hover {
+    background-color: #4B5563 !important;
+}
+.dark .ts-control input {
+    color: #E5E7EB !important;
+}
+/* Monokai mode styles for Tom Select */
+.monokai .ts-control {
+    background-color: #272822 !important;
+    border-color: #75715E !important;
+    color: #F8F8F2 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+.monokai .ts-dropdown {
+    background-color: #272822 !important;
+    border-color: #75715E !important;
+    color: #F8F8F2 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+.monokai .ts-dropdown .active {
+    background-color: #3E3D32 !important;
+    color: #F8F8F2 !important;
+}
+.monokai .ts-dropdown .option:hover {
+    background-color: #3E3D32 !important;
+}
+.monokai .ts-control input {
+    color: #F8F8F2 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
+.monokai .ts-wrapper.multi .ts-control > div {
+    background-color: #3E3D32 !important;
+    color: #66D9EF !important;
+    border-color: #75715E !important;
+    font-family: 'JetBrains Mono', monospace !important;
+}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-white shadow sm:rounded-lg">
+    <div class="bg-white dark:bg-gray-800 monokai:bg-monokai-bg shadow sm:rounded-lg">
         <div class="px-4 py-5 sm:p-6">
-            <h1 class="text-2xl font-semibold text-gray-900">Offence Grid</h1>
+            <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 monokai:text-keyword">class OffenceGrid:</h1>
             
             <!-- Collateral Consequences Section -->
             <div class="mt-6">
-                <h2 class="text-xl font-medium text-gray-900">Collateral Consequences Search</h2>
-                <p class="mt-2 text-sm text-gray-500">
-                    Search and select multiple offences to view their potential immigration consequences under IRPA.
+                <h2 class="text-xl font-medium text-gray-900 dark:text-gray-100 monokai:text-function">def search_consequences(self):</h2>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400 monokai:text-comment">
+                    # Search and select multiple offences to view their potential immigration consequences under IRPA
                 </p>
                 
                 <form method="get" class="mt-4">
                     <div class="max-w-xl">
-                        <label for="offences" class="block text-sm font-medium text-gray-700">Search Offences</label>
-                        <select name="offences" id="offences" multiple class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <label for="offences" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type">offences: List[str]</label>
+                        <select name="offences" id="offences" multiple class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 monokai:border-monokai-gray focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 monokai:bg-monokai-bg dark:text-gray-200 monokai:text-string">
                             {% for section, display in offences %}
                             <option value="{{ section }}" {% if section in selected_offences %}selected{% endif %}>
                                 {{ display }}
@@ -43,39 +94,39 @@
                         </select>
                     </div>
                     
-                    <button type="submit" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Check Consequences
+                    <button type="submit" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
+                        return results
                     </button>
                 </form>
                 
                 {% if results %}
                 <div class="mt-6">
-                    <h3 class="text-lg font-medium text-gray-900">Immigration Consequences</h3>
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-type">class Results(TypedDict):</h3>
                     <div class="mt-2 space-y-6">
                         {% for offence, result in results.items %}
-                        <div class="p-4 bg-gray-50 rounded-md">
+                        <div class="p-4 bg-gray-50 dark:bg-gray-700 monokai:bg-monokai-darkGray rounded-md">
                             <div class="space-y-4">
                                 <div>
-                                    <p class="font-medium text-gray-700">Offence:</p>
-                                    <p class="mt-1 text-sm text-gray-900">{{ offence }}</p>
+                                    <p class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">offence</p>
+                                    <p class="mt-1 text-sm text-gray-900 dark:text-gray-200 monokai:text-string">{{ offence }}</p>
                                 </div>
                                 <div>
-                                    <p class="font-medium text-gray-700">Result:</p>
-                                    <p class="mt-1 text-sm text-gray-900">
+                                    <p class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">result</p>
+                                    <p class="mt-1 text-sm text-gray-900 dark:text-gray-200 monokai:text-string">
                                         {% if result.available %}
-                                        This offence may trigger inadmissibility under IRPA.
+                                        "This offence may trigger inadmissibility under IRPA."
                                         {% else %}
-                                        This offence does not appear to trigger inadmissibility under IRPA.
+                                        "This offence does not appear to trigger inadmissibility under IRPA."
                                         {% endif %}
                                     </p>
                                 </div>
                                 
                                 {% if result.sections %}
                                 <div>
-                                    <p class="font-medium text-gray-700">Relevant Sections:</p>
-                                    <ul class="mt-1 text-sm text-gray-900 list-disc list-inside">
+                                    <p class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">sections: List[str]</p>
+                                    <ul class="mt-1 text-sm text-gray-900 dark:text-gray-200 monokai:text-string list-disc list-inside">
                                         {% for section in result.sections %}
-                                        <li>{{ section }}</li>
+                                        <li>"{{ section }}"</li>
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -83,8 +134,8 @@
                                 
                                 {% if result.reason %}
                                 <div>
-                                    <p class="font-medium text-gray-700">Reason:</p>
-                                    <p class="mt-1 text-sm text-gray-900">{{ result.reason }}</p>
+                                    <p class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">reason: str</p>
+                                    <p class="mt-1 text-sm text-gray-900 dark:text-gray-200 monokai:text-string">"{{ result.reason }}"</p>
                                 </div>
                                 {% endif %}
                             </div>
