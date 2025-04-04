@@ -12,27 +12,14 @@
                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 monokai:text-comment">Tools for analyzing criminal code cases and patterns</p>
                 </div>
                 <div class="px-4 py-5 sm:p-6">
-                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                        <div class="bg-gray-50 dark:bg-gray-700 monokai:bg-monokai-bg overflow-hidden shadow rounded-lg">
-                            <div class="px-4 py-5 sm:p-6">
-                                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-function">Case Ingestion</h2>
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 monokai:text-comment">Add new cases to the database by entering CanLII citations.</p>
-                                <div class="mt-4">
-                                    <a href="{% url 'ingest_case' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 monokai:focus:ring-monokai-blue">
-                                        Ingest Cases
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-gray-700 monokai:bg-monokai-bg overflow-hidden shadow rounded-lg">
-                            <div class="px-4 py-5 sm:p-6">
-                                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-function">Case Search</h2>
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 monokai:text-comment">Search and analyze ingested cases in the database.</p>
-                                <div class="mt-4">
-                                    <a href="{% url 'search' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 monokai:focus:ring-monokai-blue">
-                                        Search Cases
-                                    </a>
-                                </div>
+                    <div class="bg-gray-50 dark:bg-gray-700 monokai:bg-monokai-bg overflow-hidden shadow rounded-lg">
+                        <div class="px-4 py-5 sm:p-6">
+                            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-function">Offence Grid</h2>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 monokai:text-comment">Explore and analyze criminal code offences and their details.</p>
+                            <div class="mt-4">
+                                <a href="{% url 'offence_grid:index' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 monokai:focus:ring-monokai-blue">
+                                    View Offence Grid
+                                </a>
                             </div>
                         </div>
                     </div>
