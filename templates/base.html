@@ -34,23 +34,152 @@
     </script>
     <style type="text/tailwindcss">
         @layer utilities {
+            /* Light mode defaults */
+            .card {
+                @apply bg-white shadow-sm rounded-lg overflow-hidden;
+            }
+            .card-header {
+                @apply px-4 py-5 border-b border-gray-200 sm:px-6;
+            }
+            .card-body {
+                @apply px-4 py-5 sm:p-6;
+            }
+            .card-footer {
+                @apply px-4 py-4 border-t border-gray-200 sm:px-6;
+            }
+            
+            /* Dark mode styles */
+            .dark {
+                @apply bg-gray-900;
+            }
+            .dark .card {
+                @apply bg-gray-800 border-gray-700;
+            }
+            .dark .card-header {
+                @apply border-gray-700 bg-gray-800;
+            }
+            .dark .card-body {
+                @apply bg-gray-800;
+            }
+            .dark .card-footer {
+                @apply border-gray-700 bg-gray-800;
+            }
             .dark .dark\:bg-dark {
                 background-color: #1a1a1a;
             }
             .dark .dark\:text-dark {
                 color: #e5e5e5;
             }
+            /* Dark mode form elements */
+            .dark input[type="text"],
+            .dark input[type="email"],
+            .dark input[type="password"],
+            .dark input[type="number"],
+            .dark input[type="search"],
+            .dark input[type="tel"],
+            .dark input[type="url"],
+            .dark textarea,
+            .dark select {
+                @apply bg-gray-700 border-gray-600 text-gray-100 focus:border-indigo-500 focus:ring-indigo-500;
+            }
+            .dark input::placeholder {
+                @apply text-gray-400;
+            }
+            /* Dark mode tables */
+            .dark table {
+                @apply text-gray-300;
+            }
+            .dark thead {
+                @apply bg-gray-700 text-gray-200;
+            }
+            .dark tbody tr {
+                @apply border-gray-700;
+            }
+            .dark tbody tr:hover {
+                @apply bg-gray-700;
+            }
+            /* Dark mode alerts and messages */
+            .dark .alert {
+                @apply bg-gray-700 border-gray-600;
+            }
+            .dark .alert-success {
+                @apply bg-green-800 border-green-700 text-green-100;
+            }
+            .dark .alert-error {
+                @apply bg-red-800 border-red-700 text-red-100;
+            }
+            .dark .alert-warning {
+                @apply bg-yellow-800 border-yellow-700 text-yellow-100;
+            }
+            .dark .alert-info {
+                @apply bg-blue-800 border-blue-700 text-blue-100;
+            }
+            
             /* Monokai specific styles */
             .monokai {
                 background-color: theme('colors.monokai.bg');
                 color: theme('colors.monokai.fg');
                 font-family: theme('fontFamily.mono');
             }
+            .monokai .card {
+                @apply bg-monokai-darkGray border-monokai-gray;
+            }
+            .monokai .card-header {
+                @apply border-monokai-gray bg-monokai-darkGray;
+            }
+            .monokai .card-body {
+                @apply bg-monokai-darkGray;
+            }
+            .monokai .card-footer {
+                @apply border-monokai-gray bg-monokai-darkGray;
+            }
             .monokai .monokai\:bg-dark {
                 background-color: theme('colors.monokai.darkGray');
             }
-            .monokai .monokai\:bg-card {
-                background-color: theme('colors.monokai.bg');
+            /* Monokai form elements */
+            .monokai input[type="text"],
+            .monokai input[type="email"],
+            .monokai input[type="password"],
+            .monokai input[type="number"],
+            .monokai input[type="search"],
+            .monokai input[type="tel"],
+            .monokai input[type="url"],
+            .monokai textarea,
+            .monokai select {
+                @apply bg-monokai-bg border-monokai-gray text-monokai-fg focus:border-monokai-blue focus:ring-monokai-blue;
+                font-family: theme('fontFamily.mono');
+            }
+            .monokai input::placeholder {
+                @apply text-monokai-comment;
+            }
+            /* Monokai tables */
+            .monokai table {
+                @apply text-monokai-fg;
+            }
+            .monokai thead {
+                @apply bg-monokai-darkGray text-monokai-blue;
+            }
+            .monokai tbody tr {
+                @apply border-monokai-gray;
+            }
+            .monokai tbody tr:hover {
+                @apply bg-monokai-darkGray;
+            }
+            /* Monokai alerts and messages */
+            .monokai .alert {
+                @apply bg-monokai-darkGray border-monokai-gray;
+            }
+            .monokai .alert-success {
+                @apply bg-monokai-green border-monokai-gray text-monokai-fg;
+            }
+            .monokai .alert-error {
+                @apply bg-monokai-pink border-monokai-gray text-monokai-fg;
+            }
+            .monokai .alert-warning {
+                @apply bg-monokai-orange border-monokai-gray text-monokai-fg;
+            }
+            .monokai .alert-info {
+                @apply bg-monokai-blue border-monokai-gray text-monokai-fg;
             }
             /* Monokai syntax-like text styles */
             .monokai .monokai\:text-keyword {
@@ -95,7 +224,7 @@
     </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="flex flex-col min-h-full bg-gray-100 dark:bg-dark monokai:bg-monokai-bg transition-colors duration-200">
+<body class="flex flex-col min-h-full bg-gray-100 dark:bg-gray-900 monokai:bg-monokai-bg transition-colors duration-200">
     <nav class="bg-white dark:bg-gray-800 monokai:bg-monokai-darkGray shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -141,36 +270,18 @@
         </div>
     </nav>
 
-    <main class="flex-1">
-        {% if messages %}
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {% for message in messages %}
-            <div class="rounded-md {% if message.tags == 'error' %}bg-red-50{% else %}bg-green-50{% endif %} p-4 mb-4">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        {% if message.tags == 'error' %}
-                        <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                        </svg>
-                        {% else %}
-                        <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                        </svg>
-                        {% endif %}
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium {% if message.tags == 'error' %}text-red-800{% else %}text-green-800{% endif %}">
-                            {{ message }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} p-4 mb-4 rounded-lg">
+            {{ message }}
         </div>
-        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
 
-        {% block content %}
-        {% endblock %}
+    <main class="flex-1 py-6">
+        {% block content %}{% endblock %}
     </main>
 
     <footer class="bg-gray-800 dark:bg-gray-900 monokai:bg-monokai-darkGray">
