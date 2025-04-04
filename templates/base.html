@@ -5,36 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Criminal Code Tools{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        monokai: {
+                            bg: '#272822',
+                            fg: '#F8F8F2',
+                            pink: '#F92672',
+                            green: '#A6E22E',
+                            orange: '#FD971F',
+                            purple: '#AE81FF',
+                            blue: '#66D9EF',
+                            yellow: '#E6DB74',
+                            gray: '#75715E',
+                            darkGray: '#1e1f1c'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .dark .dark\:bg-dark {
+                background-color: #1a1a1a;
+            }
+            .dark .dark\:text-dark {
+                color: #e5e5e5;
+            }
+            .monokai {
+                background-color: theme('colors.monokai.bg');
+                color: theme('colors.monokai.fg');
+            }
+            .monokai .monokai\:bg-dark {
+                background-color: theme('colors.monokai.darkGray');
+            }
+            .monokai .monokai\:bg-card {
+                background-color: theme('colors.monokai.bg');
+            }
+            .monokai .monokai\:text-primary {
+                color: theme('colors.monokai.blue');
+            }
+            .monokai .monokai\:text-secondary {
+                color: theme('colors.monokai.green');
+            }
+            .monokai .monokai\:text-accent {
+                color: theme('colors.monokai.orange');
+            }
+            .monokai .monokai\:border-gray {
+                border-color: theme('colors.monokai.gray');
+            }
+            .monokai .monokai\:hover\:bg-dark:hover {
+                background-color: theme('colors.monokai.darkGray');
+            }
+        }
+    </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="flex flex-col min-h-full bg-gray-100">
-    <nav class="bg-white shadow-sm">
+<body class="flex flex-col min-h-full bg-gray-100 dark:bg-dark monokai:bg-monokai-bg transition-colors duration-200">
+    <nav class="bg-white dark:bg-gray-800 monokai:bg-monokai-darkGray shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
-                        <a href="{% url 'home' %}" class="text-xl font-bold text-indigo-600">Criminal Code Tools</a>
+                        <a href="{% url 'home' %}" class="text-xl font-bold text-indigo-600 dark:text-indigo-400 monokai:text-monokai-blue">Criminal Code Tools</a>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="{% url 'home' %}" class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{% url 'home' %}" class="border-indigo-500 text-gray-900 dark:text-gray-100 monokai:text-monokai-fg inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Home
                         </a>
-                        <a href="{% url 'ingest_case' %}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{% url 'ingest_case' %}" class="border-transparent text-gray-500 dark:text-gray-300 monokai:text-monokai-gray hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-monokai-fg inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Ingest Cases
                         </a>
-                        <a href="{% url 'popular_citations' %}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{% url 'popular_citations' %}" class="border-transparent text-gray-500 dark:text-gray-300 monokai:text-monokai-gray hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-monokai-fg inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Popular Citations
                         </a>
-                        <a href="{% url 'offence_grid:index' %}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                        <a href="{% url 'offence_grid:index' %}" class="border-transparent text-gray-500 dark:text-gray-300 monokai:text-monokai-gray hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-monokai-fg inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Offence Grid
                         </a>
+                    </div>
+                </div>
+                <!-- Theme toggle -->
+                <div class="flex items-center space-x-2">
+                    <div class="relative">
+                        <button id="themeToggle" class="p-2 rounded-md text-gray-500 dark:text-gray-400 monokai:text-monokai-gray hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-monokai-fg focus:outline-none">
+                            <!-- Sun icon (light mode) -->
+                            <svg class="h-6 w-6 hidden light-only" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <!-- Moon icon (dark mode) -->
+                            <svg class="h-6 w-6 hidden dark-only" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                            <!-- Code icon (monokai mode) -->
+                            <svg class="h-6 w-6 hidden monokai-only" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="flex-grow py-10">
+    <main class="flex-1">
         {% if messages %}
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {% for message in messages %}
@@ -64,15 +141,74 @@
 
         {% block content %}
         {% endblock %}
-    </div>
+    </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800">
+    <footer class="bg-gray-800 dark:bg-gray-900 monokai:bg-monokai-darkGray">
         <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
-            <p class="text-center text-gray-300 text-sm">
+            <p class="text-center text-gray-300 dark:text-gray-400 monokai:text-monokai-gray text-sm">
                 &copy; {% now "Y" %} Criminal Code Tools. All rights reserved.
             </p>
         </div>
     </footer>
+
+    <script>
+        // Theme functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+            const icons = {
+                light: document.querySelector('.light-only'),
+                dark: document.querySelector('.dark-only'),
+                monokai: document.querySelector('.monokai-only')
+            };
+            
+            // Theme cycling order
+            const themes = ['light', 'dark', 'monokai'];
+            
+            // Function to update icon visibility
+            function updateIcons(currentTheme) {
+                Object.keys(icons).forEach(theme => {
+                    icons[theme].classList.toggle('hidden', theme !== currentTheme);
+                });
+            }
+            
+            // Function to set theme
+            function setTheme(theme) {
+                // Remove all theme classes
+                html.classList.remove('dark', 'monokai');
+                
+                // Add appropriate theme class
+                if (theme === 'dark') {
+                    html.classList.add('dark');
+                } else if (theme === 'monokai') {
+                    html.classList.add('monokai');
+                }
+                
+                // Update icons
+                updateIcons(theme);
+                
+                // Save preference
+                localStorage.setItem('theme', theme);
+            }
+            
+            // Get initial theme
+            let currentTheme = localStorage.getItem('theme') || 'light';
+            if (!localStorage.getItem('theme')) {
+                // Check system preference
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    currentTheme = 'dark';
+                }
+            }
+            setTheme(currentTheme);
+            
+            // Toggle theme
+            themeToggle.addEventListener('click', function() {
+                const currentIndex = themes.indexOf(currentTheme);
+                const nextIndex = (currentIndex + 1) % themes.length;
+                currentTheme = themes[nextIndex];
+                setTheme(currentTheme);
+            });
+        });
+    </script>
 </body>
 </html>
