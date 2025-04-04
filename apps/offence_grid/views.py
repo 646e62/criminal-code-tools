@@ -63,7 +63,6 @@ def get_collateral_consequences(section, max_indictable, max_sc):
     all_reasons = []
     for result in results:
         if result.get('sections'):
-            # Format each section before adding to the list
             all_sections.extend([format_section(s) for s in result['sections']])
         if result.get('notes'):
             all_reasons.append(result['notes'])
@@ -77,11 +76,13 @@ def get_collateral_consequences(section, max_indictable, max_sc):
 def offence_grid(request):
     """Landing page for the offence grid tool."""
     offences = load_offences()
-    selected_offence = request.GET.get('offence')
-    result = None
     
-    if selected_offence:
-        # Find the selected offence details
+    # Get list of selected offences (might be empty)
+    selected_offences = request.GET.getlist('offences')
+    results = {}
+    
+    # Process each selected offence
+    for selected_offence in selected_offences:
         offence_details = next(
             (o for o in offences if o[0] == selected_offence), 
             None
@@ -89,12 +90,17 @@ def offence_grid(request):
         
         if offence_details:
             section, formatted_section, name, max_indictable, max_sc = offence_details
-            result = get_collateral_consequences(section, max_indictable, max_sc)
+            # Store results with formatted section name as key
+            results[f"{formatted_section} - {name}"] = get_collateral_consequences(
+                section, max_indictable, max_sc
+            )
+    
+    # Prepare offence data for the template
+    formatted_offences = [(o[0], f"{o[1]} - {o[2]}") for o in offences]
     
     return render(request, 'offence_grid/index.html', {
         'title': 'Offence Grid',
-        'offences': [(o[0], o[2]) for o in offences],  # Pass raw section for value, name for display
-        'formatted_offences': [(o[0], f"{o[1]} - {o[2]}") for o in offences],  # Include formatted version
-        'selected_offence': selected_offence,
-        'result': result,
+        'offences': formatted_offences,
+        'selected_offences': selected_offences,
+        'results': results,
     })
