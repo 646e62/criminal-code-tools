@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Criminal Code Tools{% endblock %}</title>
+    <title>{% block title %}Sentencing Tools{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -230,25 +230,21 @@
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
-                        <a href="{% url 'home' %}" class="text-xl font-bold text-indigo-600 dark:text-indigo-400 monokai:text-keyword">Criminal Code Tools</a>
+                        <a href="{% url 'home' %}" class="text-xl font-bold text-indigo-600 dark:text-indigo-400 monokai:text-keyword">Sentencing Tools</a>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                         <a href="{% url 'home' %}" class="border-indigo-500 text-gray-900 dark:text-gray-100 monokai:text-function inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Home
-                        </a>
-                        <a href="{% url 'ingest_case' %}" class="border-transparent text-gray-500 dark:text-gray-300 monokai:text-comment hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-fg inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Ingest Cases
-                        </a>
-                        <a href="{% url 'popular_citations' %}" class="border-transparent text-gray-500 dark:text-gray-300 monokai:text-comment hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-fg inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Popular Citations
                         </a>
                         <a href="{% url 'offence_grid:index' %}" class="border-transparent text-gray-500 dark:text-gray-300 monokai:text-comment hover:border-gray-300 hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-fg inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
                             Offence Grid
                         </a>
                     </div>
                 </div>
-                <!-- Theme toggle -->
-                <div class="flex items-center space-x-2">
+                
+                <!-- Menu and Theme Toggle -->
+                <div class="flex items-center space-x-4">
+                    <!-- Theme toggle -->
                     <div class="relative">
                         <button id="themeToggle" class="p-2 rounded-md text-gray-500 dark:text-gray-400 monokai:text-comment hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-fg focus:outline-none">
                             <!-- Sun icon (light mode) -->
@@ -264,6 +260,24 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </button>
+                    </div>
+
+                    <!-- Menu button -->
+                    <div class="relative">
+                        <button id="menuToggle" class="p-2 rounded-md text-gray-500 dark:text-gray-400 monokai:text-comment hover:text-gray-700 dark:hover:text-gray-200 monokai:hover:text-fg focus:outline-none">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                        <!-- Dropdown menu -->
+                        <div id="menuDropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-800 monokai:bg-monokai-darkGray ring-1 ring-black ring-opacity-5">
+                            <a href="{% url 'ingest_case' %}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 monokai:text-comment hover:bg-gray-100 dark:hover:bg-gray-700 monokai:hover:bg-monokai-bg">
+                                Ingest Cases
+                            </a>
+                            <a href="{% url 'popular_citations' %}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 monokai:text-comment hover:bg-gray-100 dark:hover:bg-gray-700 monokai:hover:bg-monokai-bg">
+                                Popular Citations
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -287,7 +301,7 @@
     <footer class="bg-gray-800 dark:bg-gray-900 monokai:bg-monokai-darkGray">
         <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
             <p class="text-center text-gray-300 dark:text-gray-400 monokai:text-comment text-sm">
-                &copy; {% now "Y" %} Criminal Code Tools. All rights reserved.
+                &copy; {% now "Y" %} Sentencing Tools. All rights reserved.
             </p>
         </div>
     </footer>
@@ -348,6 +362,21 @@
                 const nextIndex = (currentIndex + 1) % themes.length;
                 currentTheme = themes[nextIndex];
                 setTheme(currentTheme);
+            });
+            
+            // Menu toggle functionality
+            const menuToggle = document.getElementById('menuToggle');
+            const menuDropdown = document.getElementById('menuDropdown');
+            
+            menuToggle.addEventListener('click', function() {
+                menuDropdown.classList.toggle('hidden');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!menuToggle.contains(event.target) && !menuDropdown.contains(event.target)) {
+                    menuDropdown.classList.add('hidden');
+                }
             });
         });
     </script>
