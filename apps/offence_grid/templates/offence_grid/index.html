@@ -143,19 +143,28 @@
                                     <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-keyword">{{ offence }}</h4>
                                 </div>
 
-                                <!-- Immigration Consequences -->
+                                <!-- Collateral Consequences -->
                                 <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Immigration Consequences</h5>
-                                    {% for immigration_result in result.immigration %}
-                                    <div class="mt-2 text-sm text-gray-900 dark:text-gray-200 monokai:text-string">
-                                        <p>
-                                            {{ immigration_result.notes }}
+                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Collateral Consequences</h5>
+                                    <div class="mt-2 space-y-2">
+                                        {% for immigration_result in result.immigration %}
+                                        <div class="text-sm">
+                                            <span class="font-medium">Immigration/Admissibility:</span>
+                                            {% if immigration_result.notes == "serious criminality" and immigration_result.status.notes == "both" %}
+                                            <span class="text-red-600 dark:text-red-400">Permanent residents and foreign nationals</span>
+                                            {% elif immigration_result.notes == "criminality" %}
+                                            <span class="text-red-600 dark:text-red-400">Foreign nationals</span>
+                                            {% elif immigration_result.notes == "none" %}
+                                            <span class="text-green-600 dark:text-green-400">None</span>
+                                            {% else %}
+                                            <span class="text-red-600 dark:text-red-400">{{ immigration_result.notes|title }}</span>
+                                            {% endif %}
                                             {% if immigration_result.sections %}
                                             <a href="#footnote-{{ forloop.parentloop.counter }}-imm-{{ forloop.counter }}" class="footnote-ref" id="ref-{{ forloop.parentloop.counter }}-imm-{{ forloop.counter }}">[{{ forloop.counter }}]</a>
                                             {% endif %}
-                                        </p>
+                                        </div>
+                                        {% endfor %}
                                     </div>
-                                    {% endfor %}
                                 </div>
 
                                 <!-- Sentencing Options -->
