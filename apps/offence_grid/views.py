@@ -161,7 +161,10 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
                 "available": dna_results["status"]["available"],
                 "notes": dna_results["notes"]
             },
-            "soira": soira_results[0] if soira_results else None,  # Take first SOIRA result
+            "soira": {
+                "available": soira_results[0]["status"]["available"] if soira_results else False,
+                "notes": soira_results[0]["notes"] if soira_results else None
+            },
             "weapons": {
                 "available": weapons_results["status"]["available"],
                 "notes": weapons_results["notes"]
