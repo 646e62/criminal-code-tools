@@ -3,7 +3,7 @@ Criminal Code of Canada rules for creating a sentencing grid. The rules are
 current to October 2, 2024.
 """
 
-from constants import (
+from .constants import (
     PRIMARY_DESIGNATED_DNA_OFFENCES,
     SECONDARY_DESIGNATED_DNA_OFFENCES,
     EXCLUDED_CSO_OFFENCES,
@@ -29,7 +29,7 @@ from constants import (
     VIOLENCE_USED_THREATENED_ATTEMPTED_OFFENCES,
 )
 
-from utils import (
+from .utils import (
     convert_quantum_to_days,
     standard_output,
 )
@@ -377,7 +377,7 @@ def check_cso_availablity(
         )
 
     else:
-        return standard_output(True, None, ["cc742.1"], None)
+        return standard_output(True, None, ["cc742.1"], "no mandatory minimum and no excluded offence")
 
 
 def check_intermittent_available(
