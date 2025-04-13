@@ -153,7 +153,7 @@
                                         {% if 'summary_maximum' in result.summary %}
                                         <div class="text-sm">
                                             <span class="font-medium">Summary Maximum:</span>
-                                            {% if result.summary.summary_maximum.jail.amount == '255' and result.summary.summary_maximum.jail.unit == 'years' %}
+                                            {% if result.summary.summary_maximum.jail.amount == 255 and result.summary.summary_maximum.jail.unit == 'years' %}
                                                 Life
                                             {% else %}
                                                 {% if result.summary.summary_maximum.jail.amount %}{{ result.summary.summary_maximum.jail.amount }} {{ result.summary.summary_maximum.jail.unit }}{% endif %}
@@ -163,8 +163,12 @@
                                         <div class="text-sm">
                                             <span class="font-medium">Summary Minimum:</span>
                                             {% if result.summary.summary_minimum.jail.amount or result.summary.summary_minimum.fine.amount %}
-                                                {% if result.summary.summary_minimum.jail.amount %}{{ result.summary.summary_minimum.jail.amount }} {{ result.summary.summary_minimum.jail.unit }}{% endif %}
-                                                {% if result.summary.summary_minimum.fine.amount %}{% if result.summary.summary_minimum.jail.amount %} and {% endif %}${{ result.summary.summary_minimum.fine.amount }}{% endif %}
+                                                {% if result.summary.summary_minimum.jail.amount == 255 and result.summary.summary_minimum.jail.unit == 'years' %}
+                                                    Life
+                                                {% else %}
+                                                    {% if result.summary.summary_minimum.jail.amount %}{{ result.summary.summary_minimum.jail.amount }} {{ result.summary.summary_minimum.jail.unit }}{% endif %}
+                                                    {% if result.summary.summary_minimum.fine.amount %}{% if result.summary.summary_minimum.jail.amount %} and {% endif %}${{ result.summary.summary_minimum.fine.amount }}{% endif %}
+                                                {% endif %}
                                             {% else %}
                                                 None
                                             {% endif %}
@@ -173,7 +177,7 @@
                                         {% if 'indictable_maximum' in result.summary %}
                                         <div class="text-sm">
                                             <span class="font-medium">Indictable Maximum:</span>
-                                            {% if result.summary.indictable_maximum.jail.amount == '255' and result.summary.indictable_maximum.jail.unit == 'years' %}
+                                            {% if result.summary.indictable_maximum.jail.amount == 255 and result.summary.indictable_maximum.jail.unit == 'years' %}
                                                 Life
                                             {% else %}
                                                 {% if result.summary.indictable_maximum.jail.amount %}{{ result.summary.indictable_maximum.jail.amount }} {{ result.summary.indictable_maximum.jail.unit }}{% endif %}
@@ -183,8 +187,12 @@
                                         <div class="text-sm">
                                             <span class="font-medium">Indictable Minimum:</span>
                                             {% if result.summary.indictable_minimum.jail.amount or result.summary.indictable_minimum.fine.amount %}
-                                                {% if result.summary.indictable_minimum.jail.amount %}{{ result.summary.indictable_minimum.jail.amount }} {{ result.summary.indictable_minimum.jail.unit }}{% endif %}
-                                                {% if result.summary.indictable_minimum.fine.amount %}{% if result.summary.indictable_minimum.jail.amount %} and {% endif %}${{ result.summary.indictable_minimum.fine.amount }}{% endif %}
+                                                {% if result.summary.indictable_minimum.jail.amount == 255 and result.summary.indictable_minimum.jail.unit == 'years' %}
+                                                    Life
+                                                {% else %}
+                                                    {% if result.summary.indictable_minimum.jail.amount %}{{ result.summary.indictable_minimum.jail.amount }} {{ result.summary.indictable_minimum.jail.unit }}{% endif %}
+                                                    {% if result.summary.indictable_minimum.fine.amount %}{% if result.summary.indictable_minimum.jail.amount %} and {% endif %}${{ result.summary.indictable_minimum.fine.amount }}{% endif %}
+                                                {% endif %}
                                             {% else %}
                                                 None
                                             {% endif %}
