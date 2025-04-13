@@ -143,6 +143,56 @@
                                     <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-keyword">{{ offence }}</h4>
                                 </div>
 
+                                <!-- Offence Summary -->
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Offence Summary</h5>
+                                    <div class="mt-2 space-y-2">
+                                        <div class="text-sm">
+                                            <span class="font-medium">Mode:</span> {{ result.summary.mode }}
+                                        </div>
+                                        {% if 'summary_maximum' in result.summary %}
+                                        <div class="text-sm">
+                                            <span class="font-medium">Summary Maximum:</span>
+                                            {% if result.summary.summary_maximum.jail.amount == '255' and result.summary.summary_maximum.jail.unit == 'years' %}
+                                                Life
+                                            {% else %}
+                                                {% if result.summary.summary_maximum.jail.amount %}{{ result.summary.summary_maximum.jail.amount }} {{ result.summary.summary_maximum.jail.unit }}{% endif %}
+                                                {% if result.summary.summary_maximum.fine.amount %}{% if result.summary.summary_maximum.jail.amount %} and {% endif %}${{ result.summary.summary_maximum.fine.amount }}{% endif %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-sm">
+                                            <span class="font-medium">Summary Minimum:</span>
+                                            {% if result.summary.summary_minimum.jail.amount or result.summary.summary_minimum.fine.amount %}
+                                                {% if result.summary.summary_minimum.jail.amount %}{{ result.summary.summary_minimum.jail.amount }} {{ result.summary.summary_minimum.jail.unit }}{% endif %}
+                                                {% if result.summary.summary_minimum.fine.amount %}{% if result.summary.summary_minimum.jail.amount %} and {% endif %}${{ result.summary.summary_minimum.fine.amount }}{% endif %}
+                                            {% else %}
+                                                None
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                        {% if 'indictable_maximum' in result.summary %}
+                                        <div class="text-sm">
+                                            <span class="font-medium">Indictable Maximum:</span>
+                                            {% if result.summary.indictable_maximum.jail.amount == '255' and result.summary.indictable_maximum.jail.unit == 'years' %}
+                                                Life
+                                            {% else %}
+                                                {% if result.summary.indictable_maximum.jail.amount %}{{ result.summary.indictable_maximum.jail.amount }} {{ result.summary.indictable_maximum.jail.unit }}{% endif %}
+                                                {% if result.summary.indictable_maximum.fine.amount %}{% if result.summary.indictable_maximum.jail.amount %} and {% endif %}${{ result.summary.indictable_maximum.fine.amount }}{% endif %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-sm">
+                                            <span class="font-medium">Indictable Minimum:</span>
+                                            {% if result.summary.indictable_minimum.jail.amount or result.summary.indictable_minimum.fine.amount %}
+                                                {% if result.summary.indictable_minimum.jail.amount %}{{ result.summary.indictable_minimum.jail.amount }} {{ result.summary.indictable_minimum.jail.unit }}{% endif %}
+                                                {% if result.summary.indictable_minimum.fine.amount %}{% if result.summary.indictable_minimum.jail.amount %} and {% endif %}${{ result.summary.indictable_minimum.fine.amount }}{% endif %}
+                                            {% else %}
+                                                None
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
                                 <!-- Collateral Consequences -->
                                 <div class="mt-4">
                                     <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Collateral Consequences</h5>

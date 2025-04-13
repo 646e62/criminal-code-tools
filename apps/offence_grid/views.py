@@ -172,6 +172,34 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
         }
     }
 
+def get_offence_summary(section, max_indictable, max_sc, min_indictable, min_sc):
+    """Generate a summary of the offence including mode and sentences."""
+    summary = {}
+    
+    # Parse the quantum values
+    max_indictable_dict = parse_maximum(max_indictable) if max_indictable else None
+    max_sc_dict = parse_maximum(max_sc) if max_sc else None
+    min_indictable_dict = parse_minimum(min_indictable) if min_indictable else None
+    min_sc_dict = parse_minimum(min_sc) if min_sc else None
+    
+    # Determine mode
+    if max_indictable_dict and max_sc_dict:
+        summary['mode'] = 'Hybrid'
+    elif max_indictable_dict:
+        summary['mode'] = 'Indictable'
+    else:
+        summary['mode'] = 'Summary'
+    
+    # Add sentence information
+    if max_indictable_dict:
+        summary['indictable_maximum'] = max_indictable_dict
+        summary['indictable_minimum'] = min_indictable_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
+    if max_sc_dict:
+        summary['summary_maximum'] = max_sc_dict
+        summary['summary_minimum'] = min_sc_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
+    
+    return summary
+
 def offence_grid(request):
     """Landing page for the offence grid tool."""
     # Load all offences
@@ -187,13 +215,29 @@ def offence_grid(request):
             # Find the matching offence data
             for offence_data in offences:
                 if offence_data[0] == section:
-                    results[format_section(section)] = get_collateral_consequences(
+                    # Get offence summary
+                    summary = get_offence_summary(
                         section=section,
                         max_indictable=offence_data[3],
                         max_sc=offence_data[4],
                         min_indictable=offence_data[5],
                         min_sc=offence_data[6]
                     )
+                    
+                    # Get collateral consequences
+                    consequences = get_collateral_consequences(
+                        section=section,
+                        max_indictable=offence_data[3],
+                        max_sc=offence_data[4],
+                        min_indictable=offence_data[5],
+                        min_sc=offence_data[6]
+                    )
+                    
+                    # Combine summary and consequences
+                    results[format_section(section)] = {
+                        'summary': summary,
+                        **consequences
+                    }
                     break
     
     return render(request, 'offence_grid/index.html', {
