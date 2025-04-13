@@ -1,12 +1,22 @@
+# Web Framework and Core Dependencies
 Django>=4.2.0
 psycopg2-binary>=2.9.9
 python-dotenv>=1.0.0
+
+# REST API Dependencies
 djangorestframework>=3.14.0
 django-cors-headers>=4.3.0
 django-filter>=23.5
+
+# API Documentation
 drf-spectacular>=0.27.0  # Modern OpenAPI 3 documentation
 markdown>=3.5.1  # For API documentation
 pyyaml>=6.0.1   # For OpenAPI schema
 uritemplate>=4.1.1  # For OpenAPI schema
 inflection>=0.5.1  # For OpenAPI schema
-legal-citation-parser>=1.0.0  # For parsing legal citations
+
+# Project-specific Dependencies
+legal-citation-parser>=0.5.1  # For parsing legal citations
+pandas>=2.0.0  # For data processing
+numpy>=1.24.0  # Required by pandas
+requests>=2.31.0  # For making HTTP requests
