@@ -194,8 +194,13 @@ def get_offence_summary(section, max_indictable, max_sc, min_indictable, min_sc)
     if max_indictable_dict:
         summary['indictable_maximum'] = max_indictable_dict
         summary['indictable_minimum'] = min_indictable_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
-    if max_sc_dict:
-        summary['summary_maximum'] = max_sc_dict
+    
+    # For hybrid offences without explicit summary max, use 729 days
+    if summary['mode'] in ['Hybrid', 'Summary']:
+        if max_sc_dict and (max_sc_dict['jail']['amount'] or max_sc_dict['fine']['amount']):
+            summary['summary_maximum'] = max_sc_dict
+        else:
+            summary['summary_maximum'] = {'jail': {'amount': 729, 'unit': 'days'}, 'fine': {'amount': None, 'unit': None}}
         summary['summary_minimum'] = min_sc_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
     
     return summary
