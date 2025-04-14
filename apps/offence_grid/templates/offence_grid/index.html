@@ -342,9 +342,9 @@
 
                                         <div class="text-sm">
                                             <span class="font-medium">SOIRA Registration:</span>
-                                            {% if result.ancillary_orders.soira.0.status.available %}
+                                            {% if result.ancillary_orders.soira.0.notes == "primary designated offence" %}
                                             <span class="text-red-600 dark:text-red-400">Primary Designated Offence</span>
-                                            {% elif result.ancillary_orders.soira.0.status.available %}
+                                            {% elif result.ancillary_orders.soira.0.notes == "secondary designated offence" %}
                                             <span class="text-yellow-600 dark:text-yellow-400">Secondary Designated Offence</span>
                                             {% else %}
                                             <span class="text-green-600 dark:text-green-400">Not Available</span>
