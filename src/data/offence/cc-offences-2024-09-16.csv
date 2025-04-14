@@ -259,8 +259,8 @@ cc_270,assaulting a peace officer,,5y,,sc
 cc_270.01,assaulting a peace officer with a weapon or causing bodily harm,,10y,,sc
 cc_270.02,aggravated assault of a peace officer,,14y,,
 cc_270.1,disarming a peace officer,,5y,,sc
-cc_271#a,sexual assault,,10y,,18m
-cc_271#b,sexual assault — complainant under 16,1y,14y,6m,729d
+cc_271(a),sexual assault,,10y,,18m
+cc_271(b),sexual assault — complainant under 16,1y,14y,6m,729d
 cc_272(2)(a)#1,sexual assault with a weapon threats to a third party or causing bodily harm — restricted or prohibited firearm or criminal organization — first offence,5y,14y,,
 cc_272(2)(a)#s,sexual assault with a weapon threats to a third party or causing bodily harm — restricted or prohibited firearm or criminal organization — subsequent offence,7y,14y,,
 cc_272(2)(a.1),sexual assault with a weapon threats to a third party or causing bodily harm — firearm,4y,14y,,
