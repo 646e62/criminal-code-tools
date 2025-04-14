@@ -203,6 +203,26 @@
                                     </div>
                                 </div>
 
+                                <!-- Procedure -->
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Procedure</h5>
+                                    <div class="mt-2 space-y-2">
+                                        <div class="text-sm">
+                                            <span class="font-medium">Preliminary Inquiry:</span>
+                                            {% if result.procedure.prelim_available.status.available %}
+                                            <span class="text-green-600 dark:text-green-400">Available</span>
+                                            {% else %}
+                                            <span class="text-red-600 dark:text-red-400">Not Available</span>
+                                            {% endif %}
+                                            {% if result.procedure.prelim_available.notes %}
+                                            {% with counter=result.immigration|length|add:7 %}
+                                            <a href="#footnote-{{ forloop.counter }}-prelim" class="footnote-ref" id="ref-{{ forloop.counter }}-prelim">[{{ counter }}]</a>
+                                            {% endwith %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Bail -->
                                 <div class="mt-4">
                                     <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Bail</h5>
@@ -383,6 +403,19 @@
                                         </div>
                                         {% endif %}
                                     {% endfor %}
+
+                                    <!-- Preliminary Inquiry footnote -->
+                                    {% if result.procedure.prelim_available.notes %}
+                                    {% with counter=result.immigration|length|add:7 %}
+                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-prelim">
+                                        [{{ counter }}] {{ result.procedure.prelim_available.notes }}
+                                        {% if result.procedure.prelim_available.sections %}
+                                        ({{ result.procedure.prelim_available.sections|join:", " }})
+                                        {% endif %}
+                                        <a href="#ref-{{ forloop.counter }}-prelim" class="footnote-backref">↩</a>
+                                    </div>
+                                    {% endwith %}
+                                    {% endif %}
 
                                     <!-- Sentencing Options footnotes -->
                                     {% if result.sentencing_options.discharge.notes %}
