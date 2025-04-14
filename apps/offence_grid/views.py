@@ -206,9 +206,10 @@ def get_offence_summary(section, max_indictable, max_sc, min_indictable, min_sc)
         summary['summary_maximum'] = {'jail': {'amount': 729, 'unit': 'days'}, 'fine': {'amount': None, 'unit': None}}
     elif max_sc_dict and (max_sc_dict['jail']['amount'] or max_sc_dict['fine']['amount']):
         summary['summary_maximum'] = max_sc_dict
-    else:
-        summary['summary_maximum'] = {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
-    summary['summary_minimum'] = min_sc_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
+    
+    # Only add summary minimum if we have a summary maximum
+    if 'summary_maximum' in summary:
+        summary['summary_minimum'] = min_sc_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
     
     return summary
 

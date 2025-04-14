@@ -150,34 +150,30 @@
                                         <div class="text-sm">
                                             <span class="font-medium">Mode:</span> {{ result.summary.mode }}
                                         </div>
+                                        {% if result.summary.summary_maximum %}
                                         <div class="text-sm">
                                             <span class="font-medium">Summary Maximum:</span>
-                                            {% if result.summary.summary_maximum %}
-                                                {% if result.summary.summary_maximum.jail.amount == 255 and result.summary.summary_maximum.jail.unit == 'years' %}
-                                                    Life
-                                                {% else %}
-                                                    {% if result.summary.summary_maximum.jail.amount %}{{ result.summary.summary_maximum.jail.amount }} {{ result.summary.summary_maximum.jail.unit }}{% endif %}
-                                                    {% if result.summary.summary_maximum.jail.amount and result.summary.summary_maximum.fine.amount %} or {% endif %}
-                                                    {% if result.summary.summary_maximum.fine.amount %}${{ result.summary.summary_maximum.fine.amount }}{% endif %}
-                                                {% endif %}
+                                            {% if result.summary.summary_maximum.jail.amount == 255 and result.summary.summary_maximum.jail.unit == 'years' %}
+                                                Life
                                             {% else %}
-                                                None
+                                                {% if result.summary.summary_maximum.jail.amount %}{{ result.summary.summary_maximum.jail.amount }} {{ result.summary.summary_maximum.jail.unit }}{% endif %}
+                                                {% if result.summary.summary_maximum.jail.amount and result.summary.summary_maximum.fine.amount %} or {% endif %}
+                                                {% if result.summary.summary_maximum.fine.amount %}${{ result.summary.summary_maximum.fine.amount }}{% endif %}
                                             {% endif %}
                                         </div>
+                                        {% endif %}
+                                        {% if result.summary.indictable_maximum %}
                                         <div class="text-sm">
                                             <span class="font-medium">Indictable Maximum:</span>
-                                            {% if result.summary.indictable_maximum %}
-                                                {% if result.summary.indictable_maximum.jail.amount == 255 and result.summary.indictable_maximum.jail.unit == 'years' %}
-                                                    Life
-                                                {% else %}
-                                                    {% if result.summary.indictable_maximum.jail.amount %}{{ result.summary.indictable_maximum.jail.amount }} {{ result.summary.indictable_maximum.jail.unit }}{% endif %}
-                                                    {% if result.summary.indictable_maximum.jail.amount and result.summary.indictable_maximum.fine.amount %} or {% endif %}
-                                                    {% if result.summary.indictable_maximum.fine.amount %}${{ result.summary.indictable_maximum.fine.amount }}{% endif %}
-                                                {% endif %}
+                                            {% if result.summary.indictable_maximum.jail.amount == 255 and result.summary.indictable_maximum.jail.unit == 'years' %}
+                                                Life
                                             {% else %}
-                                                None
+                                                {% if result.summary.indictable_maximum.jail.amount %}{{ result.summary.indictable_maximum.jail.amount }} {{ result.summary.indictable_maximum.jail.unit }}{% endif %}
+                                                {% if result.summary.indictable_maximum.jail.amount and result.summary.indictable_maximum.fine.amount %} or {% endif %}
+                                                {% if result.summary.indictable_maximum.fine.amount %}${{ result.summary.indictable_maximum.fine.amount }}{% endif %}
                                             {% endif %}
                                         </div>
+                                        {% endif %}
                                         <div class="text-sm">
                                             <span class="font-medium">Mandatory Minimum:</span>
                                             {% if result.summary.summary_minimum.jail.amount or result.summary.summary_minimum.fine.amount or result.summary.indictable_minimum.jail.amount or result.summary.indictable_minimum.fine.amount %}
