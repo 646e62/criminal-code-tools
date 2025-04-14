@@ -237,7 +237,7 @@ def check_discharge_available(
 ) -> Dict[str, Union[bool, None, List[str], str]]:
     """
     Discharges are available when the following conditions obtain:
-    - The offence does not have a mandatory minimum of any kind
+    - The offence does not have a mandatory minimum of any kind (jail or fine)
     - The offence is not punishable by 14y or greater
 
     Args:
@@ -252,9 +252,9 @@ def check_discharge_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-    # Check if there's a mandatory minimum
-    if (summary_minimum and summary_minimum["jail"]["amount"]) or \
-       (indictable_minimum and indictable_minimum["jail"]["amount"]):
+    # Check if there's a mandatory minimum (jail or fine)
+    if (summary_minimum and (summary_minimum["jail"]["amount"] or summary_minimum["fine"]["amount"])) or \
+       (indictable_minimum and (indictable_minimum["jail"]["amount"] or indictable_minimum["fine"]["amount"])):
         return standard_output(False, None, ["cc_730(1)"], "mandatory minimum sentence")
 
     # For summary offences, indictable_maximum will be None
@@ -277,7 +277,7 @@ def check_cso_availablity(
     Check if the charge screening officer is available for a given offence. An offence
     qualifies for a CSO if the following conditions obtain:
 
-    - The offence does not have a mandatory minimum term of imprisonment
+    - The offence does not have a mandatory minimum of any kind (jail or fine)
     - The offence is not an enumerated offence
     - The offence is not:
       - A terrorism or criminal organization offence; AND
@@ -295,7 +295,7 @@ def check_cso_availablity(
         Dict: A dictionary containing:
             - available (bool): Whether CSO is available
             - quantum (Optional[str]): The quantum of sentence, if applicable
-            - sections (List[str]): Relevant Criminal Code sections
+            - sections (List[str]]: Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
     indictable_max_years = 0
@@ -305,19 +305,16 @@ def check_cso_availablity(
         except (ValueError, TypeError):
             indictable_max_years = 0
 
-    if summary_minimum and summary_minimum.get("jail", {}).get("amount"):
-        if summary_minimum.get("jail", {}).get("unit") in ["days", "months", "years"]:
-            return standard_output(
-                False, None, ["cc_742.1(b)"], "mandatory minimum term of imprisonment"
-            )
-        else:
-            return standard_output(True, None, ["cc_742.1"], "no mandatory minimum")
+    # Check for any mandatory minimum (jail or fine)
+    if summary_minimum and (summary_minimum.get("jail", {}).get("amount") or summary_minimum.get("fine", {}).get("amount")):
+        return standard_output(
+            False, None, ["cc_742.1(b)"], "mandatory minimum sentence"
+        )
 
-    elif indictable_minimum and indictable_minimum.get("jail", {}).get("amount"):
-        if indictable_minimum.get("jail", {}).get("unit") in ["days", "months", "years"]:
-            return standard_output(
-                False, None, ["cc_742.1(b)"], "mandatory minimum term of imprisonment"
-            )
+    elif indictable_minimum and (indictable_minimum.get("jail", {}).get("amount") or indictable_minimum.get("fine", {}).get("amount")):
+        return standard_output(
+            False, None, ["cc_742.1(b)"], "mandatory minimum sentence"
+        )
 
     elif section in EXCLUDED_CSO_OFFENCES:
         return standard_output(False, None, ["cc_742.1(c)"], "enumerated offence")
@@ -355,9 +352,8 @@ def check_intermittent_available(
 ) -> Dict[str, Union[bool, None, List[str], str]]:
     """
     Where facilities are available, the court may order that anyone sentenced
-    to 90 days or less serve their sentence intermittently. The only excluded
-    offences are those with a mandatory minimum term of imprisonment longer
-    than 90 days.
+    to 90 days or less serve their sentence intermittently. Intermittent sentences
+    are not available when there is any mandatory minimum penalty (jail or fine).
 
     Args:
         summary_minimum (Dict): The minimum sentence for summary proceedings
@@ -370,7 +366,14 @@ def check_intermittent_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-    # Convert minimums to days for comparison
+    # First check if there's a mandatory minimum fine
+    if (summary_minimum and summary_minimum["fine"]["amount"]) or \
+       (indictable_minimum and indictable_minimum["fine"]["amount"]):
+        return standard_output(
+            False, None, ["cc_732"], "mandatory minimum fine"
+        )
+
+    # Convert jail minimums to days for comparison
     summary_days = 0
     indictable_days = 0
 
@@ -392,18 +395,18 @@ def check_intermittent_available(
 
     if summary_days == 0 and indictable_days == 0:
         return standard_output(
-            True, None, ["cc_732(1)"], "no minimum term of imprisonment"
+            True, None, ["cc_732(1)"], "no mandatory minimum"
         )
     elif summary_days <= 90 and indictable_days <= 90:
         return standard_output(
-            True, None, ["cc_732(1)"], "minimum does not exceed 90 days"
+            True, None, ["cc_732(1)"], "jail minimum does not exceed 90 days"
         )
     else:
         return standard_output(
             False,
             None,
             ["cc_732"],
-            "mandatory minimum term of imprisonment exceeds 90 days",
+            "mandatory minimum jail term exceeds 90 days",
         )
 
 
