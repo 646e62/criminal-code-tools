@@ -263,7 +263,7 @@
                                     <div class="mt-2 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">Discharge:</span>
-                                            {% if result.sentencing_options.discharge.available %}
+                                            {% if result.sentencing_options.discharge.status.available %}
                                             <span class="text-green-600 dark:text-green-400">Available</span>
                                             {% else %}
                                             <span class="text-red-600 dark:text-red-400">Not Available</span>
@@ -277,8 +277,8 @@
 
                                         <div class="text-sm">
                                             <span class="font-medium">CSO:</span>
-                                            {% if result.sentencing_options.cso.available %}
-                                            <span class="text-green-600 dark:text-green-400">Available</span>
+                                            {% if result.sentencing_options.cso.status.available %}
+                                            <span class="text-green-600 dark:text-green-400">Yes</span>
                                             {% else %}
                                             <span class="text-red-600 dark:text-red-400">Not Available</span>
                                             {% endif %}
@@ -291,7 +291,7 @@
 
                                         <div class="text-sm">
                                             <span class="font-medium">Intermittent Sentence:</span>
-                                            {% if result.sentencing_options.intermittent.available %}
+                                            {% if result.sentencing_options.intermittent.status.available %}
                                             <span class="text-green-600 dark:text-green-400">Available</span>
                                             {% else %}
                                             <span class="text-red-600 dark:text-red-400">Not Available</span>
@@ -305,7 +305,7 @@
 
                                         <div class="text-sm">
                                             <span class="font-medium">Suspended Sentence:</span>
-                                            {% if result.sentencing_options.suspended.available %}
+                                            {% if result.sentencing_options.suspended.status.available %}
                                             <span class="text-green-600 dark:text-green-400">Available</span>
                                             {% else %}
                                             <span class="text-red-600 dark:text-red-400">Not Available</span>
@@ -325,9 +325,9 @@
                                     <div class="mt-2 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">DNA Order:</span>
-                                            {% if result.ancillary_orders.dna.notes == "primary designated offence" %}
-                                            <span class="text-red-600 dark:text-red-400">Mandatory</span>
-                                            {% elif result.ancillary_orders.dna.notes == "secondary designated offence" %}
+                                            {% if result.ancillary_orders.dna.status.available %}
+                                            <span class="text-green-600 dark:text-green-400">Mandatory</span>
+                                            {% elif result.ancillary_orders.dna.status.available %}
                                             <span class="text-yellow-600 dark:text-yellow-400">Discretionary</span>
                                             {% else %}
                                             <span class="text-green-600 dark:text-green-400">Not Available</span>
@@ -341,9 +341,9 @@
 
                                         <div class="text-sm">
                                             <span class="font-medium">SOIRA Registration:</span>
-                                            {% if result.ancillary_orders.soira.0.notes == "primary designated offence" %}
+                                            {% if result.ancillary_orders.soira.0.status.available %}
                                             <span class="text-red-600 dark:text-red-400">Primary Designated Offence</span>
-                                            {% elif result.ancillary_orders.soira.0.notes == "secondary designated offence" %}
+                                            {% elif result.ancillary_orders.soira.0.status.available %}
                                             <span class="text-yellow-600 dark:text-yellow-400">Secondary Designated Offence</span>
                                             {% else %}
                                             <span class="text-green-600 dark:text-green-400">Not Available</span>
@@ -357,7 +357,7 @@
 
                                         <div class="text-sm">
                                             <span class="font-medium">Weapons Prohibition:</span>
-                                            {% if result.ancillary_orders.weapons.available %}
+                                            {% if result.ancillary_orders.weapons.status.available %}
                                             <span class="text-green-600 dark:text-green-400">Required</span>
                                             {% else %}
                                             <span class="text-gray-500">Not Required</span>
@@ -393,10 +393,10 @@
                                     {% endwith %}
                                     {% endif %}
 
-                                    {% if result.sentencing_options.cso %}
+                                    {% if result.sentencing_options.cso.notes %}
                                     {% with counter=result.immigration|length|add:2 %}
                                     <div class="footnote-item" id="footnote-{{ forloop.counter }}-cso">
-                                        [{{ counter }}] {{ result.sentencing_options.cso }}
+                                        [{{ counter }}] {{ result.sentencing_options.cso.notes }}
                                         <a href="#ref-{{ forloop.counter }}-cso" class="footnote-backref">↩</a>
                                     </div>
                                     {% endwith %}
