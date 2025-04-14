@@ -201,6 +201,37 @@
                                     </div>
                                 </div>
 
+                                <!-- Bail -->
+                                <div class="mt-4">
+                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Bail</h5>
+                                    <div class="mt-2 space-y-2">
+                                        <div class="text-sm">
+                                            <span class="font-medium">Reverse Onus:</span>
+                                            {% if result.bail.reverse_onus.status.available %}
+                                                Yes [{{ forloop.counter|add:8 }}]
+                                            {% else %}
+                                                No
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-sm">
+                                            <span class="font-medium">Section 469:</span>
+                                            {% if result.bail.section_469.status.available %}
+                                                Yes [{{ forloop.counter|add:9 }}]
+                                            {% else %}
+                                                No
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-sm">
+                                            <span class="font-medium">Mandatory Weapons Prohibition:</span>
+                                            {% if result.bail.mandatory_weapons_prohibition.status.available %}
+                                                Yes [{{ forloop.counter|add:10 }}]
+                                            {% else %}
+                                                No
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Collateral Consequences -->
                                 <div class="mt-4">
                                     <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Collateral Consequences</h5>
@@ -410,6 +441,27 @@
                                         <a href="#ref-{{ forloop.counter }}-wpn" class="footnote-backref">↩</a>
                                     </div>
                                     {% endwith %}
+                                    {% endif %}
+
+                                    {% if result.bail.reverse_onus.status.available %}
+                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-ro">
+                                        [{{ result.immigration|length|add:8 }}] {{ result.bail.reverse_onus.notes }}
+                                        <a href="#ref-{{ forloop.counter }}-ro" class="footnote-backref">↩</a>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if result.bail.section_469.status.available %}
+                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-469">
+                                        [{{ result.immigration|length|add:9 }}] {{ result.bail.section_469.notes }}
+                                        <a href="#ref-{{ forloop.counter }}-469" class="footnote-backref">↩</a>
+                                    </div>
+                                    {% endif %}
+
+                                    {% if result.bail.mandatory_weapons_prohibition.status.available %}
+                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-mwp">
+                                        [{{ result.immigration|length|add:10 }}] {{ result.bail.mandatory_weapons_prohibition.notes }}
+                                        <a href="#ref-{{ forloop.counter }}-mwp" class="footnote-backref">↩</a>
+                                    </div>
                                     {% endif %}
                                 </div>
                             </div>

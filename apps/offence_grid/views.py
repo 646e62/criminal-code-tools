@@ -17,6 +17,9 @@ from tools.cc_rules_current import (
     check_dna_designation,
     check_soira,
     check_section_109_weapons_prohibition,
+    reverse_onus,
+    check_section_469_offence,
+    check_section_515_mandatory_weapons_prohibition,
 )
 
 def format_section(section):
@@ -73,104 +76,80 @@ def parse_maximum(max_value):
 
 def get_collateral_consequences(section, max_indictable, max_sc, min_indictable, min_sc):
     """Get collateral consequences for an offence."""
-    # Parse the maximum and minimum sentences
-    indictable_maximum = parse_maximum(max_indictable)
-    max_years = indictable_maximum["jail"]["amount"]
-    
+    consequences = {}
+
+    # Parse the sentences
+    summary_min = parse_minimum(min_sc)
+    indictable_min = parse_minimum(min_indictable)
+    indictable_max = parse_maximum(max_indictable)
+
     # Determine mode based on maximum sentences
     mode = "summary" if pd.isna(max_indictable) and not pd.isna(max_sc) else "indictable"
     if not pd.isna(max_indictable) and not pd.isna(max_sc):
         mode = "hybrid"
-    
-    # Parse minimum sentences
-    summary_minimum = parse_minimum(min_sc)
-    indictable_minimum = parse_minimum(min_indictable)
-    
+
+    # Get bail information
+    consequences['bail'] = {
+        'reverse_onus': reverse_onus(),
+        'section_469': check_section_469_offence(section),
+        'mandatory_weapons_prohibition': check_section_515_mandatory_weapons_prohibition(section)
+    }
+
     # Get immigration consequences
-    immigration_results = ca_collateral_consequences.check_inadmissibility(
+    max_years = indictable_max["jail"]["amount"] if indictable_max["jail"]["amount"] else 0
+    consequences['immigration'] = ca_collateral_consequences.check_inadmissibility(
         section=section,
         mode=mode,
         indictable_maximum=max_years
     )
-    
+
     # Get sentencing options
-    discharge_results = check_discharge_available(
-        summary_minimum=summary_minimum,
-        indictable_minimum=indictable_minimum,
-        indictable_maximum=indictable_maximum
-    )
-    
-    cso_results = check_cso_availablity(
-        section=section,
-        summary_minimum=summary_minimum,
-        indictable_minimum=indictable_minimum,
-        indictable_maximum=indictable_maximum,
-        mode=mode
-    )
-    
-    intermittent_results = check_intermittent_available(
-        summary_minimum=summary_minimum,
-        indictable_minimum=indictable_minimum
-    )
-    
-    suspended_results = check_suspended_sentence_available(
-        summary_minimum=summary_minimum,
-        indictable_minimum=indictable_minimum
-    )
-    
-    # Get ancillary orders
-    dna_results = check_dna_designation(
-        offence=[section],  # Passing minimal offence data
-        mode=mode,
-        quantum=indictable_maximum
-    )
-    
-    soira_results = check_soira(
-        section=section,
-        mode=mode,
-        indictable_maximum=indictable_maximum
-    )
-    
-    weapons_results = check_section_109_weapons_prohibition(
-        offence=[section]  # Passing minimal offence data
-    )
-    
-    # Combine all results
-    return {
-        "immigration": immigration_results,
-        "sentencing_options": {
-            "discharge": {
-                "available": discharge_results["status"]["available"],
-                "notes": discharge_results["notes"]
-            },
-            "cso": {
-                "available": cso_results["status"]["available"],
-                "notes": cso_results["notes"]
-            },
-            "intermittent": {
-                "available": intermittent_results["status"]["available"],
-                "notes": intermittent_results["notes"]
-            },
-            "suspended": {
-                "available": suspended_results["status"]["available"],
-                "notes": suspended_results["notes"]
-            }
-        },
-        "ancillary_orders": {
-            "dna": {
-                "available": dna_results["status"]["available"],
-                "notes": dna_results["notes"]
-            },
-            "soira": {
-                "available": soira_results[0]["status"]["available"] if soira_results else False,
-                "notes": soira_results[0]["notes"] if soira_results else None
-            },
-            "weapons": {
-                "available": weapons_results["status"]["available"],
-                "notes": weapons_results["notes"]
-            }
-        }
+    consequences['sentencing_options'] = {
+        'discharge': check_discharge_available(
+            summary_minimum=summary_min,
+            indictable_minimum=indictable_min,
+            indictable_maximum=indictable_max
+        ),
+        'cso': check_cso_availablity(
+            section=section,
+            summary_minimum=summary_min,
+            indictable_minimum=indictable_min,
+            indictable_maximum=indictable_max,
+            mode=mode
+        ),
+        'intermittent': check_intermittent_available(
+            summary_minimum=summary_min,
+            indictable_minimum=indictable_min
+        ),
+        'suspended': check_suspended_sentence_available(
+            summary_minimum=summary_min,
+            indictable_minimum=indictable_min
+        )
     }
+
+    # Get ancillary orders
+    consequences['ancillary_orders'] = {
+        'dna': check_dna_designation(
+            offence=[section],
+            mode=mode,
+            quantum=indictable_max
+        ),
+        'soira': check_soira(
+            section=section,
+            mode=mode,
+            indictable_maximum=indictable_max
+        ),
+        'weapons': check_section_109_weapons_prohibition([
+            section,
+            None,  # offence name not needed
+            max_indictable,
+            max_sc,
+            min_indictable,
+            min_sc
+        ])
+    }
+
+    return consequences
 
 def get_offence_summary(section, max_indictable, max_sc, min_indictable, min_sc):
     """Generate a summary of the offence including mode and sentences."""
