@@ -63,9 +63,6 @@ def check_offence_type(offence: List[str]) -> str:
     max_indictable = offence[3]
     max_sc = offence[4]
 
-    print(f"DEBUG: max_indictable = '{max_indictable}'")
-    print(f"DEBUG: max_sc = '{max_sc}'")
-
     # If both maximums are present, it's hybrid
     if max_indictable and max_sc:
         return "hybrid"

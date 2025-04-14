@@ -341,13 +341,12 @@
 
                                         <div class="text-sm">
                                             <span class="font-medium">SOIRA Registration:</span>
-                                            {% if result.ancillary_orders.soira.0.available %}
-                                            <span class="text-green-600 dark:text-green-400">Required</span>
-                                            {% if result.ancillary_orders.soira.0.duration %}
-                                            ({{ result.ancillary_orders.soira.0.duration.amount }} {{ result.ancillary_orders.soira.0.duration.unit }})
-                                            {% endif %}
+                                            {% if result.ancillary_orders.soira.0.notes == "primary designated offence" %}
+                                            <span class="text-red-600 dark:text-red-400">Primary Designated Offence</span>
+                                            {% elif result.ancillary_orders.soira.0.notes == "secondary designated offence" %}
+                                            <span class="text-yellow-600 dark:text-yellow-400">Secondary Designated Offence</span>
                                             {% else %}
-                                            <span class="text-gray-500">Not Required</span>
+                                            <span class="text-green-600 dark:text-green-400">Not Available</span>
                                             {% endif %}
                                             {% if result.ancillary_orders.soira.0.notes %}
                                             {% with counter=result.immigration|length|add:6 %}
