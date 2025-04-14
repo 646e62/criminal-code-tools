@@ -20,6 +20,7 @@ from tools.cc_rules_current import (
     reverse_onus,
     check_section_469_offence,
     check_section_515_mandatory_weapons_prohibition,
+    check_offence_type
 )
 
 def format_section(section):
@@ -31,8 +32,8 @@ def format_section(section):
 
 def load_offences():
     """Load offences from the CSV file."""
-    csv_path = src_path / 'data/offence/cc-offences-2024-09-16.csv'
-    df = pd.read_csv(csv_path)
+    csv_path = Path(__file__).resolve().parent.parent.parent / 'src/data/offence/cc-offences-2024-09-16.csv'
+    df = pd.read_csv(csv_path, keep_default_na=False)  # Treat empty strings as empty strings, not NaN
     return [(row['section'], format_section(row['section']), row['offence_name'], 
              row['maximum_indictable'], row['maximum_sc'],
              row['minimum_indictable'], row['minimum_sc']) 
@@ -60,19 +61,14 @@ def parse_minimum(min_value):
 
 def parse_maximum(max_value):
     """Parse maximum sentence value into a dictionary format."""
-    empty_result = {
-        "jail": {"amount": 0, "unit": None},
-        "fine": {"amount": 0, "unit": None}
-    }
-    
     if pd.isna(max_value) or not max_value:
-        return empty_result
+        return None
     if isinstance(max_value, str) and max_value.endswith('y'):
         return {
             "jail": {"amount": int(max_value.rstrip('y')), "unit": "years"},
-            "fine": {"amount": 0, "unit": None}
+            "fine": {"amount": None, "unit": None}
         }
-    return empty_result
+    return None
 
 def get_collateral_consequences(section, max_indictable, max_sc, min_indictable, min_sc):
     """Get collateral consequences for an offence."""
@@ -96,7 +92,7 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
     }
 
     # Get immigration consequences
-    max_years = indictable_max["jail"]["amount"] if indictable_max["jail"]["amount"] else 0
+    max_years = indictable_max["jail"]["amount"] if indictable_max and indictable_max["jail"]["amount"] else 0
     consequences['immigration'] = ca_collateral_consequences.check_inadmissibility(
         section=section,
         mode=mode,
@@ -161,26 +157,19 @@ def get_offence_summary(section, max_indictable, max_sc, min_indictable, min_sc)
     min_indictable_dict = parse_minimum(min_indictable) if min_indictable else None
     min_sc_dict = parse_minimum(min_sc) if min_sc else None
     
-    # Determine mode
-    if max_indictable_dict and max_sc_dict:
-        summary['mode'] = 'Hybrid'
-    elif max_indictable_dict:
-        summary['mode'] = 'Indictable'
-    else:
-        summary['mode'] = 'Summary'
-    
     # Add sentence information
     if max_indictable_dict:
         summary['indictable_maximum'] = max_indictable_dict
         summary['indictable_minimum'] = min_indictable_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
     
-    # For hybrid offences without explicit summary max, use 729 days
-    if summary['mode'] in ['Hybrid', 'Summary']:
-        if max_sc_dict and (max_sc_dict['jail']['amount'] or max_sc_dict['fine']['amount']):
-            summary['summary_maximum'] = max_sc_dict
-        else:
-            summary['summary_maximum'] = {'jail': {'amount': 729, 'unit': 'days'}, 'fine': {'amount': None, 'unit': None}}
-        summary['summary_minimum'] = min_sc_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
+    # For hybrid offences and summary offences, handle summary maximum
+    if max_sc == 'sc':  # If explicitly marked as summary conviction
+        summary['summary_maximum'] = {'jail': {'amount': 729, 'unit': 'days'}, 'fine': {'amount': None, 'unit': None}}
+    elif max_sc_dict and (max_sc_dict['jail']['amount'] or max_sc_dict['fine']['amount']):
+        summary['summary_maximum'] = max_sc_dict
+    else:
+        summary['summary_maximum'] = {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
+    summary['summary_minimum'] = min_sc_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
     
     return summary
 
@@ -199,6 +188,11 @@ def offence_grid(request):
             # Find the matching offence data
             for offence_data in offences:
                 if offence_data[0] == section:
+                    # Convert tuple to list for check_offence_type
+                    offence_list = list(offence_data)
+                    # Determine mode using check_offence_type
+                    mode = check_offence_type(offence_list)
+                    
                     # Get offence summary
                     summary = get_offence_summary(
                         section=section,
@@ -207,6 +201,9 @@ def offence_grid(request):
                         min_indictable=offence_data[5],
                         min_sc=offence_data[6]
                     )
+                    
+                    # Add mode to summary
+                    summary['mode'] = mode.title()
                     
                     # Get collateral consequences
                     consequences = get_collateral_consequences(

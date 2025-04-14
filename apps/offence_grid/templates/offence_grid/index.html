@@ -156,8 +156,9 @@
                                             {% if result.summary.summary_maximum.jail.amount == 255 and result.summary.summary_maximum.jail.unit == 'years' %}
                                                 Life
                                             {% else %}
-                                                {% if result.summary.summary_maximum.jail.amount %}{{ result.summary.summary_maximum.jail.amount }} {{ result.summary.summary_maximum.jail.unit }}{% endif %}
-                                                {% if result.summary.summary_maximum.fine.amount %}{% if result.summary.summary_maximum.jail.amount %} and {% endif %}${{ result.summary.summary_maximum.fine.amount }}{% endif %}
+                                                {% if result.summary.summary_maximum.jail.amount %}{{ result.summary.summary_maximum.jail.amount }} {{ result.summary.summary_maximum.jail.unit }}
+                                                {% elif result.summary.summary_maximum.fine.amount %}${{ result.summary.summary_maximum.fine.amount }}
+                                                {% else %}None{% endif %}
                                             {% endif %}
                                         </div>
                                         <div class="text-sm">
@@ -324,10 +325,12 @@
                                     <div class="mt-2 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">DNA Order:</span>
-                                            {% if result.ancillary_orders.dna.available %}
-                                            <span class="text-green-600 dark:text-green-400">Required</span>
+                                            {% if result.ancillary_orders.dna.notes == "primary designated offence" %}
+                                            <span class="text-red-600 dark:text-red-400">Mandatory</span>
+                                            {% elif result.ancillary_orders.dna.notes == "secondary designated offence" %}
+                                            <span class="text-yellow-600 dark:text-yellow-400">Discretionary</span>
                                             {% else %}
-                                            <span class="text-gray-500">Not Required</span>
+                                            <span class="text-green-600 dark:text-green-400">Not Available</span>
                                             {% endif %}
                                             {% if result.ancillary_orders.dna.notes %}
                                             {% with counter=result.immigration|length|add:5 %}
@@ -338,12 +341,15 @@
 
                                         <div class="text-sm">
                                             <span class="font-medium">SOIRA Registration:</span>
-                                            {% if result.ancillary_orders.soira.available %}
+                                            {% if result.ancillary_orders.soira.0.available %}
                                             <span class="text-green-600 dark:text-green-400">Required</span>
+                                            {% if result.ancillary_orders.soira.0.duration %}
+                                            ({{ result.ancillary_orders.soira.0.duration.amount }} {{ result.ancillary_orders.soira.0.duration.unit }})
+                                            {% endif %}
                                             {% else %}
                                             <span class="text-gray-500">Not Required</span>
                                             {% endif %}
-                                            {% if result.ancillary_orders.soira.notes %}
+                                            {% if result.ancillary_orders.soira.0.notes %}
                                             {% with counter=result.immigration|length|add:6 %}
                                             <a href="#footnote-{{ forloop.counter }}-soira" class="footnote-ref" id="ref-{{ forloop.counter }}-soira">[{{ counter }}]</a>
                                             {% endwith %}
@@ -420,15 +426,21 @@
                                     {% with counter=result.immigration|length|add:5 %}
                                     <div class="footnote-item" id="footnote-{{ forloop.counter }}-dna">
                                         [{{ counter }}] {{ result.ancillary_orders.dna.notes }}
+                                        {% if result.ancillary_orders.dna.sections %}
+                                        ({{ result.ancillary_orders.dna.sections|join:", " }})
+                                        {% endif %}
                                         <a href="#ref-{{ forloop.counter }}-dna" class="footnote-backref">↩</a>
                                     </div>
                                     {% endwith %}
                                     {% endif %}
 
-                                    {% if result.ancillary_orders.soira.notes %}
+                                    {% if result.ancillary_orders.soira.0.notes %}
                                     {% with counter=result.immigration|length|add:6 %}
                                     <div class="footnote-item" id="footnote-{{ forloop.counter }}-soira">
-                                        [{{ counter }}] {{ result.ancillary_orders.soira.notes }}
+                                        [{{ counter }}] {{ result.ancillary_orders.soira.0.notes }}
+                                        {% if result.ancillary_orders.soira.0.sections %}
+                                        ({{ result.ancillary_orders.soira.0.sections|join:", " }})
+                                        {% endif %}
                                         <a href="#ref-{{ forloop.counter }}-soira" class="footnote-backref">↩</a>
                                     </div>
                                     {% endwith %}

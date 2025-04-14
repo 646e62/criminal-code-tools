@@ -44,8 +44,8 @@ def check_offence_type(offence: List[str]) -> str:
 
     Args:
         offence (List[str]): A row from the CSV file containing offence data
-            [3] = indictable maximum
-            [5] = summary maximum
+            [3] = maximum_indictable
+            [4] = maximum_sc
 
     Returns:
         str: The type of offence - "summary", "indictable", or "hybrid"
@@ -56,15 +56,25 @@ def check_offence_type(offence: List[str]) -> str:
     """
     if not isinstance(offence, list):
         raise TypeError("offence must be a list")
-    if len(offence) < 6:
-        raise ValueError("offence list must have at least 6 elements")
+    if len(offence) < 5:
+        raise ValueError("offence list must have at least 5 elements")
 
-    if offence[3] == "":
-        return "summary"
-    elif offence[5] == "":
-        return "indictable"
-    else:
+    # Get the maximum values
+    max_indictable = offence[3]
+    max_sc = offence[4]
+
+    print(f"DEBUG: max_indictable = '{max_indictable}'")
+    print(f"DEBUG: max_sc = '{max_sc}'")
+
+    # If both maximums are present, it's hybrid
+    if max_indictable and max_sc:
         return "hybrid"
+    # If there's an indictable maximum only, it's indictable
+    elif max_indictable:
+        return "indictable"
+    # Otherwise (no indictable maximum or both empty), it's summary
+    else:
+        return "summary"
 
 
 # Procedure
@@ -245,10 +255,13 @@ def check_discharge_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-    if summary_minimum["jail"]["amount"] or indictable_minimum["jail"]["amount"]:
+    # Check if there's a mandatory minimum
+    if (summary_minimum and summary_minimum["jail"]["amount"]) or \
+       (indictable_minimum and indictable_minimum["jail"]["amount"]):
         return standard_output(False, None, ["cc_730(1)"], "mandatory minimum sentence")
 
-    elif indictable_maximum["jail"]["amount"] >= 14:
+    # For summary offences, indictable_maximum will be None
+    if indictable_maximum and indictable_maximum["jail"]["amount"] and indictable_maximum["jail"]["amount"] >= 14:
         return standard_output(
             False, None, ["cc_730(1)"], "punishable by 14y or greater"
         )
@@ -288,96 +301,55 @@ def check_cso_availablity(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
+    indictable_max_years = 0
+    if indictable_maximum and indictable_maximum.get("jail", {}).get("amount"):
+        try:
+            indictable_max_years = int(indictable_maximum["jail"]["amount"])
+        except (ValueError, TypeError):
+            indictable_max_years = 0
 
-    # Convert None values to a comparable integer
-    # Confirm whether this is necessary since the v0.0.5 updates to the program
-    try:
-        indictable_maximum["jail"]["amount"] = int(indictable_maximum["jail"]["amount"])
-    except:
-        indictable_maximum["jail"]["amount"] = 0
-
-    cso_available = {}
-
-    if summary_minimum["jail"]["amount"]:
-
-        if (
-            summary_minimum["jail"]["unit"] == "days"
-            or summary_minimum["jail"]["unit"] == "months"
-            or summary_minimum["jail"]["unit"] == "years"
-        ):
+    if summary_minimum and summary_minimum.get("jail", {}).get("amount"):
+        if summary_minimum.get("jail", {}).get("unit") in ["days", "months", "years"]:
             return standard_output(
                 False, None, ["cc_742.1(b)"], "mandatory minimum term of imprisonment"
             )
-
         else:
             return standard_output(True, None, ["cc_742.1"], "no mandatory minimum")
 
-    elif indictable_minimum["jail"]["amount"]:
-
-        if (
-            indictable_minimum["jail"]["unit"] == "days"
-            or indictable_minimum["jail"]["unit"] == "months"
-            or indictable_minimum["jail"]["unit"] == "years"
-        ):
+    elif indictable_minimum and indictable_minimum.get("jail", {}).get("amount"):
+        if indictable_minimum.get("jail", {}).get("unit") in ["days", "months", "years"]:
             return standard_output(
                 False, None, ["cc_742.1(b)"], "mandatory minimum term of imprisonment"
             )
 
-        else:
-            return standard_output(True, None, ["cc_742.1"], None)
-
     elif section in EXCLUDED_CSO_OFFENCES:
-        return standard_output(
-            False, None, ["cc_742.1(c)"], "enumerated excluded offence"
-        )
+        return standard_output(False, None, ["cc_742.1(c)"], "enumerated offence")
 
     elif (
         section in TERRORISM_OFFENCES
-        and int(indictable_maximum["jail"]["amount"]) >= 10
-        and mode == "indictable"
-    ):
-        return standard_output(
-            False, None, ["cc_742.1(d)"], "serious indictable terrorism offence"
-        )
-
-    elif (
-        section in TERRORISM_OFFENCES
-        and int(indictable_maximum["jail"]["amount"]) >= 10
-        and mode == "hybrid"
-    ):
-        return standard_output(
-            True,
-            "summary conviction only",
-            ["cc_742.1(d)"],
-            "serious indictable terrorism offence",
-        )
-
-    elif (
-        section in CRIMINAL_ORGANIZATION_OFFENCES
-        and int(indictable_maximum["jail"]["amount"]) >= 10
+        and indictable_max_years >= 10
         and mode == "indictable"
     ):
         return standard_output(
             False,
-            "summary conviction only",
+            None,
             ["cc_742.1(d)"],
-            "serious indictable criminal organization offence",
+            "terrorism or criminal organization offence, punishable by 10y or more, prosecuted by indictment",
         )
 
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
-        and int(indictable_maximum["jail"]["amount"]) >= 10
-        and mode == "hybrid"
+        and indictable_max_years >= 10
+        and mode == "indictable"
     ):
         return standard_output(
-            True,
-            "summary conviction only",
+            False,
+            None,
             ["cc_742.1(d)"],
-            "serious indictable criminal organization offence",
+            "terrorism or criminal organization offence, punishable by 10y or more, prosecuted by indictment",
         )
 
-    else:
-        return standard_output(True, None, ["cc_742.1"], "no mandatory minimum and no excluded offence")
+    return standard_output(True, None, ["cc_742.1"], "no mandatory minimum")
 
 
 def check_intermittent_available(
@@ -742,9 +714,11 @@ def check_dna_designation(
         return standard_output(True, None, ["cc_487.04"], "secondary designated offence")
 
     elif (
-        (mode == "indictable" or mode == "hybrid")
-        and quantum["jail"]["unit"] == "years"
-        and int(quantum["jail"]["amount"]) >= 5
+        quantum is not None
+        and (mode == "indictable" or mode == "hybrid")
+        and quantum.get("jail", {}).get("unit") == "years"
+        and quantum.get("jail", {}).get("amount") is not None
+        and int(quantum.get("jail", {}).get("amount", 0)) >= 5
     ):
         return standard_output(True, None, ["cc_487.04"], "secondary designated offence")
 
