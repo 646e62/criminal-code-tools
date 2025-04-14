@@ -42,21 +42,32 @@ def load_offences():
 def parse_minimum(min_value):
     """Parse minimum sentence value into a dictionary format."""
     empty_result = {
-        "jail": {"amount": 0, "unit": None},
-        "fine": {"amount": 0, "unit": None}
+        "jail": {"amount": None, "unit": None},
+        "fine": {"amount": None, "unit": None}
     }
     
     if pd.isna(min_value) or not min_value:
         return empty_result
     
-    match = re.match(r'(\d+)([dmy])', min_value)
-    if match:
-        amount, unit = match.groups()
+    # Check for fine amount (e.g., "1000$")
+    fine_match = re.match(r'(\d+)\$', min_value)
+    if fine_match:
+        amount = fine_match.group(1)
+        return {
+            "jail": {"amount": None, "unit": None},
+            "fine": {"amount": int(amount), "unit": None}
+        }
+    
+    # Check for jail time (e.g., "90d", "6m", "2y")
+    jail_match = re.match(r'(\d+)([dmy])', min_value)
+    if jail_match:
+        amount, unit = jail_match.groups()
         unit_map = {'d': 'days', 'm': 'months', 'y': 'years'}
         return {
             "jail": {"amount": int(amount), "unit": unit_map[unit]},
-            "fine": {"amount": 0, "unit": None}
+            "fine": {"amount": None, "unit": None}
         }
+    
     return empty_result
 
 def parse_maximum(max_value):
@@ -242,8 +253,9 @@ def offence_grid(request):
                         min_sc=offence_data[6]
                     )
                     
-                    # Add mode to summary
+                    # Add mode and description to summary
                     summary['mode'] = mode.title()
+                    summary['description'] = offence_data[2]
                     
                     # Get collateral consequences
                     consequences = get_collateral_consequences(

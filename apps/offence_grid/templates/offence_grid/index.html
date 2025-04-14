@@ -140,7 +140,7 @@
                         <div class="p-4 bg-gray-50 dark:bg-gray-700 monokai:bg-monokai-darkGray rounded-md">
                             <div class="space-y-4">
                                 <div>
-                                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-keyword">{{ offence }}</h4>
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-keyword">{{ offence }} - {{ result.summary.description }}</h4>
                                 </div>
 
                                 <!-- Offence Summary -->
@@ -184,7 +184,9 @@
                                                     {% if result.summary.summary_minimum.jail.amount %}
                                                         {% if result.summary.summary_minimum.jail.amount == 255 and result.summary.summary_minimum.jail.unit == 'years' %}Life{% else %}{{ result.summary.summary_minimum.jail.amount }} {{ result.summary.summary_minimum.jail.unit }}{% endif %}
                                                     {% endif %}
-                                                    {% if result.summary.summary_minimum.fine.amount %}{% if result.summary.summary_minimum.jail.amount %} or {% endif %}${{ result.summary.summary_minimum.fine.amount }}{% endif %}
+                                                    {% if result.summary.summary_minimum.fine.amount %}
+                                                        {% if result.summary.summary_minimum.jail.amount %} or {% endif %}${{ result.summary.summary_minimum.fine.amount }}
+                                                    {% endif %}
                                                 </li>
                                                 {% endif %}
                                                 {% if result.summary.indictable_minimum.jail.amount or result.summary.indictable_minimum.fine.amount %}
@@ -192,7 +194,9 @@
                                                     {% if result.summary.indictable_minimum.jail.amount %}
                                                         {% if result.summary.indictable_minimum.jail.amount == 255 and result.summary.indictable_minimum.jail.unit == 'years' %}Life{% else %}{{ result.summary.indictable_minimum.jail.amount }} {{ result.summary.indictable_minimum.jail.unit }}{% endif %}
                                                     {% endif %}
-                                                    {% if result.summary.indictable_minimum.fine.amount %}{% if result.summary.indictable_minimum.jail.amount %} or {% endif %}${{ result.summary.indictable_minimum.fine.amount }}{% endif %}
+                                                    {% if result.summary.indictable_minimum.fine.amount %}
+                                                        {% if result.summary.indictable_minimum.jail.amount %} or {% endif %}${{ result.summary.indictable_minimum.fine.amount }}
+                                                    {% endif %}
                                                 </li>
                                                 {% endif %}
                                             </ul>
