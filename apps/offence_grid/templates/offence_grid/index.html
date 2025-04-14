@@ -144,9 +144,9 @@
                                 </div>
 
                                 <!-- Offence Summary -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Offence Summary</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-12 border-t pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Offence Summary</h5>
+                                    <div class="mt-4 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">Mode:</span> {{ result.summary.mode }}
                                         </div>
@@ -208,9 +208,9 @@
                                 </div>
 
                                 <!-- Procedure -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Procedure</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-16 border-t pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Procedure</h5>
+                                    <div class="mt-4 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">Preliminary Inquiry:</span>
                                             {% if result.procedure.prelim_available.status.available %}
@@ -228,9 +228,9 @@
                                 </div>
 
                                 <!-- Bail -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Bail</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-16 border-t pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Bail</h5>
+                                    <div class="mt-4 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">Reverse Onus:</span>
                                             {% if result.bail.reverse_onus.status.available %}
@@ -259,9 +259,9 @@
                                 </div>
 
                                 <!-- Collateral Consequences -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Collateral Consequences</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-16 border-t pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Collateral Consequences</h5>
+                                    <div class="mt-4 space-y-2">
                                         {% for immigration_result in result.immigration %}
                                         <div class="text-sm">
                                             <span class="font-medium">Immigration/Admissibility:</span>
@@ -283,9 +283,9 @@
                                 </div>
 
                                 <!-- Sentencing Options -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Sentencing Options</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-16 border-t pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Sentencing Options</h5>
+                                    <div class="mt-4 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">Discharge:</span>
                                             {% if result.sentencing_options.discharge.status.available %}
@@ -345,9 +345,9 @@
                                 </div>
 
                                 <!-- Ancillary Orders -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Ancillary Orders</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-16 border-t pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Ancillary Orders</h5>
+                                    <div class="mt-4 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">DNA Order:</span>
                                             {% if result.ancillary_orders.dna.notes == "primary designated offence" %}
