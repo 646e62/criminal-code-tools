@@ -63,11 +63,50 @@ def parse_maximum(max_value):
     """Parse maximum sentence value into a dictionary format."""
     if pd.isna(max_value) or not max_value:
         return None
-    if isinstance(max_value, str) and max_value.endswith('y'):
+    
+    # Handle combined fine and jail time (e.g., "100$&90d" or "100&90d")
+    if isinstance(max_value, str) and '&' in max_value:
+        fine_part, jail_part = max_value.split('&')
+        # Handle fine part - strip $ if present
+        fine_amount = int(fine_part.rstrip('$')) if fine_part.strip('$').isdigit() else None
+        
+        # Parse jail part
+        if jail_part.endswith('y'):
+            jail_amount = int(jail_part.rstrip('y'))
+            jail_unit = "years"
+        elif jail_part.endswith('m'):
+            jail_amount = int(jail_part.rstrip('m'))
+            jail_unit = "months"
+        elif jail_part.endswith('d'):
+            jail_amount = int(jail_part.rstrip('d'))
+            jail_unit = "days"
+        else:
+            jail_amount = None
+            jail_unit = None
+            
         return {
-            "jail": {"amount": int(max_value.rstrip('y')), "unit": "years"},
-            "fine": {"amount": None, "unit": None}
+            "jail": {"amount": jail_amount, "unit": jail_unit},
+            "fine": {"amount": fine_amount, "unit": "dollars"}
         }
+    
+    # Handle jail time only
+    if isinstance(max_value, str):
+        if max_value.endswith('y'):
+            return {
+                "jail": {"amount": int(max_value.rstrip('y')), "unit": "years"},
+                "fine": {"amount": None, "unit": None}
+            }
+        elif max_value.endswith('m'):
+            return {
+                "jail": {"amount": int(max_value.rstrip('m')), "unit": "months"},
+                "fine": {"amount": None, "unit": None}
+            }
+        elif max_value.endswith('d'):
+            return {
+                "jail": {"amount": int(max_value.rstrip('d')), "unit": "days"},
+                "fine": {"amount": None, "unit": None}
+            }
+    
     return None
 
 def get_collateral_consequences(section, max_indictable, max_sc, min_indictable, min_sc):
