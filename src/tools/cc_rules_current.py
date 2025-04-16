@@ -670,6 +670,72 @@ def check_fine_probation_intermittent(
     return fine_probation_intermittent_available
 
 
+def check_jury_trial_available(section: str, indictable_maximum: Dict[str, Dict[str, Union[int, str]]]) -> Dict[str, Union[bool, None, List[str], str]]:
+    """
+    Determines if a jury trial is available for an offence based on the maximum indictable penalty and s. 469.
+    Rule 1: Jury trial is available if the offence is punishable by five years or more imprisonment.
+    Rule 2: If the offence appears in section 469, a jury trial is required.
+
+    Args:
+        section (str): The section of the Criminal Code
+        indictable_maximum (Dict): The maximum sentence for indictable proceedings, expects a structure like:
+            {"jail": {"amount": int, "unit": str}}
+
+    Returns:
+        Dict: A dictionary containing:
+            - available (bool): Whether jury trial is available
+            - quantum (Optional[str]): The quantum of sentence, if applicable
+            - sections (List[str]): Relevant Criminal Code sections
+            - explanation (str): Explanation of the determination
+            - required (Optional[bool]): True if jury trial is required (for s. 469)
+    """
+    # Check for s. 469 offences (jury trial required)
+    section_469_result = check_section_469_offence(section)
+    if section_469_result["status"]["available"]:
+        return {
+            **standard_output(
+                True,
+                "Required",
+                section_469_result.get("sections", ["cc_469"]),
+                "Jury trial required: offence is listed in s. 469."
+            ),
+            "jury_required": True  # for template color logic
+        }
+    # Normal eligibility check
+    if not indictable_maximum or not isinstance(indictable_maximum, dict):
+        return standard_output(
+            False,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial not available: no indictable maximum provided."
+        )
+    jail = indictable_maximum.get("jail")
+    if not jail or not isinstance(jail, dict):
+        return standard_output(
+            False,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial not available: no jail quantum provided."
+        )
+    amount = jail.get("amount")
+    unit = jail.get("unit")
+    # Only consider if unit is years and amount >= 5
+    if unit == "years" and isinstance(amount, int) and amount >= 5:
+        return standard_output(
+            True,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial available: offence punishable by five years or more imprisonment."
+        )
+    else:
+        return standard_output(
+            False,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial not available: offence not punishable by five years or more imprisonment."
+        )
+
+
 # Ancillary orders
 def check_dna_designation(
     offence: List[str], mode: str, quantum: Dict[str, Dict[str, Union[int, str]]]

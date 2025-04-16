@@ -224,6 +224,23 @@
                                             {% endif %}
                                             {% endif %}
                                         </div>
+                                        <div class="text-sm">
+                                            <span class="font-medium">Jury Trial:</span>
+                                            {% if result.procedure.jury_trial_available.status.available %}
+                                                {% if result.procedure.jury_trial_available.jury_required %}
+                                                    <span class="text-yellow-600 dark:text-yellow-400">Required</span>
+                                                {% else %}
+                                                    <span class="text-green-600 dark:text-green-400">Available</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="text-red-600 dark:text-red-400">Not Available</span>
+                                            {% endif %}
+                                            {% if result.procedure.jury_trial_available.notes %}
+                                            {% if result.procedure.jury_footnote %}
+                                            <a href="#footnote-{{ result.procedure.jury_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.jury_footnote.anchor }}">[{{ result.procedure.jury_footnote.number }}]</a>
+                                            {% endif %}
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
 

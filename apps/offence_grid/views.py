@@ -21,7 +21,8 @@ from tools.cc_rules_current import (
     check_section_469_offence,
     check_section_515_mandatory_weapons_prohibition,
     check_offence_type,
-    check_prelim_available
+    check_prelim_available,
+    check_jury_trial_available
 )
 
 def format_section(section):
@@ -155,9 +156,26 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
     procedure = {
         'prelim_available': check_prelim_available(
             indictable_maximum=indictable_max
+        ),
+        'jury_trial_available': check_jury_trial_available(
+            section=section,
+            indictable_maximum=indictable_max
         )
     }
     consequences['procedure'] = procedure
+
+    # Jury trial footnote
+    jury_footnote_obj = None
+    if procedure['jury_trial_available'].get('notes'):
+        jury_footnote_obj = {
+            'label': 'jury',
+            'text': procedure['jury_trial_available']['notes'] + (f" ({', '.join(procedure['jury_trial_available'].get('sections', []))})" if procedure['jury_trial_available'].get('sections') else ""),
+            'anchor': f"jury-PLACEHOLDER",
+            'number': None
+        }
+        consequences['procedure']['jury_footnote'] = jury_footnote_obj
+    else:
+        consequences['procedure']['jury_footnote'] = None
 
     # Get sentencing options
     consequences['sentencing_options'] = {
@@ -311,15 +329,18 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
     # 1. Procedure (prelim)
     if prelim_footnote_obj:
         ordered_footnotes.append(prelim_footnote_obj)
-    # 2. Immigration (may be multiple)
+    # 2. Procedure (jury)
+    if jury_footnote_obj:
+        ordered_footnotes.append(jury_footnote_obj)
+    # 3. Immigration (may be multiple)
     for imm_result in immigration_results:
         if imm_result.get('footnote'):
             ordered_footnotes.append(imm_result['footnote'])
-    # 3. Sentencing Options
+    # 4. Sentencing Options
     for key in ['discharge', 'cso', 'intermittent', 'suspended']:
         if so_footnotes.get(key):
             ordered_footnotes.append(so_footnotes[key])
-    # 4. Ancillary Orders
+    # 5. Ancillary Orders
     if ao_footnotes['dna']:
         ordered_footnotes.append(ao_footnotes['dna'])
     for soira_footnote in ao_footnotes['soira']:
