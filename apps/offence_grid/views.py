@@ -144,11 +144,12 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
 
     # Get immigration consequences
     max_years = indictable_max["jail"]["amount"] if indictable_max and indictable_max["jail"]["amount"] else 0
-    consequences['immigration'] = ca_collateral_consequences.check_inadmissibility(
+    immigration_results = ca_collateral_consequences.check_inadmissibility(
         section=section,
         mode=mode,
         indictable_maximum=max_years
     )
+    consequences['immigration'] = immigration_results
 
     # Get procedure information
     procedure = {
@@ -203,6 +204,136 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
             min_sc
         ])
     }
+
+    # --- Footnotes system ---
+    footnotes = []
+    footnote_refs = {}
+
+    # Immigration footnotes (attach to immigration_result)
+    for imm_result in immigration_results:
+        if imm_result.get('sections'):
+            footnote_obj = {
+                'label': 'immigration',
+                'text': f"Relevant sections: {', '.join(imm_result['sections'])}",
+                'anchor': f"imm-{len(footnotes)+1}",
+                'number': None
+            }
+            imm_result['footnote'] = footnote_obj
+            footnotes.append(('immigration', footnote_obj, imm_result))
+    consequences['immigration'] = immigration_results
+
+    # Procedure footnote (preliminary inquiry)
+    prelim_footnote_obj = None
+    if procedure['prelim_available'].get('notes'):
+        prelim_footnote_obj = {
+            'label': 'prelim',
+            'text': procedure['prelim_available']['notes'] + (f" ({', '.join(procedure['prelim_available'].get('sections', []))})" if procedure['prelim_available'].get('sections') else ""),
+            'anchor': f"prelim-PLACEHOLDER",
+            'number': None
+        }
+        consequences['procedure']['prelim_footnote'] = prelim_footnote_obj
+    else:
+        consequences['procedure']['prelim_footnote'] = None
+
+    # Sentencing Options footnotes
+    so = consequences['sentencing_options']
+    so_footnotes = {}
+    for key, label in [('discharge', 'dis'), ('cso', 'cso'), ('intermittent', 'int'), ('suspended', 'sus')]:
+        note = so[key].get('notes')
+        if note:
+            footnote_obj = {
+                'label': label,
+                'text': note,
+                'anchor': f"{label}-PLACEHOLDER",
+                'number': None
+            }
+            so[key]['footnote'] = footnote_obj
+            so_footnotes[key] = footnote_obj
+        else:
+            so[key]['footnote'] = None
+
+    # Ancillary Orders footnotes
+    ao = consequences['ancillary_orders']
+    ao_footnotes = {'dna': None, 'soira': [], 'weapons': None}
+    # DNA
+    if ao['dna'].get('notes'):
+        footnote_obj = {
+            'label': 'dna',
+            'text': ao['dna']['notes'] + (f" ({', '.join(ao['dna'].get('sections', []))})" if ao['dna'].get('sections') else ""),
+            'anchor': f"dna-PLACEHOLDER",
+            'number': None
+        }
+        ao['dna']['footnote'] = footnote_obj
+        ao_footnotes['dna'] = footnote_obj
+    else:
+        ao['dna']['footnote'] = None
+    # SOIRA (may be a list)
+    if isinstance(ao['soira'], list):
+        for idx, item in enumerate(ao['soira']):
+            if item.get('notes'):
+                footnote_obj = {
+                    'label': f'soira{idx+1}',
+                    'text': item['notes'] + (f" ({', '.join(item.get('sections', []))})" if item.get('sections') else ""),
+                    'anchor': f"soira-{idx+1}-PLACEHOLDER",
+                    'number': None
+                }
+                item['footnote'] = footnote_obj
+                ao_footnotes['soira'].append(footnote_obj)
+            else:
+                item['footnote'] = None
+    else:
+        if ao['soira'].get('notes'):
+            footnote_obj = {
+                'label': 'soira',
+                'text': ao['soira']['notes'] + (f" ({', '.join(ao['soira'].get('sections', []))})" if ao['soira'].get('sections') else ""),
+                'anchor': f"soira-PLACEHOLDER",
+                'number': None
+            }
+            ao['soira']['footnote'] = footnote_obj
+            ao_footnotes['soira'].append(footnote_obj)
+        else:
+            ao['soira']['footnote'] = None
+    # Weapons
+    if ao['weapons'].get('notes'):
+        footnote_obj = {
+            'label': 'mwp',
+            'text': ao['weapons']['notes'] + (f" ({', '.join(ao['weapons'].get('sections', []))})" if ao['weapons'].get('sections') else ""),
+            'anchor': f"mwp-PLACEHOLDER",
+            'number': None
+        }
+        ao['weapons']['footnote'] = footnote_obj
+        ao_footnotes['weapons'] = footnote_obj
+    else:
+        ao['weapons']['footnote'] = None
+
+    # --- Order footnotes to match template appearance (Procedure first, then Immigration, etc.) ---
+    ordered_footnotes = []
+    # 1. Procedure (prelim)
+    if prelim_footnote_obj:
+        ordered_footnotes.append(prelim_footnote_obj)
+    # 2. Immigration (may be multiple)
+    for imm_result in immigration_results:
+        if imm_result.get('footnote'):
+            ordered_footnotes.append(imm_result['footnote'])
+    # 3. Sentencing Options
+    for key in ['discharge', 'cso', 'intermittent', 'suspended']:
+        if so_footnotes.get(key):
+            ordered_footnotes.append(so_footnotes[key])
+    # 4. Ancillary Orders
+    if ao_footnotes['dna']:
+        ordered_footnotes.append(ao_footnotes['dna'])
+    for soira_footnote in ao_footnotes['soira']:
+        ordered_footnotes.append(soira_footnote)
+    if ao_footnotes['weapons']:
+        ordered_footnotes.append(ao_footnotes['weapons'])
+
+    # Assign numbers and anchors
+    for i, footnote in enumerate(ordered_footnotes):
+        footnote['number'] = i + 1
+        # Update anchor to match new number
+        base_anchor = footnote['anchor'].split('-')[0]
+        footnote['anchor'] = f"{base_anchor}-{i+1}"
+    consequences['footnotes'] = ordered_footnotes
 
     return consequences
 
