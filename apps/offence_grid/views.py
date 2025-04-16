@@ -20,7 +20,9 @@ from tools.cc_rules_current import (
     reverse_onus,
     check_section_469_offence,
     check_section_515_mandatory_weapons_prohibition,
-    check_offence_type
+    check_offence_type,
+    check_prelim_available,
+    check_jury_trial_available
 )
 
 def format_section(section):
@@ -42,32 +44,82 @@ def load_offences():
 def parse_minimum(min_value):
     """Parse minimum sentence value into a dictionary format."""
     empty_result = {
-        "jail": {"amount": 0, "unit": None},
-        "fine": {"amount": 0, "unit": None}
+        "jail": {"amount": None, "unit": None},
+        "fine": {"amount": None, "unit": None}
     }
     
     if pd.isna(min_value) or not min_value:
         return empty_result
     
-    match = re.match(r'(\d+)([dmy])', min_value)
-    if match:
-        amount, unit = match.groups()
+    # Check for fine amount (e.g., "1000$")
+    fine_match = re.match(r'(\d+)\$', min_value)
+    if fine_match:
+        amount = fine_match.group(1)
+        return {
+            "jail": {"amount": None, "unit": None},
+            "fine": {"amount": int(amount), "unit": None}
+        }
+    
+    # Check for jail time (e.g., "90d", "6m", "2y")
+    jail_match = re.match(r'(\d+)([dmy])', min_value)
+    if jail_match:
+        amount, unit = jail_match.groups()
         unit_map = {'d': 'days', 'm': 'months', 'y': 'years'}
         return {
             "jail": {"amount": int(amount), "unit": unit_map[unit]},
-            "fine": {"amount": 0, "unit": None}
+            "fine": {"amount": None, "unit": None}
         }
+    
     return empty_result
 
 def parse_maximum(max_value):
     """Parse maximum sentence value into a dictionary format."""
     if pd.isna(max_value) or not max_value:
         return None
-    if isinstance(max_value, str) and max_value.endswith('y'):
+    
+    # Handle combined fine and jail time (e.g., "100$&90d" or "100&90d")
+    if isinstance(max_value, str) and '&' in max_value:
+        fine_part, jail_part = max_value.split('&')
+        # Handle fine part - strip $ if present
+        fine_amount = int(fine_part.rstrip('$')) if fine_part.strip('$').isdigit() else None
+        
+        # Parse jail part
+        if jail_part.endswith('y'):
+            jail_amount = int(jail_part.rstrip('y'))
+            jail_unit = "years"
+        elif jail_part.endswith('m'):
+            jail_amount = int(jail_part.rstrip('m'))
+            jail_unit = "months"
+        elif jail_part.endswith('d'):
+            jail_amount = int(jail_part.rstrip('d'))
+            jail_unit = "days"
+        else:
+            jail_amount = None
+            jail_unit = None
+            
         return {
-            "jail": {"amount": int(max_value.rstrip('y')), "unit": "years"},
-            "fine": {"amount": None, "unit": None}
+            "jail": {"amount": jail_amount, "unit": jail_unit},
+            "fine": {"amount": fine_amount, "unit": "dollars"}
         }
+    
+    # Handle jail time only
+    if isinstance(max_value, str):
+        if max_value.endswith('y'):
+            return {
+                "jail": {"amount": int(max_value.rstrip('y')), "unit": "years"},
+                "fine": {"amount": None, "unit": None}
+            }
+        elif max_value.endswith('m'):
+            return {
+                "jail": {"amount": int(max_value.rstrip('m')), "unit": "months"},
+                "fine": {"amount": None, "unit": None}
+            }
+        elif max_value.endswith('d'):
+            return {
+                "jail": {"amount": int(max_value.rstrip('d')), "unit": "days"},
+                "fine": {"amount": None, "unit": None}
+            }
+    
     return None
 
 def get_collateral_consequences(section, max_indictable, max_sc, min_indictable, min_sc):
@@ -93,11 +145,37 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
 
     # Get immigration consequences
     max_years = indictable_max["jail"]["amount"] if indictable_max and indictable_max["jail"]["amount"] else 0
-    consequences['immigration'] = ca_collateral_consequences.check_inadmissibility(
+    immigration_results = ca_collateral_consequences.check_inadmissibility(
         section=section,
         mode=mode,
         indictable_maximum=max_years
     )
+    consequences['immigration'] = immigration_results
+
+    # Get procedure information
+    procedure = {
+        'prelim_available': check_prelim_available(
+            indictable_maximum=indictable_max
+        ),
+        'jury_trial_available': check_jury_trial_available(
+            section=section,
+            indictable_maximum=indictable_max
+        )
+    }
+    consequences['procedure'] = procedure
+
+    # Jury trial footnote
+    jury_footnote_obj = None
+    if procedure['jury_trial_available'].get('notes'):
+        jury_footnote_obj = {
+            'label': 'jury',
+            'text': procedure['jury_trial_available']['notes'] + (f" ({', '.join(procedure['jury_trial_available'].get('sections', []))})" if procedure['jury_trial_available'].get('sections') else ""),
+            'anchor': f"jury-PLACEHOLDER",
+            'number': None
+        }
+        consequences['procedure']['jury_footnote'] = jury_footnote_obj
+    else:
+        consequences['procedure']['jury_footnote'] = None
 
     # Get sentencing options
     consequences['sentencing_options'] = {
@@ -145,6 +223,139 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
         ])
     }
 
+    # --- Footnotes system ---
+    footnotes = []
+    footnote_refs = {}
+
+    # Immigration footnotes (attach to immigration_result)
+    for imm_result in immigration_results:
+        if imm_result.get('sections'):
+            footnote_obj = {
+                'label': 'immigration',
+                'text': f"Relevant sections: {', '.join(imm_result['sections'])}",
+                'anchor': f"imm-{len(footnotes)+1}",
+                'number': None
+            }
+            imm_result['footnote'] = footnote_obj
+            footnotes.append(('immigration', footnote_obj, imm_result))
+    consequences['immigration'] = immigration_results
+
+    # Procedure footnote (preliminary inquiry)
+    prelim_footnote_obj = None
+    if procedure['prelim_available'].get('notes'):
+        prelim_footnote_obj = {
+            'label': 'prelim',
+            'text': procedure['prelim_available']['notes'] + (f" ({', '.join(procedure['prelim_available'].get('sections', []))})" if procedure['prelim_available'].get('sections') else ""),
+            'anchor': f"prelim-PLACEHOLDER",
+            'number': None
+        }
+        consequences['procedure']['prelim_footnote'] = prelim_footnote_obj
+    else:
+        consequences['procedure']['prelim_footnote'] = None
+
+    # Sentencing Options footnotes
+    so = consequences['sentencing_options']
+    so_footnotes = {}
+    for key, label in [('discharge', 'dis'), ('cso', 'cso'), ('intermittent', 'int'), ('suspended', 'sus')]:
+        note = so[key].get('notes')
+        if note:
+            footnote_obj = {
+                'label': label,
+                'text': note,
+                'anchor': f"{label}-PLACEHOLDER",
+                'number': None
+            }
+            so[key]['footnote'] = footnote_obj
+            so_footnotes[key] = footnote_obj
+        else:
+            so[key]['footnote'] = None
+
+    # Ancillary Orders footnotes
+    ao = consequences['ancillary_orders']
+    ao_footnotes = {'dna': None, 'soira': [], 'weapons': None}
+    # DNA
+    if ao['dna'].get('notes'):
+        footnote_obj = {
+            'label': 'dna',
+            'text': ao['dna']['notes'] + (f" ({', '.join(ao['dna'].get('sections', []))})" if ao['dna'].get('sections') else ""),
+            'anchor': f"dna-PLACEHOLDER",
+            'number': None
+        }
+        ao['dna']['footnote'] = footnote_obj
+        ao_footnotes['dna'] = footnote_obj
+    else:
+        ao['dna']['footnote'] = None
+    # SOIRA (may be a list)
+    if isinstance(ao['soira'], list):
+        for idx, item in enumerate(ao['soira']):
+            if item.get('notes'):
+                footnote_obj = {
+                    'label': f'soira{idx+1}',
+                    'text': item['notes'] + (f" ({', '.join(item.get('sections', []))})" if item.get('sections') else ""),
+                    'anchor': f"soira-{idx+1}-PLACEHOLDER",
+                    'number': None
+                }
+                item['footnote'] = footnote_obj
+                ao_footnotes['soira'].append(footnote_obj)
+            else:
+                item['footnote'] = None
+    else:
+        if ao['soira'].get('notes'):
+            footnote_obj = {
+                'label': 'soira',
+                'text': ao['soira']['notes'] + (f" ({', '.join(ao['soira'].get('sections', []))})" if ao['soira'].get('sections') else ""),
+                'anchor': f"soira-PLACEHOLDER",
+                'number': None
+            }
+            ao['soira']['footnote'] = footnote_obj
+            ao_footnotes['soira'].append(footnote_obj)
+        else:
+            ao['soira']['footnote'] = None
+    # Weapons
+    if ao['weapons'].get('notes'):
+        footnote_obj = {
+            'label': 'mwp',
+            'text': ao['weapons']['notes'] + (f" ({', '.join(ao['weapons'].get('sections', []))})" if ao['weapons'].get('sections') else ""),
+            'anchor': f"mwp-PLACEHOLDER",
+            'number': None
+        }
+        ao['weapons']['footnote'] = footnote_obj
+        ao_footnotes['weapons'] = footnote_obj
+    else:
+        ao['weapons']['footnote'] = None
+
+    # --- Order footnotes to match template appearance (Procedure first, then Immigration, etc.) ---
+    ordered_footnotes = []
+    # 1. Procedure (prelim)
+    if prelim_footnote_obj:
+        ordered_footnotes.append(prelim_footnote_obj)
+    # 2. Procedure (jury)
+    if jury_footnote_obj:
+        ordered_footnotes.append(jury_footnote_obj)
+    # 3. Immigration (may be multiple)
+    for imm_result in immigration_results:
+        if imm_result.get('footnote'):
+            ordered_footnotes.append(imm_result['footnote'])
+    # 4. Sentencing Options
+    for key in ['discharge', 'cso', 'intermittent', 'suspended']:
+        if so_footnotes.get(key):
+            ordered_footnotes.append(so_footnotes[key])
+    # 5. Ancillary Orders
+    if ao_footnotes['dna']:
+        ordered_footnotes.append(ao_footnotes['dna'])
+    for soira_footnote in ao_footnotes['soira']:
+        ordered_footnotes.append(soira_footnote)
+    if ao_footnotes['weapons']:
+        ordered_footnotes.append(ao_footnotes['weapons'])
+
+    # Assign numbers and anchors
+    for i, footnote in enumerate(ordered_footnotes):
+        footnote['number'] = i + 1
+        # Update anchor to match new number
+        base_anchor = footnote['anchor'].split('-')[0]
+        footnote['anchor'] = f"{base_anchor}-{i+1}"
+    consequences['footnotes'] = ordered_footnotes
+
     return consequences
 
 def get_offence_summary(section, max_indictable, max_sc, min_indictable, min_sc):
@@ -167,9 +378,10 @@ def get_offence_summary(section, max_indictable, max_sc, min_indictable, min_sc)
         summary['summary_maximum'] = {'jail': {'amount': 729, 'unit': 'days'}, 'fine': {'amount': None, 'unit': None}}
     elif max_sc_dict and (max_sc_dict['jail']['amount'] or max_sc_dict['fine']['amount']):
         summary['summary_maximum'] = max_sc_dict
-    else:
-        summary['summary_maximum'] = {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
-    summary['summary_minimum'] = min_sc_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
+    
+    # Only add summary minimum if we have a summary maximum
+    if 'summary_maximum' in summary:
+        summary['summary_minimum'] = min_sc_dict or {'jail': {'amount': None, 'unit': None}, 'fine': {'amount': None, 'unit': None}}
     
     return summary
 
@@ -202,8 +414,9 @@ def offence_grid(request):
                         min_sc=offence_data[6]
                     )
                     
-                    # Add mode to summary
+                    # Add mode and description to summary
                     summary['mode'] = mode.title()
+                    summary['description'] = offence_data[2]
                     
                     # Get collateral consequences
                     consequences = get_collateral_consequences(

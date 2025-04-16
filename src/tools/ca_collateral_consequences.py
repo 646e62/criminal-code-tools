@@ -77,6 +77,16 @@ def check_inadmissibility(section, mode, indictable_maximum):
                 )
             )
 
+    if mode == "summary":
+        inadmissibilty_list.append(
+            standard_output(
+                False,
+                None,
+                None,
+                None
+            )
+        )
+
     # If no consequences were found, add a "none" result
     if not inadmissibilty_list:
         inadmissibilty_list.append(

@@ -63,9 +63,6 @@ def check_offence_type(offence: List[str]) -> str:
     max_indictable = offence[3]
     max_sc = offence[4]
 
-    print(f"DEBUG: max_indictable = '{max_indictable}'")
-    print(f"DEBUG: max_sc = '{max_sc}'")
-
     # If both maximums are present, it's hybrid
     if max_indictable and max_sc:
         return "hybrid"
@@ -78,34 +75,17 @@ def check_offence_type(offence: List[str]) -> str:
 
 
 # Procedure
-def check_prelim_available(
-    indictable_maximum: str,
-) -> Dict[str, Union[bool, None, List[str], str]]:
-    """
-    Check if the preliminary inquiry is available for a given offence.
-
-    Args:
-        indictable_maximum (str): The maximum sentence for indictable proceedings
-
-    Returns:
-        Dict: A dictionary containing:
-            - available (bool): Whether preliminary inquiry is available
-            - quantum (Optional[str]): The quantum of sentence, if applicable
-            - sections (List[str]): Relevant Criminal Code sections
-            - explanation (str): Explanation of the determination
-
-    Raises:
-        TypeError: If indictable_maximum is not a string
-    """
-    if not isinstance(indictable_maximum, str):
-        raise TypeError("indictable_maximum must be a string")
-
-    if indictable_maximum == "14y" or indictable_maximum == "255y":
+def check_prelim_available(indictable_maximum):
+    if not isinstance(indictable_maximum, dict):
+        return standard_output(False, None, ["cc_535"], "indictable_maximum not a dict")
+    jail = indictable_maximum.get('jail', {})
+    amount = jail.get('amount')
+    unit = jail.get('unit')
+    if (amount == 14 and unit == 'years') or (amount == 255 and unit == 'years'):
         prelim_available = standard_output(
             True, None, ["cc_535"], "maximum term of 14y or greater"
         )
         return prelim_available
-
     else:
         prelim_available = standard_output(
             False, None, ["cc_535"], "maximum of less than 14y"
@@ -240,7 +220,7 @@ def check_discharge_available(
 ) -> Dict[str, Union[bool, None, List[str], str]]:
     """
     Discharges are available when the following conditions obtain:
-    - The offence does not have a mandatory minimum of any kind
+    - The offence does not have a mandatory minimum of any kind (jail or fine)
     - The offence is not punishable by 14y or greater
 
     Args:
@@ -255,9 +235,9 @@ def check_discharge_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-    # Check if there's a mandatory minimum
-    if (summary_minimum and summary_minimum["jail"]["amount"]) or \
-       (indictable_minimum and indictable_minimum["jail"]["amount"]):
+    # Check if there's a mandatory minimum (jail or fine)
+    if (summary_minimum and (summary_minimum["jail"]["amount"] or summary_minimum["fine"]["amount"])) or \
+       (indictable_minimum and (indictable_minimum["jail"]["amount"] or indictable_minimum["fine"]["amount"])):
         return standard_output(False, None, ["cc_730(1)"], "mandatory minimum sentence")
 
     # For summary offences, indictable_maximum will be None
@@ -280,7 +260,7 @@ def check_cso_availablity(
     Check if the charge screening officer is available for a given offence. An offence
     qualifies for a CSO if the following conditions obtain:
 
-    - The offence does not have a mandatory minimum term of imprisonment
+    - The offence does not have a mandatory minimum of any kind (jail or fine)
     - The offence is not an enumerated offence
     - The offence is not:
       - A terrorism or criminal organization offence; AND
@@ -298,7 +278,7 @@ def check_cso_availablity(
         Dict: A dictionary containing:
             - available (bool): Whether CSO is available
             - quantum (Optional[str]): The quantum of sentence, if applicable
-            - sections (List[str]): Relevant Criminal Code sections
+            - sections (List[str]]: Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
     indictable_max_years = 0
@@ -308,19 +288,16 @@ def check_cso_availablity(
         except (ValueError, TypeError):
             indictable_max_years = 0
 
-    if summary_minimum and summary_minimum.get("jail", {}).get("amount"):
-        if summary_minimum.get("jail", {}).get("unit") in ["days", "months", "years"]:
-            return standard_output(
-                False, None, ["cc_742.1(b)"], "mandatory minimum term of imprisonment"
-            )
-        else:
-            return standard_output(True, None, ["cc_742.1"], "no mandatory minimum")
+    # Check for any mandatory minimum (jail or fine)
+    if summary_minimum and (summary_minimum.get("jail", {}).get("amount") or summary_minimum.get("fine", {}).get("amount")):
+        return standard_output(
+            False, None, ["cc_742.1(b)"], "mandatory minimum sentence"
+        )
 
-    elif indictable_minimum and indictable_minimum.get("jail", {}).get("amount"):
-        if indictable_minimum.get("jail", {}).get("unit") in ["days", "months", "years"]:
-            return standard_output(
-                False, None, ["cc_742.1(b)"], "mandatory minimum term of imprisonment"
-            )
+    elif indictable_minimum and (indictable_minimum.get("jail", {}).get("amount") or indictable_minimum.get("fine", {}).get("amount")):
+        return standard_output(
+            False, None, ["cc_742.1(b)"], "mandatory minimum sentence"
+        )
 
     elif section in EXCLUDED_CSO_OFFENCES:
         return standard_output(False, None, ["cc_742.1(c)"], "enumerated offence")
@@ -358,9 +335,8 @@ def check_intermittent_available(
 ) -> Dict[str, Union[bool, None, List[str], str]]:
     """
     Where facilities are available, the court may order that anyone sentenced
-    to 90 days or less serve their sentence intermittently. The only excluded
-    offences are those with a mandatory minimum term of imprisonment longer
-    than 90 days.
+    to 90 days or less serve their sentence intermittently. Intermittent sentences
+    are not available when there is any mandatory minimum penalty (jail or fine).
 
     Args:
         summary_minimum (Dict): The minimum sentence for summary proceedings
@@ -373,7 +349,14 @@ def check_intermittent_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-    # Convert minimums to days for comparison
+    # First check if there's a mandatory minimum fine
+    if (summary_minimum and summary_minimum["fine"]["amount"]) or \
+       (indictable_minimum and indictable_minimum["fine"]["amount"]):
+        return standard_output(
+            False, None, ["cc_732"], "mandatory minimum fine"
+        )
+
+    # Convert jail minimums to days for comparison
     summary_days = 0
     indictable_days = 0
 
@@ -395,18 +378,18 @@ def check_intermittent_available(
 
     if summary_days == 0 and indictable_days == 0:
         return standard_output(
-            True, None, ["cc_732(1)"], "no minimum term of imprisonment"
+            True, None, ["cc_732(1)"], "no mandatory minimum"
         )
     elif summary_days <= 90 and indictable_days <= 90:
         return standard_output(
-            True, None, ["cc_732(1)"], "minimum does not exceed 90 days"
+            True, None, ["cc_732(1)"], "jail minimum does not exceed 90 days"
         )
     else:
         return standard_output(
             False,
             None,
             ["cc_732"],
-            "mandatory minimum term of imprisonment exceeds 90 days",
+            "mandatory minimum jail term exceeds 90 days",
         )
 
 
@@ -685,6 +668,72 @@ def check_fine_probation_intermittent(
     )
 
     return fine_probation_intermittent_available
+
+
+def check_jury_trial_available(section: str, indictable_maximum: Dict[str, Dict[str, Union[int, str]]]) -> Dict[str, Union[bool, None, List[str], str]]:
+    """
+    Determines if a jury trial is available for an offence based on the maximum indictable penalty and s. 469.
+    Rule 1: Jury trial is available if the offence is punishable by five years or more imprisonment.
+    Rule 2: If the offence appears in section 469, a jury trial is required.
+
+    Args:
+        section (str): The section of the Criminal Code
+        indictable_maximum (Dict): The maximum sentence for indictable proceedings, expects a structure like:
+            {"jail": {"amount": int, "unit": str}}
+
+    Returns:
+        Dict: A dictionary containing:
+            - available (bool): Whether jury trial is available
+            - quantum (Optional[str]): The quantum of sentence, if applicable
+            - sections (List[str]): Relevant Criminal Code sections
+            - explanation (str): Explanation of the determination
+            - required (Optional[bool]): True if jury trial is required (for s. 469)
+    """
+    # Check for s. 469 offences (jury trial required)
+    section_469_result = check_section_469_offence(section)
+    if section_469_result["status"]["available"]:
+        return {
+            **standard_output(
+                True,
+                "Required",
+                section_469_result.get("sections", ["cc_469"]),
+                "Jury trial required: offence is listed in s. 469."
+            ),
+            "jury_required": True  # for template color logic
+        }
+    # Normal eligibility check
+    if not indictable_maximum or not isinstance(indictable_maximum, dict):
+        return standard_output(
+            False,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial not available: no indictable maximum provided."
+        )
+    jail = indictable_maximum.get("jail")
+    if not jail or not isinstance(jail, dict):
+        return standard_output(
+            False,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial not available: no jail quantum provided."
+        )
+    amount = jail.get("amount")
+    unit = jail.get("unit")
+    # Only consider if unit is years and amount >= 5
+    if unit == "years" and isinstance(amount, int) and amount >= 5:
+        return standard_output(
+            True,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial available: offence punishable by five years or more imprisonment."
+        )
+    else:
+        return standard_output(
+            False,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial not available: offence not punishable by five years or more imprisonment."
+        )
 
 
 # Ancillary orders

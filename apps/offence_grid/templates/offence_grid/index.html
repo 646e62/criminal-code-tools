@@ -140,76 +140,118 @@
                         <div class="p-4 bg-gray-50 dark:bg-gray-700 monokai:bg-monokai-darkGray rounded-md">
                             <div class="space-y-4">
                                 <div>
-                                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-keyword">{{ offence }}</h4>
+                                    <h4 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-keyword">{{ offence }} - {{ result.summary.description }}</h4>
                                 </div>
 
                                 <!-- Offence Summary -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Offence Summary</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-12 pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Offence Summary</h5>
+                                    <div class="mt-4 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">Mode:</span> {{ result.summary.mode }}
                                         </div>
-                                        {% if 'summary_maximum' in result.summary %}
+                                        {% if result.summary.summary_maximum %}
                                         <div class="text-sm">
                                             <span class="font-medium">Summary Maximum:</span>
                                             {% if result.summary.summary_maximum.jail.amount == 255 and result.summary.summary_maximum.jail.unit == 'years' %}
                                                 Life
                                             {% else %}
-                                                {% if result.summary.summary_maximum.jail.amount %}{{ result.summary.summary_maximum.jail.amount }} {{ result.summary.summary_maximum.jail.unit }}
-                                                {% elif result.summary.summary_maximum.fine.amount %}${{ result.summary.summary_maximum.fine.amount }}
-                                                {% else %}None{% endif %}
-                                            {% endif %}
-                                        </div>
-                                        <div class="text-sm">
-                                            <span class="font-medium">Summary Minimum:</span>
-                                            {% if result.summary.summary_minimum.jail.amount or result.summary.summary_minimum.fine.amount %}
-                                                {% if result.summary.summary_minimum.jail.amount == 255 and result.summary.summary_minimum.jail.unit == 'years' %}
-                                                    Life
-                                                {% else %}
-                                                    {% if result.summary.summary_minimum.jail.amount %}{{ result.summary.summary_minimum.jail.amount }} {{ result.summary.summary_minimum.jail.unit }}{% endif %}
-                                                    {% if result.summary.summary_minimum.fine.amount %}{% if result.summary.summary_minimum.jail.amount %} and {% endif %}${{ result.summary.summary_minimum.fine.amount }}{% endif %}
-                                                {% endif %}
-                                            {% else %}
-                                                None
+                                                {% if result.summary.summary_maximum.jail.amount %}{{ result.summary.summary_maximum.jail.amount }} {{ result.summary.summary_maximum.jail.unit }}{% endif %}
+                                                {% if result.summary.summary_maximum.jail.amount and result.summary.summary_maximum.fine.amount %} or {% endif %}
+                                                {% if result.summary.summary_maximum.fine.amount %}${{ result.summary.summary_maximum.fine.amount }}{% endif %}
                                             {% endif %}
                                         </div>
                                         {% endif %}
-                                        {% if 'indictable_maximum' in result.summary %}
+                                        {% if result.summary.indictable_maximum %}
                                         <div class="text-sm">
                                             <span class="font-medium">Indictable Maximum:</span>
                                             {% if result.summary.indictable_maximum.jail.amount == 255 and result.summary.indictable_maximum.jail.unit == 'years' %}
                                                 Life
                                             {% else %}
                                                 {% if result.summary.indictable_maximum.jail.amount %}{{ result.summary.indictable_maximum.jail.amount }} {{ result.summary.indictable_maximum.jail.unit }}{% endif %}
-                                                {% if result.summary.indictable_maximum.fine.amount %}{% if result.summary.indictable_maximum.jail.amount %} and {% endif %}${{ result.summary.indictable_maximum.fine.amount }}{% endif %}
-                                            {% endif %}
-                                        </div>
-                                        <div class="text-sm">
-                                            <span class="font-medium">Indictable Minimum:</span>
-                                            {% if result.summary.indictable_minimum.jail.amount or result.summary.indictable_minimum.fine.amount %}
-                                                {% if result.summary.indictable_minimum.jail.amount == 255 and result.summary.indictable_minimum.jail.unit == 'years' %}
-                                                    Life
-                                                {% else %}
-                                                    {% if result.summary.indictable_minimum.jail.amount %}{{ result.summary.indictable_minimum.jail.amount }} {{ result.summary.indictable_minimum.jail.unit }}{% endif %}
-                                                    {% if result.summary.indictable_minimum.fine.amount %}{% if result.summary.indictable_minimum.jail.amount %} and {% endif %}${{ result.summary.indictable_minimum.fine.amount }}{% endif %}
-                                                {% endif %}
-                                            {% else %}
-                                                None
+                                                {% if result.summary.indictable_maximum.jail.amount and result.summary.indictable_maximum.fine.amount %} or {% endif %}
+                                                {% if result.summary.indictable_maximum.fine.amount %}${{ result.summary.indictable_maximum.fine.amount }}{% endif %}
                                             {% endif %}
                                         </div>
                                         {% endif %}
+                                        <div class="text-sm">
+                                            <span class="font-medium">Mandatory Minimum:</span>
+                                            {% if result.summary.summary_minimum.jail.amount or result.summary.summary_minimum.fine.amount or result.summary.indictable_minimum.jail.amount or result.summary.indictable_minimum.fine.amount %}
+                                            <span class="text-red-600 dark:text-red-400">Yes</span>
+                                            <ul class="list-disc list-inside ml-4 mt-1">
+                                                {% if result.summary.summary_minimum.jail.amount or result.summary.summary_minimum.fine.amount %}
+                                                <li class="text-sm">Summary: 
+                                                    {% if result.summary.summary_minimum.jail.amount %}
+                                                        {% if result.summary.summary_minimum.jail.amount == 255 and result.summary.summary_minimum.jail.unit == 'years' %}Life{% else %}{{ result.summary.summary_minimum.jail.amount }} {{ result.summary.summary_minimum.jail.unit }}{% endif %}
+                                                    {% endif %}
+                                                    {% if result.summary.summary_minimum.fine.amount %}
+                                                        {% if result.summary.summary_minimum.jail.amount %} or {% endif %}${{ result.summary.summary_minimum.fine.amount }}
+                                                    {% endif %}
+                                                </li>
+                                                {% endif %}
+                                                {% if result.summary.indictable_minimum.jail.amount or result.summary.indictable_minimum.fine.amount %}
+                                                <li class="text-sm">Indictable: 
+                                                    {% if result.summary.indictable_minimum.jail.amount %}
+                                                        {% if result.summary.indictable_minimum.jail.amount == 255 and result.summary.indictable_minimum.jail.unit == 'years' %}Life{% else %}{{ result.summary.indictable_minimum.jail.amount }} {{ result.summary.indictable_minimum.jail.unit }}{% endif %}
+                                                    {% endif %}
+                                                    {% if result.summary.indictable_minimum.fine.amount %}
+                                                        {% if result.summary.indictable_minimum.jail.amount %} or {% endif %}${{ result.summary.indictable_minimum.fine.amount }}
+                                                    {% endif %}
+                                                </li>
+                                                {% endif %}
+                                            </ul>
+                                            {% else %}
+                                            <span class="text-green-600 dark:text-green-400">No</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Procedure -->
+                                <div class="mt-16 pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Procedure</h5>
+                                    <div class="mt-4 space-y-2">
+                                        <div class="text-sm">
+                                            <span class="font-medium">Preliminary Inquiry:</span>
+                                            {% if result.procedure.prelim_available.status.available %}
+                                            <span class="text-green-600 dark:text-green-400">Available</span>
+                                            {% else %}
+                                            <span class="text-red-600 dark:text-red-400">Not Available</span>
+                                            {% endif %}
+                                            {% if result.procedure.prelim_available.notes %}
+                                            {% if result.procedure.prelim_footnote %}
+                                            <a href="#footnote-{{ result.procedure.prelim_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.prelim_footnote.anchor }}">[{{ result.procedure.prelim_footnote.number }}]</a>
+                                            {% endif %}
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-sm">
+                                            <span class="font-medium">Jury Trial:</span>
+                                            {% if result.procedure.jury_trial_available.status.available %}
+                                                {% if result.procedure.jury_trial_available.jury_required %}
+                                                    <span class="text-yellow-600 dark:text-yellow-400">Required</span>
+                                                {% else %}
+                                                    <span class="text-green-600 dark:text-green-400">Available</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="text-red-600 dark:text-red-400">Not Available</span>
+                                            {% endif %}
+                                            {% if result.procedure.jury_trial_available.notes %}
+                                            {% if result.procedure.jury_footnote %}
+                                            <a href="#footnote-{{ result.procedure.jury_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.jury_footnote.anchor }}">[{{ result.procedure.jury_footnote.number }}]</a>
+                                            {% endif %}
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Bail -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Bail</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-16 pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Bail</h5>
+                                    <div class="mt-4 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">Reverse Onus:</span>
                                             {% if result.bail.reverse_onus.status.available %}
-                                                Yes [{{ forloop.counter|add:8 }}]
+                                                Yes [{{ result.bail.reverse_onus_footnote|add:1 }}]
                                             {% else %}
                                                 No
                                             {% endif %}
@@ -217,7 +259,7 @@
                                         <div class="text-sm">
                                             <span class="font-medium">Section 469:</span>
                                             {% if result.bail.section_469.status.available %}
-                                                Yes [{{ forloop.counter|add:9 }}]
+                                                Yes [{{ result.bail.section_469_footnote|add:1 }}]
                                             {% else %}
                                                 No
                                             {% endif %}
@@ -225,7 +267,7 @@
                                         <div class="text-sm">
                                             <span class="font-medium">Mandatory Weapons Prohibition:</span>
                                             {% if result.bail.mandatory_weapons_prohibition.status.available %}
-                                                Yes [{{ forloop.counter|add:10 }}]
+                                                Yes [{{ result.bail.mandatory_weapons_prohibition_footnote|add:1 }}]
                                             {% else %}
                                                 No
                                             {% endif %}
@@ -234,9 +276,9 @@
                                 </div>
 
                                 <!-- Collateral Consequences -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Collateral Consequences</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-16 pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Collateral Consequences</h5>
+                                    <div class="mt-4 space-y-2">
                                         {% for immigration_result in result.immigration %}
                                         <div class="text-sm">
                                             <span class="font-medium">Immigration/Admissibility:</span>
@@ -249,8 +291,8 @@
                                             {% else %}
                                             <span class="text-red-600 dark:text-red-400">{{ immigration_result.notes|title }}</span>
                                             {% endif %}
-                                            {% if immigration_result.sections %}
-                                            <a href="#footnote-{{ forloop.parentloop.counter }}-imm-{{ forloop.counter }}" class="footnote-ref" id="ref-{{ forloop.parentloop.counter }}-imm-{{ forloop.counter }}">[{{ forloop.counter }}]</a>
+                                            {% if immigration_result.sections and immigration_result.footnote %}
+                                            <a href="#footnote-{{ immigration_result.footnote.anchor }}" class="footnote-ref" id="ref-{{ immigration_result.footnote.anchor }}">[{{ immigration_result.footnote.number }}]</a>
                                             {% endif %}
                                         </div>
                                         {% endfor %}
@@ -258,71 +300,63 @@
                                 </div>
 
                                 <!-- Sentencing Options -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Sentencing Options</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-16 pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Sentencing Options</h5>
+                                    <div class="mt-4 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">Discharge:</span>
-                                            {% if result.sentencing_options.discharge.available %}
+                                            {% if result.sentencing_options.discharge.status.available %}
                                             <span class="text-green-600 dark:text-green-400">Available</span>
                                             {% else %}
                                             <span class="text-red-600 dark:text-red-400">Not Available</span>
                                             {% endif %}
-                                            {% if result.sentencing_options.discharge.notes %}
-                                            {% with counter=result.immigration|length|add:1 %}
-                                            <a href="#footnote-{{ forloop.counter }}-dis" class="footnote-ref" id="ref-{{ forloop.counter }}-dis">[{{ counter }}]</a>
-                                            {% endwith %}
-                                            {% endif %}
+                                            {% if result.sentencing_options.discharge.footnote %}
+                                             <a href="#footnote-{{ result.sentencing_options.discharge.footnote.anchor }}" class="footnote-ref" id="ref-{{ result.sentencing_options.discharge.footnote.anchor }}">[{{ result.sentencing_options.discharge.footnote.number }}]</a>
+                                             {% endif %}
                                         </div>
 
                                         <div class="text-sm">
                                             <span class="font-medium">CSO:</span>
-                                            {% if result.sentencing_options.cso.available %}
+                                            {% if result.sentencing_options.cso.status.available %}
                                             <span class="text-green-600 dark:text-green-400">Available</span>
                                             {% else %}
                                             <span class="text-red-600 dark:text-red-400">Not Available</span>
                                             {% endif %}
-                                            {% if result.sentencing_options.cso.notes %}
-                                            {% with counter=result.immigration|length|add:2 %}
-                                            <a href="#footnote-{{ forloop.counter }}-cso" class="footnote-ref" id="ref-{{ forloop.counter }}-cso">[{{ counter }}]</a>
-                                            {% endwith %}
-                                            {% endif %}
+                                            {% if result.sentencing_options.cso.footnote %}
+                                             <a href="#footnote-{{ result.sentencing_options.cso.footnote.anchor }}" class="footnote-ref" id="ref-{{ result.sentencing_options.cso.footnote.anchor }}">[{{ result.sentencing_options.cso.footnote.number }}]</a>
+                                             {% endif %}
                                         </div>
 
                                         <div class="text-sm">
                                             <span class="font-medium">Intermittent Sentence:</span>
-                                            {% if result.sentencing_options.intermittent.available %}
+                                            {% if result.sentencing_options.intermittent.status.available %}
                                             <span class="text-green-600 dark:text-green-400">Available</span>
                                             {% else %}
                                             <span class="text-red-600 dark:text-red-400">Not Available</span>
                                             {% endif %}
-                                            {% if result.sentencing_options.intermittent.notes %}
-                                            {% with counter=result.immigration|length|add:3 %}
-                                            <a href="#footnote-{{ forloop.counter }}-int" class="footnote-ref" id="ref-{{ forloop.counter }}-int">[{{ counter }}]</a>
-                                            {% endwith %}
-                                            {% endif %}
+                                            {% if result.sentencing_options.intermittent.footnote %}
+                                             <a href="#footnote-{{ result.sentencing_options.intermittent.footnote.anchor }}" class="footnote-ref" id="ref-{{ result.sentencing_options.intermittent.footnote.anchor }}">[{{ result.sentencing_options.intermittent.footnote.number }}]</a>
+                                             {% endif %}
                                         </div>
 
                                         <div class="text-sm">
                                             <span class="font-medium">Suspended Sentence:</span>
-                                            {% if result.sentencing_options.suspended.available %}
+                                            {% if result.sentencing_options.suspended.status.available %}
                                             <span class="text-green-600 dark:text-green-400">Available</span>
                                             {% else %}
                                             <span class="text-red-600 dark:text-red-400">Not Available</span>
                                             {% endif %}
-                                            {% if result.sentencing_options.suspended.notes %}
-                                            {% with counter=result.immigration|length|add:4 %}
-                                            <a href="#footnote-{{ forloop.counter }}-sus" class="footnote-ref" id="ref-{{ forloop.counter }}-sus">[{{ counter }}]</a>
-                                            {% endwith %}
-                                            {% endif %}
+                                            {% if result.sentencing_options.suspended.footnote %}
+                                             <a href="#footnote-{{ result.sentencing_options.suspended.footnote.anchor }}" class="footnote-ref" id="ref-{{ result.sentencing_options.suspended.footnote.anchor }}">[{{ result.sentencing_options.suspended.footnote.number }}]</a>
+                                             {% endif %}
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Ancillary Orders -->
-                                <div class="mt-4">
-                                    <h5 class="font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Ancillary Orders</h5>
-                                    <div class="mt-2 space-y-2">
+                                <div class="mt-16 pt-8">
+                                    <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Ancillary Orders</h5>
+                                    <div class="mt-4 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">DNA Order:</span>
                                             {% if result.ancillary_orders.dna.notes == "primary designated offence" %}
@@ -332,149 +366,47 @@
                                             {% else %}
                                             <span class="text-green-600 dark:text-green-400">Not Available</span>
                                             {% endif %}
-                                            {% if result.ancillary_orders.dna.notes %}
-                                            {% with counter=result.immigration|length|add:5 %}
-                                            <a href="#footnote-{{ forloop.counter }}-dna" class="footnote-ref" id="ref-{{ forloop.counter }}-dna">[{{ counter }}]</a>
-                                            {% endwith %}
-                                            {% endif %}
+                                            {% if result.ancillary_orders.dna.footnote %}
+                                             <a href="#footnote-{{ result.ancillary_orders.dna.footnote.anchor }}" class="footnote-ref" id="ref-{{ result.ancillary_orders.dna.footnote.anchor }}">[{{ result.ancillary_orders.dna.footnote.number }}]</a>
+                                             {% endif %}
                                         </div>
 
                                         <div class="text-sm">
                                             <span class="font-medium">SOIRA Registration:</span>
-                                            {% if result.ancillary_orders.soira.0.available %}
-                                            <span class="text-green-600 dark:text-green-400">Required</span>
-                                            {% if result.ancillary_orders.soira.0.duration %}
-                                            ({{ result.ancillary_orders.soira.0.duration.amount }} {{ result.ancillary_orders.soira.0.duration.unit }})
-                                            {% endif %}
+                                            {% if result.ancillary_orders.soira.0.notes == "primary designated offence" %}
+                                            <span class="text-red-600 dark:text-red-400">Primary Designated Offence</span>
+                                            {% elif result.ancillary_orders.soira.0.notes == "secondary designated offence" %}
+                                            <span class="text-yellow-600 dark:text-yellow-400">Secondary Designated Offence</span>
                                             {% else %}
-                                            <span class="text-gray-500">Not Required</span>
+                                            <span class="text-green-600 dark:text-green-400">Not Available</span>
                                             {% endif %}
-                                            {% if result.ancillary_orders.soira.0.notes %}
-                                            {% with counter=result.immigration|length|add:6 %}
-                                            <a href="#footnote-{{ forloop.counter }}-soira" class="footnote-ref" id="ref-{{ forloop.counter }}-soira">[{{ counter }}]</a>
-                                            {% endwith %}
-                                            {% endif %}
+                                            {% if result.ancillary_orders.soira.0.footnote %}
+                                             <a href="#footnote-{{ result.ancillary_orders.soira.0.footnote.anchor }}" class="footnote-ref" id="ref-{{ result.ancillary_orders.soira.0.footnote.anchor }}">[{{ result.ancillary_orders.soira.0.footnote.number }}]</a>
+                                             {% endif %}
                                         </div>
 
                                         <div class="text-sm">
                                             <span class="font-medium">Weapons Prohibition:</span>
-                                            {% if result.ancillary_orders.weapons.available %}
+                                            {% if result.ancillary_orders.weapons.status.available %}
                                             <span class="text-green-600 dark:text-green-400">Required</span>
                                             {% else %}
                                             <span class="text-gray-500">Not Required</span>
                                             {% endif %}
-                                            {% if result.ancillary_orders.weapons.notes %}
-                                            {% with counter=result.immigration|length|add:7 %}
-                                            <a href="#footnote-{{ forloop.counter }}-wpn" class="footnote-ref" id="ref-{{ forloop.counter }}-wpn">[{{ counter }}]</a>
-                                            {% endwith %}
-                                            {% endif %}
+                                            {% if result.ancillary_orders.weapons.footnote %}
+                                             <a href="#footnote-{{ result.ancillary_orders.weapons.footnote.anchor }}" class="footnote-ref" id="ref-{{ result.ancillary_orders.weapons.footnote.anchor }}">[{{ result.ancillary_orders.weapons.footnote.number }}]</a>
+                                             {% endif %}
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Footnotes -->
                                 <div class="footnotes">
-                                    <!-- Immigration footnotes -->
-                                    {% for immigration_result in result.immigration %}
-                                        {% if immigration_result.sections %}
-                                        <div class="footnote-item" id="footnote-{{ forloop.parentloop.counter }}-imm-{{ forloop.counter }}">
-                                            [{{ forloop.counter }}] Relevant sections: {{ immigration_result.sections|join:", " }}
-                                            <a href="#ref-{{ forloop.parentloop.counter }}-imm-{{ forloop.counter }}" class="footnote-backref">↩</a>
-                                        </div>
-                                        {% endif %}
+                                    {% for footnote in result.footnotes %}
+                                    <div class="footnote-item" id="footnote-{{ footnote.anchor }}">
+                                        [{{ footnote.number }}] {{ footnote.text }}
+                                        <a href="#ref-{{ footnote.anchor }}" class="footnote-backref">↩</a>
+                                    </div>
                                     {% endfor %}
-
-                                    <!-- Sentencing Options footnotes -->
-                                    {% if result.sentencing_options.discharge.notes %}
-                                    {% with counter=result.immigration|length|add:1 %}
-                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-dis">
-                                        [{{ counter }}] {{ result.sentencing_options.discharge.notes }}
-                                        <a href="#ref-{{ forloop.counter }}-dis" class="footnote-backref">↩</a>
-                                    </div>
-                                    {% endwith %}
-                                    {% endif %}
-
-                                    {% if result.sentencing_options.cso %}
-                                    {% with counter=result.immigration|length|add:2 %}
-                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-cso">
-                                        [{{ counter }}] {{ result.sentencing_options.cso }}
-                                        <a href="#ref-{{ forloop.counter }}-cso" class="footnote-backref">↩</a>
-                                    </div>
-                                    {% endwith %}
-                                    {% endif %}
-
-                                    {% if result.sentencing_options.intermittent.notes %}
-                                    {% with counter=result.immigration|length|add:3 %}
-                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-int">
-                                        [{{ counter }}] {{ result.sentencing_options.intermittent.notes }}
-                                        <a href="#ref-{{ forloop.counter }}-int" class="footnote-backref">↩</a>
-                                    </div>
-                                    {% endwith %}
-                                    {% endif %}
-
-                                    {% if result.sentencing_options.suspended.notes %}
-                                    {% with counter=result.immigration|length|add:4 %}
-                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-sus">
-                                        [{{ counter }}] {{ result.sentencing_options.suspended.notes }}
-                                        <a href="#ref-{{ forloop.counter }}-sus" class="footnote-backref">↩</a>
-                                    </div>
-                                    {% endwith %}
-                                    {% endif %}
-
-                                    <!-- Ancillary Orders footnotes -->
-                                    {% if result.ancillary_orders.dna.notes %}
-                                    {% with counter=result.immigration|length|add:5 %}
-                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-dna">
-                                        [{{ counter }}] {{ result.ancillary_orders.dna.notes }}
-                                        {% if result.ancillary_orders.dna.sections %}
-                                        ({{ result.ancillary_orders.dna.sections|join:", " }})
-                                        {% endif %}
-                                        <a href="#ref-{{ forloop.counter }}-dna" class="footnote-backref">↩</a>
-                                    </div>
-                                    {% endwith %}
-                                    {% endif %}
-
-                                    {% if result.ancillary_orders.soira.0.notes %}
-                                    {% with counter=result.immigration|length|add:6 %}
-                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-soira">
-                                        [{{ counter }}] {{ result.ancillary_orders.soira.0.notes }}
-                                        {% if result.ancillary_orders.soira.0.sections %}
-                                        ({{ result.ancillary_orders.soira.0.sections|join:", " }})
-                                        {% endif %}
-                                        <a href="#ref-{{ forloop.counter }}-soira" class="footnote-backref">↩</a>
-                                    </div>
-                                    {% endwith %}
-                                    {% endif %}
-
-                                    {% if result.ancillary_orders.weapons.notes %}
-                                    {% with counter=result.immigration|length|add:7 %}
-                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-wpn">
-                                        [{{ counter }}] {{ result.ancillary_orders.weapons.notes }}
-                                        <a href="#ref-{{ forloop.counter }}-wpn" class="footnote-backref">↩</a>
-                                    </div>
-                                    {% endwith %}
-                                    {% endif %}
-
-                                    {% if result.bail.reverse_onus.status.available %}
-                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-ro">
-                                        [{{ result.immigration|length|add:8 }}] {{ result.bail.reverse_onus.notes }}
-                                        <a href="#ref-{{ forloop.counter }}-ro" class="footnote-backref">↩</a>
-                                    </div>
-                                    {% endif %}
-
-                                    {% if result.bail.section_469.status.available %}
-                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-469">
-                                        [{{ result.immigration|length|add:9 }}] {{ result.bail.section_469.notes }}
-                                        <a href="#ref-{{ forloop.counter }}-469" class="footnote-backref">↩</a>
-                                    </div>
-                                    {% endif %}
-
-                                    {% if result.bail.mandatory_weapons_prohibition.status.available %}
-                                    <div class="footnote-item" id="footnote-{{ forloop.counter }}-mwp">
-                                        [{{ result.immigration|length|add:10 }}] {{ result.bail.mandatory_weapons_prohibition.notes }}
-                                        <a href="#ref-{{ forloop.counter }}-mwp" class="footnote-backref">↩</a>
-                                    </div>
-                                    {% endif %}
                                 </div>
                             </div>
                         </div>
