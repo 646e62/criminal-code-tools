@@ -14,6 +14,7 @@ from .utils import (
 
 
 def check_inadmissibility(section, mode, indictable_maximum):
+    print(mode)
     """
     Checks to see whether the offence renders the defendant liable for IRPA
     consequences.
@@ -67,6 +68,7 @@ def check_inadmissibility(section, mode, indictable_maximum):
 
     if mode == "hybrid" or mode == "indictable":
         # Only add criminality if we haven't already added serious criminality
+        print("Hit")
         if not any(result["notes"] == "serious criminality" for result in inadmissibilty_list):
             inadmissibilty_list.append(
                 standard_output(
@@ -76,6 +78,16 @@ def check_inadmissibility(section, mode, indictable_maximum):
                     "criminality"
                 )
             )
+
+    if mode == "summary":
+        inadmissibilty_list.append(
+            standard_output(
+                False,
+                None,
+                None,
+                None
+            )
+        )
 
     # If no consequences were found, add a "none" result
     if not inadmissibilty_list:
