@@ -20,7 +20,8 @@ from tools.cc_rules_current import (
     reverse_onus,
     check_section_469_offence,
     check_section_515_mandatory_weapons_prohibition,
-    check_offence_type
+    check_offence_type,
+    check_prelim_available
 )
 
 def format_section(section):
@@ -148,6 +149,14 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
         mode=mode,
         indictable_maximum=max_years
     )
+
+    # Get procedure information
+    procedure = {
+        'prelim_available': check_prelim_available(
+            indictable_maximum=indictable_max
+        )
+    }
+    consequences['procedure'] = procedure
 
     # Get sentencing options
     consequences['sentencing_options'] = {

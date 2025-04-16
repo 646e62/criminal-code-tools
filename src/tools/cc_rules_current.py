@@ -75,34 +75,17 @@ def check_offence_type(offence: List[str]) -> str:
 
 
 # Procedure
-def check_prelim_available(
-    indictable_maximum: str,
-) -> Dict[str, Union[bool, None, List[str], str]]:
-    """
-    Check if the preliminary inquiry is available for a given offence.
-
-    Args:
-        indictable_maximum (str): The maximum sentence for indictable proceedings
-
-    Returns:
-        Dict: A dictionary containing:
-            - available (bool): Whether preliminary inquiry is available
-            - quantum (Optional[str]): The quantum of sentence, if applicable
-            - sections (List[str]): Relevant Criminal Code sections
-            - explanation (str): Explanation of the determination
-
-    Raises:
-        TypeError: If indictable_maximum is not a string
-    """
-    if not isinstance(indictable_maximum, str):
-        raise TypeError("indictable_maximum must be a string")
-
-    if indictable_maximum == "14y" or indictable_maximum == "255y":
+def check_prelim_available(indictable_maximum):
+    if not isinstance(indictable_maximum, dict):
+        return standard_output(False, None, ["cc_535"], "indictable_maximum not a dict")
+    jail = indictable_maximum.get('jail', {})
+    amount = jail.get('amount')
+    unit = jail.get('unit')
+    if (amount == 14 and unit == 'years') or (amount == 255 and unit == 'years'):
         prelim_available = standard_output(
             True, None, ["cc_535"], "maximum term of 14y or greater"
         )
         return prelim_available
-
     else:
         prelim_available = standard_output(
             False, None, ["cc_535"], "maximum of less than 14y"
