@@ -130,6 +130,9 @@
                     <button type="submit" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
                         Search
                     </button>
+                    <button type="button" onclick="clearOffences()" class="mt-4 ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-700 dark:bg-gray-400 dark:hover:bg-gray-600 monokai:bg-monokai-gray monokai:hover:bg-monokai-darkGray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
+                        Clear
+                    </button>
                 </form>
                 
                 {% if results %}
@@ -210,36 +213,41 @@
                                 <!-- Procedure -->
                                 <div class="mt-16 pt-8">
                                     <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Procedure</h5>
-                                    <div class="mt-4 space-y-2">
-                                        <div class="text-sm">
-                                            <span class="font-medium">Preliminary Inquiry:</span>
-                                            {% if result.procedure.prelim_available.status.available %}
-                                            <span class="text-green-600 dark:text-green-400">Available</span>
-                                            {% else %}
-                                            <span class="text-red-600 dark:text-red-400">Not Available</span>
-                                            {% endif %}
-                                            {% if result.procedure.prelim_available.notes %}
-                                            {% if result.procedure.prelim_footnote %}
-                                            <a href="#footnote-{{ result.procedure.prelim_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.prelim_footnote.anchor }}">[{{ result.procedure.prelim_footnote.number }}]</a>
-                                            {% endif %}
-                                            {% endif %}
-                                        </div>
-                                        <div class="text-sm">
-                                            <span class="font-medium">Jury Trial:</span>
-                                            {% if result.procedure.jury_trial_available.status.available %}
-                                                {% if result.procedure.jury_trial_available.jury_required %}
-                                                    <span class="text-yellow-600 dark:text-yellow-400">Required</span>
+                                    <div class="mt-4">
+                                        <h6 class="font-semibold text-md text-gray-800 dark:text-gray-200 monokai:text-function mb-2">Indictable proceedings</h6>
+                                        <div class="space-y-2">
+                                            <div class="text-sm">
+                                                <span class="font-medium">Preliminary Inquiry:</span>
+                                                {% if result.procedure.prelim_available.status.available %}
+                                                <span class="text-green-600 dark:text-green-400">Available</span>
                                                 {% else %}
-                                                    <span class="text-green-600 dark:text-green-400">Available</span>
-                                                {% endif %}
-                                            {% else %}
                                                 <span class="text-red-600 dark:text-red-400">Not Available</span>
-                                            {% endif %}
-                                            {% if result.procedure.jury_trial_available.notes %}
-                                            {% if result.procedure.jury_footnote %}
-                                            <a href="#footnote-{{ result.procedure.jury_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.jury_footnote.anchor }}">[{{ result.procedure.jury_footnote.number }}]</a>
-                                            {% endif %}
-                                            {% endif %}
+                                                {% endif %}
+                                                {% if result.procedure.prelim_available.notes %}
+                                                {% if result.procedure.prelim_footnote %}
+                                                <a href="#footnote-{{ result.procedure.prelim_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.prelim_footnote.anchor }}">[{{ result.procedure.prelim_footnote.number }}]</a>
+                                                {% endif %}
+                                                {% endif %}
+                                            </div>
+                                            <div class="text-sm">
+                                                <span class="font-medium">Jury Trial:</span>
+                                                {% if result.procedure.jury_trial_available.jury_indeterminate %}
+                                                    <span class="text-yellow-600 dark:text-yellow-400">Indeterminate</span>
+                                                {% elif result.procedure.jury_trial_available.status.available %}
+                                                    {% if result.procedure.jury_trial_available.jury_required %}
+                                                        <span class="text-yellow-600 dark:text-yellow-400">Required</span>
+                                                    {% else %}
+                                                        <span class="text-green-600 dark:text-green-400">Available</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-red-600 dark:text-red-400">Not Available</span>
+                                                {% endif %}
+                                                {% if result.procedure.jury_trial_available.notes %}
+                                                {% if result.procedure.jury_footnote %}
+                                                <a href="#footnote-{{ result.procedure.jury_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.jury_footnote.anchor }}">[{{ result.procedure.jury_footnote.number }}]</a>
+                                                {% endif %}
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -423,23 +431,29 @@
 document.addEventListener('DOMContentLoaded', function() {
     new TomSelect('#offences', {
         plugins: ['remove_button'],
+        persist: false,
         create: false,
-        sortField: {
-            field: 'text',
-            direction: 'asc'
-        },
-        placeholder: 'Search for offences...',
         maxItems: null,
-        searchField: ['text'],
-        render: {
-            option: function(data, escape) {
-                return '<div class="py-2 px-3">' + escape(data.text) + '</div>';
-            },
-            item: function(data, escape) {
-                return '<div class="py-1 px-2">' + escape(data.text) + '</div>';
-            }
+        onInitialize: function() {
+            window.tsOffences = this;
         }
     });
 });
+
+function clearOffences() {
+    // Clear Tom Select if available
+    if (window.tsOffences) {
+        window.tsOffences.clear();
+    }
+    // Also clear native select for robustness
+    const select = document.getElementById('offences');
+    if (select) {
+        for (let i = 0; i < select.options.length; i++) {
+            select.options[i].selected = false;
+        }
+    }
+    // Actually reload the page (GET with no params)
+    window.location.href = window.location.pathname;
+}
 </script>
 {% endblock %}
