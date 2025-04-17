@@ -436,6 +436,12 @@ document.addEventListener('DOMContentLoaded', function() {
         maxItems: null,
         onInitialize: function() {
             window.tsOffences = this;
+        },
+        onItemAdd: function() {
+            // Clear the search input after adding an item
+            if (this.control_input) {
+                this.control_input.value = '';
+            }
         }
     });
 });
