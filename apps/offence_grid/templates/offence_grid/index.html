@@ -130,6 +130,9 @@
                     <button type="submit" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
                         Search
                     </button>
+                    <button type="button" onclick="clearOffences()" class="mt-4 ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-700 dark:bg-gray-400 dark:hover:bg-gray-600 monokai:bg-monokai-gray monokai:hover:bg-monokai-darkGray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
+                        Clear
+                    </button>
                 </form>
                 
                 {% if results %}
@@ -423,23 +426,29 @@
 document.addEventListener('DOMContentLoaded', function() {
     new TomSelect('#offences', {
         plugins: ['remove_button'],
+        persist: false,
         create: false,
-        sortField: {
-            field: 'text',
-            direction: 'asc'
-        },
-        placeholder: 'Search for offences...',
         maxItems: null,
-        searchField: ['text'],
-        render: {
-            option: function(data, escape) {
-                return '<div class="py-2 px-3">' + escape(data.text) + '</div>';
-            },
-            item: function(data, escape) {
-                return '<div class="py-1 px-2">' + escape(data.text) + '</div>';
-            }
+        onInitialize: function() {
+            window.tsOffences = this;
         }
     });
 });
+
+function clearOffences() {
+    // Clear Tom Select if available
+    if (window.tsOffences) {
+        window.tsOffences.clear();
+    }
+    // Also clear native select for robustness
+    const select = document.getElementById('offences');
+    if (select) {
+        for (let i = 0; i < select.options.length; i++) {
+            select.options[i].selected = false;
+        }
+    }
+    // Actually reload the page (GET with no params)
+    window.location.href = window.location.pathname;
+}
 </script>
 {% endblock %}
