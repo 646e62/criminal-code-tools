@@ -165,17 +165,31 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
     consequences['procedure'] = procedure
 
     # Jury trial footnote
+    jta = procedure['jury_trial_available']
     jury_footnote_obj = None
-    if procedure['jury_trial_available'].get('notes'):
+    if jta.get('notes') or jta.get('jury_conflict_footnote'):
         jury_footnote_obj = {
             'label': 'jury',
-            'text': procedure['jury_trial_available']['notes'] + (f" ({', '.join(procedure['jury_trial_available'].get('sections', []))})" if procedure['jury_trial_available'].get('sections') else ""),
+            'text': (jta.get('jury_conflict_footnote') or jta.get('notes')),
             'anchor': f"jury-PLACEHOLDER",
             'number': None
         }
         consequences['procedure']['jury_footnote'] = jury_footnote_obj
     else:
         consequences['procedure']['jury_footnote'] = None
+
+    # Preliminary inquiry footnote
+    prelim_footnote_obj = None
+    if procedure['prelim_available'].get('notes'):
+        prelim_footnote_obj = {
+            'label': 'prelim',
+            'text': procedure['prelim_available']['notes'] + (f" ({', '.join(procedure['prelim_available'].get('sections', []))})" if procedure['prelim_available'].get('sections') else ""),
+            'anchor': f"prelim-PLACEHOLDER",
+            'number': None
+        }
+        consequences['procedure']['prelim_footnote'] = prelim_footnote_obj
+    else:
+        consequences['procedure']['prelim_footnote'] = None
 
     # Get sentencing options
     consequences['sentencing_options'] = {
@@ -239,19 +253,6 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
             imm_result['footnote'] = footnote_obj
             footnotes.append(('immigration', footnote_obj, imm_result))
     consequences['immigration'] = immigration_results
-
-    # Procedure footnote (preliminary inquiry)
-    prelim_footnote_obj = None
-    if procedure['prelim_available'].get('notes'):
-        prelim_footnote_obj = {
-            'label': 'prelim',
-            'text': procedure['prelim_available']['notes'] + (f" ({', '.join(procedure['prelim_available'].get('sections', []))})" if procedure['prelim_available'].get('sections') else ""),
-            'anchor': f"prelim-PLACEHOLDER",
-            'number': None
-        }
-        consequences['procedure']['prelim_footnote'] = prelim_footnote_obj
-    else:
-        consequences['procedure']['prelim_footnote'] = None
 
     # Sentencing Options footnotes
     so = consequences['sentencing_options']

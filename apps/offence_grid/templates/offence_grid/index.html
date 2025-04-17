@@ -213,36 +213,41 @@
                                 <!-- Procedure -->
                                 <div class="mt-16 pt-8">
                                     <h5 class="font-medium text-lg text-gray-700 dark:text-gray-300 monokai:text-variable">Procedure</h5>
-                                    <div class="mt-4 space-y-2">
-                                        <div class="text-sm">
-                                            <span class="font-medium">Preliminary Inquiry:</span>
-                                            {% if result.procedure.prelim_available.status.available %}
-                                            <span class="text-green-600 dark:text-green-400">Available</span>
-                                            {% else %}
-                                            <span class="text-red-600 dark:text-red-400">Not Available</span>
-                                            {% endif %}
-                                            {% if result.procedure.prelim_available.notes %}
-                                            {% if result.procedure.prelim_footnote %}
-                                            <a href="#footnote-{{ result.procedure.prelim_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.prelim_footnote.anchor }}">[{{ result.procedure.prelim_footnote.number }}]</a>
-                                            {% endif %}
-                                            {% endif %}
-                                        </div>
-                                        <div class="text-sm">
-                                            <span class="font-medium">Jury Trial:</span>
-                                            {% if result.procedure.jury_trial_available.status.available %}
-                                                {% if result.procedure.jury_trial_available.jury_required %}
-                                                    <span class="text-yellow-600 dark:text-yellow-400">Required</span>
+                                    <div class="mt-4">
+                                        <h6 class="font-semibold text-md text-gray-800 dark:text-gray-200 monokai:text-function mb-2">Indictable proceedings</h6>
+                                        <div class="space-y-2">
+                                            <div class="text-sm">
+                                                <span class="font-medium">Preliminary Inquiry:</span>
+                                                {% if result.procedure.prelim_available.status.available %}
+                                                <span class="text-green-600 dark:text-green-400">Available</span>
                                                 {% else %}
-                                                    <span class="text-green-600 dark:text-green-400">Available</span>
-                                                {% endif %}
-                                            {% else %}
                                                 <span class="text-red-600 dark:text-red-400">Not Available</span>
-                                            {% endif %}
-                                            {% if result.procedure.jury_trial_available.notes %}
-                                            {% if result.procedure.jury_footnote %}
-                                            <a href="#footnote-{{ result.procedure.jury_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.jury_footnote.anchor }}">[{{ result.procedure.jury_footnote.number }}]</a>
-                                            {% endif %}
-                                            {% endif %}
+                                                {% endif %}
+                                                {% if result.procedure.prelim_available.notes %}
+                                                {% if result.procedure.prelim_footnote %}
+                                                <a href="#footnote-{{ result.procedure.prelim_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.prelim_footnote.anchor }}">[{{ result.procedure.prelim_footnote.number }}]</a>
+                                                {% endif %}
+                                                {% endif %}
+                                            </div>
+                                            <div class="text-sm">
+                                                <span class="font-medium">Jury Trial:</span>
+                                                {% if result.procedure.jury_trial_available.jury_indeterminate %}
+                                                    <span class="text-yellow-600 dark:text-yellow-400">Indeterminate</span>
+                                                {% elif result.procedure.jury_trial_available.status.available %}
+                                                    {% if result.procedure.jury_trial_available.jury_required %}
+                                                        <span class="text-yellow-600 dark:text-yellow-400">Required</span>
+                                                    {% else %}
+                                                        <span class="text-green-600 dark:text-green-400">Available</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="text-red-600 dark:text-red-400">Not Available</span>
+                                                {% endif %}
+                                                {% if result.procedure.jury_trial_available.notes %}
+                                                {% if result.procedure.jury_footnote %}
+                                                <a href="#footnote-{{ result.procedure.jury_footnote.anchor }}" class="footnote-ref" id="ref-{{ result.procedure.jury_footnote.anchor }}">[{{ result.procedure.jury_footnote.number }}]</a>
+                                                {% endif %}
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

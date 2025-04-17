@@ -675,6 +675,7 @@ def check_jury_trial_available(section: str, indictable_maximum: Dict[str, Dict[
     Determines if a jury trial is available for an offence based on the maximum indictable penalty and s. 469.
     Rule 1: Jury trial is available if the offence is punishable by five years or more imprisonment.
     Rule 2: If the offence appears in section 469, a jury trial is required.
+    Rule 3: If the offence is an absolute jurisdiction offence, jury trial is not available.
 
     Args:
         section (str): The section of the Criminal Code
@@ -689,6 +690,62 @@ def check_jury_trial_available(section: str, indictable_maximum: Dict[str, Dict[
             - explanation (str): Explanation of the determination
             - required (Optional[bool]): True if jury trial is required (for s. 469)
     """
+    # Absolute jurisdiction check
+    from .constants import (
+        ABSOLUTE_JURISDICITON_OFFENCES_THEFT,
+        ABSOLUTE_JURISDICITON_OFFENCES_FALSE_PRETENCES,
+        ABSOLUTE_JURISDICITON_OFFENCES_PPOBC,
+        ABSOLUTE_JURISDICITON_OFFENCES_FRAUD,
+        ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF,
+        ABSOLUTE_JURISDICITON_OFFENCES_ATTEMPTS_CONSPIRACIES,
+        ABSOLUTE_JURISDICITON_OFFENCES_DESIGNATED_OFFENCES
+    )
+    absolute_lists = (
+        ABSOLUTE_JURISDICITON_OFFENCES_THEFT +
+        ABSOLUTE_JURISDICITON_OFFENCES_FALSE_PRETENCES +
+        ABSOLUTE_JURISDICITON_OFFENCES_PPOBC +
+        ABSOLUTE_JURISDICITON_OFFENCES_FRAUD +
+        ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF +
+        ABSOLUTE_JURISDICITON_OFFENCES_ATTEMPTS_CONSPIRACIES +
+        ABSOLUTE_JURISDICITON_OFFENCES_DESIGNATED_OFFENCES
+    )
+    if section in absolute_lists:
+        # Check for statutory conflict: absolute jurisdiction AND punishable by 5+ years
+        jail = None
+        amount = None
+        unit = None
+        if indictable_maximum and isinstance(indictable_maximum, dict):
+            jail = indictable_maximum.get("jail")
+            if jail and isinstance(jail, dict):
+                amount = jail.get("amount")
+                unit = jail.get("unit")
+        if unit == "years" and isinstance(amount, int) and amount >= 5:
+            # Indeterminate/conflict: both absolute jurisdiction and 5+ years
+            explanation = (
+                "Indeterminate: offence is listed as absolute jurisdiction (s. 553) but is punishable by five or more years imprisonment. "
+                "This is a statutory conflict. Jury trial availability is unclear."
+            )
+            footnote = (
+                "Jury trial not available: absolute jurisdiction offence (s. 553). "
+                "Jury trial available: offence punishable by five years or more imprisonment."
+            )
+            return {
+                **standard_output(
+                    None,
+                    "Indeterminate",
+                    ["cc_553", "cc_471", "cc_473"],
+                    explanation
+                ),
+                "jury_indeterminate": True,
+                "jury_conflict_footnote": footnote
+            }
+        # Normal absolute jurisdiction (no conflict)
+        return standard_output(
+            False,
+            None,
+            ["cc_553"],
+            "Jury trial not available: absolute jurisdiction offence (s. 553)."
+        )
     # Check for s. 469 offences (jury trial required)
     section_469_result = check_section_469_offence(section)
     if section_469_result["status"]["available"]:
