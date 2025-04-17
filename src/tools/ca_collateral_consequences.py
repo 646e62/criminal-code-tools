@@ -59,27 +59,42 @@ def check_inadmissibility(section, mode, indictable_maximum):
         inadmissibilty_list.append(
             standard_output(
                 True,
-                "permanent resident",
-                ["irpa36(1)"],
-                "serious criminality"
-            )
-        )
-        inadmissibilty_list.append(
-            standard_output(
-                True,
-                "foreign national",
+                "both",  # indicates both permanent residents and foreign nationals
                 ["irpa36(1)"],
                 "serious criminality"
             )
         )
 
     if mode == "hybrid" or mode == "indictable":
+        # Only add criminality if we haven't already added serious criminality
+        if not any(result["notes"] == "serious criminality" for result in inadmissibilty_list):
+            inadmissibilty_list.append(
+                standard_output(
+                    True,
+                    "foreign national",
+                    ["irpa36(2)"],
+                    "criminality"
+                )
+            )
+
+    if mode == "summary":
         inadmissibilty_list.append(
             standard_output(
-                True,
-                "foreign national",
-                ["irpa36(2)"],
-                "criminality"
+                False,
+                None,
+                None,
+                None
+            )
+        )
+
+    # If no consequences were found, add a "none" result
+    if not inadmissibilty_list:
+        inadmissibilty_list.append(
+            standard_output(
+                False,
+                None,
+                [],
+                "none"
             )
         )
 

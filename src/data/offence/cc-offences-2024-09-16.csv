@@ -52,9 +52,9 @@ cc_83.02,collecting property for terrorist activities,,10y,,
 cc_83.03(1),providing property or services for terrorist purposes,,10y,,
 cc_83.03(2),providing property or services for use by a terrorist group,,10y,,
 cc_83.04,using or possessing property for terrorist purposes,,10y,,
-cc_83.08,dealing with terrorist property,,10y,,100000&729
-cc_83.1,failure to disclose terrorist property,,10y,,100000&729
-cc_83.11,failure to audit for listed terrorist entities,,10y,,100000&729
+cc_83.08,dealing with terrorist property,,10y,,100000&729d
+cc_83.1,failure to disclose terrorist property,,10y,,100000&729d
+cc_83.11,failure to audit for listed terrorist entities,,10y,,100000&729d
 cc_83.18,participate in terrorist group activity,,10y,,
 cc_83.181,leaving canada to participate in terrorist group activity,,10y,,
 cc_83.19,facilitating terrorist activity,,14y,,
@@ -259,8 +259,8 @@ cc_270,assaulting a peace officer,,5y,,sc
 cc_270.01,assaulting a peace officer with a weapon or causing bodily harm,,10y,,sc
 cc_270.02,aggravated assault of a peace officer,,14y,,
 cc_270.1,disarming a peace officer,,5y,,sc
-cc_271#a,sexual assault,,10y,,18m
-cc_271#b,sexual assault — complainant under 16,1y,14y,6m,729d
+cc_271(a),sexual assault,,10y,,18m
+cc_271(b),sexual assault — complainant under 16,1y,14y,6m,729d
 cc_272(2)(a)#1,sexual assault with a weapon threats to a third party or causing bodily harm — restricted or prohibited firearm or criminal organization — first offence,5y,14y,,
 cc_272(2)(a)#s,sexual assault with a weapon threats to a third party or causing bodily harm — restricted or prohibited firearm or criminal organization — subsequent offence,7y,14y,,
 cc_272(2)(a.1),sexual assault with a weapon threats to a third party or causing bodily harm — firearm,4y,14y,,
@@ -294,10 +294,10 @@ cc_280,abduction of person under age of 16,,5y,,sc
 cc_281,abduction of person under age of 14,,10y,,sc
 cc_282,abduction in contravention of custody or parenting order,,10y,,sc
 cc_283,abduction,,10y,,sc
-cc_286.1(1)(a)(i)#1,obtaining sexual services for consideration — public place — first offence,2000$,5y,1000$,5000&729
-cc_286.1(1)(a)(i)#s,obtaining sexual services for consideration — public place — subsequent offence,4000$,5y,2000$,5000&729
-cc_286.1(1)(a)(ii)#1,obtaining sexual services for consideration — first offence,1000$,5y,500$,5000&729
-cc_286.1(1)(a)(ii)#s,obtaining sexual services for consideration — subsequent offence,2000$,5y,1000$,5000&729
+cc_286.1(1)(a)(i)#1,obtaining sexual services for consideration — public place — first offence,2000$,5y,1000$,5000&729d
+cc_286.1(1)(a)(i)#s,obtaining sexual services for consideration — public place — subsequent offence,4000$,5y,2000$,5000&729d
+cc_286.1(1)(a)(ii)#1,obtaining sexual services for consideration — first offence,1000$,5y,500$,5000&729d
+cc_286.1(1)(a)(ii)#s,obtaining sexual services for consideration — subsequent offence,2000$,5y,1000$,5000&729d
 cc_286.1(2)#1,obtaining sexual services for consideration from person under 18 years — first offence,6m,10y,,
 cc_286.1(2)#s,obtaining sexual services for consideration from person under 18 years — subsequent offence,1y,10y,,
 cc_286.2(1),material benefit from sexual services,,10y,,sc
@@ -323,37 +323,37 @@ cc_320.102,conversion therapy,,5y,,sc
 cc_320.103,conversion therapy — promoting or advertising,,2y,,sc
 cc_320.104,conversion therapy — material benefit,,2y,,sc
 cc_320.13(1),dangerous operation,,10y,,sc
-cc_320.13(2)#1,dangerous operation — causing bodily harm — first offence,1000$,14y,1000$,5000&729
-cc_320.13(2)#2,dangerous operation — causing bodily harm — second offence,30d,14y,30d,5000&729
-cc_320.13(2)#s,dangerous operation — causing bodily harm — subsequent offence,120d,14y,120d,5000&729
+cc_320.13(2)#1,dangerous operation — causing bodily harm — first offence,1000$,14y,1000$,5000&729d
+cc_320.13(2)#2,dangerous operation — causing bodily harm — second offence,30d,14y,30d,5000&729d
+cc_320.13(2)#s,dangerous operation — causing bodily harm — subsequent offence,120d,14y,120d,5000&729d
 cc_320.13(3)#1,dangerous operation — causing death — first offence,1000$,255y,,
 cc_320.13(3)#2,dangerous operation — causing death — second offence,30d,255y,,
 cc_320.13(3)#s,dangerous operation — causing death — subsequent offence,120d,255y,,
-cc_320.14(1)#1#a,operation while impaired — first offence,1000$,10y,1000$,5000&729
-cc_320.14(1)#1#b,operation while impaired — first offence — BAC between 120mg and 160mg,1500$,10y,1500$,5000&729
-cc_320.14(1)#1#c,operation while impaired — first offence — BAC over 160mg,2000$,10y,2000$,5000&729
-cc_320.14(1)#2,operation while impaired — second offence,30d,10y,30d,5000&729
-cc_320.14(1)#s,operation while impaired — subsequent offence,120d,10y,120d,5000&729
-cc_320.14(2)#1,operation while impaired — causing bodily harm — first offence,1000$,14y,1000$,5000&729
-cc_320.14(2)#2,operation while impaired — causing bodily harm — second offence,30d,14y,30d,5000&729
-cc_320.14(2)#s,operation while impaired — causing bodily harm — subsequent offence,120d,14y,120d,5000&729
+cc_320.14(1)#1#a,operation while impaired — first offence,1000$,10y,1000$,5000&729d
+cc_320.14(1)#1#b,operation while impaired — first offence — BAC between 120mg and 160mg,1500$,10y,1500$,5000&729d
+cc_320.14(1)#1#c,operation while impaired — first offence — BAC over 160mg,2000$,10y,2000$,5000&729d
+cc_320.14(1)#2,operation while impaired — second offence,30d,10y,30d,5000&729d
+cc_320.14(1)#s,operation while impaired — subsequent offence,120d,10y,120d,5000&729d
+cc_320.14(2)#1,operation while impaired — causing bodily harm — first offence,1000$,14y,1000$,5000&729d
+cc_320.14(2)#2,operation while impaired — causing bodily harm — second offence,30d,14y,30d,5000&729d
+cc_320.14(2)#s,operation while impaired — causing bodily harm — subsequent offence,120d,14y,120d,5000&729d
 cc_320.14(3)#1,operation while impaired — causing death — first offence,1000$,255y,,
 cc_320.14(3)#2,operation while impaired — causing death — second offence,30d,255y,,
 cc_320.14(3)#s,operation while impaired — causing death — subsequent offence,120d,255y,,
 cc_320.14(4),operation while impaired — low blood drug concentration,,,,1000$
-cc_320.15(1)#1,failure or refusal to comply with demand — first offence,2000$,10y,1000$,5000&729
-cc_320.15(1)#2,failure or refusal to comply with demand — second offence,30d,10y,30d,5000&729
-cc_320.15(1)#s,failure or refusal to comply with demand — subsequent offence,120d,10y,120d,5000&729
-cc_320.15(2)#1,failure or refusal to comply with demand — accident resulting in bodily harm — first offence,1000$,10y,1000$,5000&729
-cc_320.15(2)#2,failure or refusal to comply with demand — accident resulting in bodily harm — second offence,30d,10y,30d,5000&729
-cc_320.15(2)#s,failure or refusal to comply with demand — accident resulting in bodily harm — subsequent offence,120d,10y,120d,5000&729
+cc_320.15(1)#1,failure or refusal to comply with demand — first offence,2000$,10y,1000$,5000&729d
+cc_320.15(1)#2,failure or refusal to comply with demand — second offence,30d,10y,30d,5000&729d
+cc_320.15(1)#s,failure or refusal to comply with demand — subsequent offence,120d,10y,120d,5000&729d
+cc_320.15(2)#1,failure or refusal to comply with demand — accident resulting in bodily harm — first offence,1000$,10y,1000$,5000&729d
+cc_320.15(2)#2,failure or refusal to comply with demand — accident resulting in bodily harm — second offence,30d,10y,30d,5000&729d
+cc_320.15(2)#s,failure or refusal to comply with demand — accident resulting in bodily harm — subsequent offence,120d,10y,120d,5000&729d
 cc_320.15(3)#1,failure or refusal to comply with demand — accident resulting in death — first offence,1000$,255y,,
 cc_320.15(3)#2,failure or refusal to comply with demand — accident resulting in death — second offence,30d,255y,,
 cc_320.15(3)#s,failure or refusal to comply with demand — accident resulting in death — subsequent offence,120d,255y,,
 cc_320.16(1),failure to stop after accident,,10y,,sc
-cc_320.16(2)#1,failure to stop after accident — accident resulting in bodily harm — first offence,1000$,10y,1000$,5000&729
-cc_320.16(2)#2,failure to stop after accident — accident resulting in bodily harm — second offence,30d,10y,30d,5000&729
-cc_320.16(2)#s,failure to stop after accident — accident resulting in bodily harm — subsequent offence,120d,10y,120d,5000&729
+cc_320.16(2)#1,failure to stop after accident — accident resulting in bodily harm — first offence,1000$,10y,1000$,5000&729d
+cc_320.16(2)#2,failure to stop after accident — accident resulting in bodily harm — second offence,30d,10y,30d,5000&729d
+cc_320.16(2)#s,failure to stop after accident — accident resulting in bodily harm — subsequent offence,120d,10y,120d,5000&729d
 cc_320.16(3)#1,failure to stop after accident — accident resulting in death — first offence,1000$,255y,,
 cc_320.16(3)#2,failure to stop after accident — accident resulting in death — second offence,30d,255y,,
 cc_320.16(3)#s,failure to stop after accident — accident resulting in death — subsequent offence,120d,255y,,
@@ -388,7 +388,7 @@ cc_345,stopping mail with intent,,255y,,
 cc_346(1.1)(a)#1,extortion — restricted or prohibited firearm or criminal organization — first offence,5y,255y,,
 cc_346(1.1)(a)#s,extortion — restricted or prohibited firearm or criminal organization — subsequent offence,7y,255y,,
 cc_346(1.1)(b),extortion,,255y,,
-cc_347,criminal interest rate,,5y,,25000&729
+cc_347,criminal interest rate,,5y,,25000&729d
 cc_348(1)(d),breaking and entering with intent committing offence or breaking out — dwelling-house,,255y,,
 cc_348(1)(e),breaking and entering with intent committing offence or breaking out — non-dwelling-house,,10y,,
 cc_349,being unlawfully in dwelling-house,,10y,,sc
@@ -506,13 +506,13 @@ cc_440,removing natural bar without permission,,2y,,sc
 cc_441,occupant injuring building,,5y,,sc
 cc_442,interfering with boundary lines,,,,sc
 cc_443,interfering with international boundary marks,,5y,,sc
-cc_445,injuring or endangering other animals,,5y,,10000&729
+cc_445,injuring or endangering other animals,,5y,,10000&729d
 cc_445.01(2)(a),killing or injuring certain animals — law enforcement animal killed,6m,5y,,
-cc_445.01(2)(b),killing or injuring certain animals,,5y,,10000&729
-cc_445.1,causing unnecessary suffering — animals,,5y,,10000&729
+cc_445.01(2)(b),killing or injuring certain animals,,5y,,10000&729d
+cc_445.1,causing unnecessary suffering — animals,,5y,,10000&729d
 cc_445.2,owning or breeding cetaceans,,,,200000$
 cc_446,causing damage or injury — animals,,2y,,sc
-cc_447,arena for animal fighting,,5y,,10000&729
+cc_447,arena for animal fighting,,5y,,10000&729d
 cc_449,making — counterfeit money,,14y,,
 cc_450,possession — counterfeit money,,14y,,
 cc_451,having clippings produced by altering currency,,5y,,sc
@@ -544,13 +544,13 @@ cc_467.12,commission of offence for criminal organization,,14y,,
 cc_467.13,instructing commission of offence for criminal organization,,255y,,
 cc_486.6,failure to comply with publication ban — victims and witnesses,,,,sc
 cc_487.0197,failure to comply with preservation demand,,,,5000$
-cc_487.0198,failure to comply with preservation or production order,,,,250000&729
+cc_487.0198,failure to comply with preservation or production order,,,,250000&729d
 cc_487.0199,failure to comply with destruction order,,,,sc
 cc_487.0552,failure to comply with order or summons,,2y,,sc
 cc_487.08(3),improper use of bodily substances seized — warrant,,,,sc
 cc_487.08(4),improper use of bodily substances seized — order authorization,,2y,,sc
-cc_490.031,failure to comply with soira or nda order,,10000&729,,10000&729
-cc_490.0311,providing false information re soira,,10000&729,,10000&729
+cc_490.031,failure to comply with soira or nda order,,10000&729,,10000&729d
+cc_490.0311,providing false information re soira,,10000&729,,10000&729d
 cc_490.0312,failure to advise police re soira,,,,sc
 cc_490.8,failure to comply with restraint order,,5y,,sc
 cc_517,failure to comply with publication ban — bail,,,,sc
@@ -560,7 +560,7 @@ cc_648,failure to comply with publication ban — jury evidence,,,,sc
 cc_649,disclosure of jury proceedings,,,,sc
 cc_672.37,improper application for federal employment,,,,sc
 cc_672.501,failure to comply with order restricting publication — sexual offences,,,,sc
-cc_708,contempt,,,,100&90
+cc_708,contempt,,,,100&90d
 cc_732.11,improper use or disclosure of bodily substances seized — probatin order,,,,sc
 cc_733.1,failure to comply with probation order,,4y,,sc
 cc_742.31,improper use or disclosure of bodily substances seized — conditional sentence,,,,sc
