@@ -437,7 +437,7 @@ def offence_grid(request):
     
     return render(request, 'offence_grid/index.html', {
         'title': 'Offence Grid',
-        'offences': [(o[0], f"{o[1]} - {o[2]}") for o in offences],
+        'offences': [(o[0], f"CC {o[1]} - {o[2]}") for o in offences],
         'selected_offences': selected_offences,
         'results': results,
     })
