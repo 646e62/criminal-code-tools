@@ -116,41 +116,67 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
             <h1 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 monokai:text-keyword">Offence Analysis</h1>
             <div class="mt-8"></div>
             <form method="get" class="mt-4">
+                <!-- Defendant Information heading -->
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 monokai:text-variable mt-8 mb-2">Defendant Information</h2>
                 <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-                    <label for="citizenship_status" class="block text-base font-semibold text-gray-700 dark:text-gray-300">Citizenship status</label>
+                    <label for="citizenship_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0">Citizenship status</label>
                     <select id="citizenship_status" name="citizenship_status" class="mt-0.5 block w-full md:w-72 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-normal text-gray-900 dark:text-gray-100 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all">
                         <option value="" {% if not citizenship_status or citizenship_status == 'canadian' %}selected{% endif %}>Canadian Citizen</option>
                         <option value="pr" {% if citizenship_status == 'pr' %}selected{% endif %}>Permanent Resident</option>
                         <option value="foreign" {% if citizenship_status == 'foreign' %}selected{% endif %}>Foreign National</option>
                     </select>
                 </div>
-                <div class="max-w-xl">
-                    <label for="offences" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type">Select Offences</label>
-                    <select name="offences" id="offences" multiple class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 monokai:border-monokai-gray focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 monokai:bg-monokai-bg dark:text-gray-200 monokai:text-string">
-                        {% for section, display in offences %}
-                        <option value="{{ section }}" {% if section in selected_offences %}selected{% endif %}>
-                            {{ display }}
-                        </option>
+
+                <!-- Offence Information heading -->
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 monokai:text-variable mt-8 mb-2">Offence Information</h2>
+                <!-- Select Offence label and select side-by-side, with wider select -->
+                <div class="flex items-center gap-4 mb-6">
+                    <label for="offences" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0">Select Offence</label>
+                    <select name="offences" id="offences" class="block w-[32rem] rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-normal text-gray-900 dark:text-gray-100 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all">
+                        <option value="" {% if not selected_offences %}selected{% endif %} disabled hidden>Select an offence...</option>
+                        {% for section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix, mode in offences %}
+                            <option value="{{ section }}" data-mode="{{ mode }}" {% if section in selected_offences %}selected{% endif %}>{{ display }} - {{ offence_name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <button type="submit" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
-                    Search
+
+                <!-- Crown election label and select side-by-side -->
+                <div class="flex items-center gap-4 mb-6">
+                    <label for="crown_election" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0">Crown election</label>
+                    <select name="crown_election" id="crown_election" class="block w-56 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-normal text-gray-900 dark:text-gray-100 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all">
+                        <!-- Options will be dynamically populated by JS -->
+                    </select>
+                </div>
+
+                <button type="button" id="add-offence-btn" class="mt-3 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg" style="width: auto; min-width: 0;" title="Add Offence">
+                    Add
                 </button>
-                <button type="button" onclick="clearOffences()" class="mt-4 ml-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-700 dark:bg-gray-400 dark:hover:bg-gray-600 monokai:bg-monokai-gray monokai:hover:bg-monokai-darkGray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
-                    Clear
-                </button>
+                <!-- Offence List heading and dynamic queue display -->
+                <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 monokai:text-variable mt-8 mb-2">Offence List</h2>
+                <div id="offence-list-queue" class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 monokai:bg-monokai-darkGray rounded-md text-gray-700 dark:text-gray-200 text-sm min-h-[3rem] flex flex-col gap-2">
+                    <!-- List will be populated by JS -->
+                    <span id="offence-list-empty" class="text-gray-500 dark:text-gray-300">The offence list is currently empty.</span>
+                </div>
+                <!-- Group Search and Clear buttons side-by-side, below Add and Offence List -->
+                <div class="flex flex-row gap-3 mt-4">
+                    <button type="button" id="search-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
+                        Search
+                    </button>
+                    <button type="button" onclick="clearOffences()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-700 dark:bg-gray-400 dark:hover:bg-gray-600 monokai:bg-monokai-gray monokai:hover:bg-monokai-darkGray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
+                        Clear
+                    </button>
+                </div>
             </form>
             {% if results %}
             <div class="mt-6">
                 <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-type">Analysis Results</h3>
                 <div class="mt-2 space-y-6">
-                    {% for offence, result in results.items %}
+                    {% for result in results %}
                     <div class="p-4 bg-gray-50 dark:bg-gray-700 monokai:bg-monokai-darkGray rounded-md">
                         <!-- Offence Header: Stretches full width -->
                         <div class="mb-0 border-b pb-1">
                             <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100 monokai:text-keyword">
-                                {{ offence }} - {{ result.summary.description }}
+                                {{ result.display }} - {{ result.summary.description }}
                             </h4>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 space-y-0">
@@ -162,6 +188,9 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                     <div class="mt-4 space-y-2">
                                         <div class="text-sm">
                                             <span class="font-medium">Mode:</span> {{ result.summary.mode }}
+                                        </div>
+                                        <div class="text-sm">
+                                            <span class="font-medium">Crown election:</span> {{ result.summary.crown_election }}
                                         </div>
                                         {% if result.summary.summary_maximum %}
                                         <div class="text-sm">
@@ -192,7 +221,7 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                             {% if result.summary.summary_minimum.jail.amount or result.summary.summary_minimum.fine.amount or result.summary.indictable_minimum.jail.amount or result.summary.indictable_minimum.fine.amount %}
                                             <span class="text-red-600 dark:text-red-400">Yes</span>
                                             <ul class="list-disc list-inside ml-4 mt-1">
-                                                {% if result.summary.summary_minimum.jail.amount or result.summary.summary_minimum.fine.amount %}
+                                                {% if result.summary.summary_minimum.jail.amount %}
                                                 <li class="text-sm">Summary: 
                                                     {% if result.summary.summary_minimum.jail.amount %}
                                                         {% if result.summary.summary_minimum.jail.amount == 255 and result.summary.summary_minimum.jail.unit == 'years' %}Life{% else %}{{ result.summary.summary_minimum.jail.amount }} {{ result.summary.summary_minimum.jail.unit }}{% endif %}
@@ -451,33 +480,272 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
 <!-- JavaScript: Initializes Tom Select for the offences dropdown and provides clear/reset logic. -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    new TomSelect('#offences', {
-        plugins: ['remove_button'],
+    var ts = new TomSelect('#offences', {
+        plugins: [], // No remove_button, no multiple, no tag creation
         persist: false,
         create: false,
-        maxItems: null,
+        maxItems: 1,
+        selectOnTab: true,
+        closeAfterSelect: true,
+        hideSelected: true,
+        render: {
+            option: function(data, escape) {
+                return `<div>${escape(data.text)}</div>`;
+            }
+        }
     });
-    window.tsOffences = TomSelect.instances['offences'];
-});
-function clearOffences() {
-    // Clear Tom Select if available
-    if (window.tsOffences) {
-        window.tsOffences.clear();
-    }
-    // Also clear native select for robustness
-    const select = document.getElementById('offences');
-    if (select) {
-        for (let i = 0; i <select.options.length; i++) {
-            select.options[i].selected = false;
+    // Track last selected value
+    let lastSelected = ts.getValue();
+    let clearedByFocus = false;
+    // Map of section value to mode (from Django context)
+    const sectionToMode = {};
+    const selectEl = document.getElementById('offences');
+    for (const opt of selectEl.options) {
+        if (opt.value) {
+            sectionToMode[opt.value] = opt.getAttribute('data-mode');
         }
     }
-    // Reset citizenship dropdown to default (Canadian Citizen)
-    const citizenshipSelect = document.getElementById('citizenship_status');
-    if (citizenshipSelect) {
-        citizenshipSelect.value = '';
+    function updateCrownElection(mode) {
+        const crownSelect = document.getElementById('crown_election');
+        crownSelect.innerHTML = '';
+        if (mode === 'indictable') {
+            const opt = document.createElement('option');
+            opt.value = 'indictment';
+            opt.textContent = 'Indictment';
+            crownSelect.appendChild(opt);
+        } else if (mode === 'summary') {
+            const opt = document.createElement('option');
+            opt.value = 'summary';
+            opt.textContent = 'Summary';
+            crownSelect.appendChild(opt);
+        } else if (mode === 'hybrid') {
+            const optSummary = document.createElement('option');
+            optSummary.value = 'summary';
+            optSummary.textContent = 'Summary';
+            crownSelect.appendChild(optSummary);
+            const optIndict = document.createElement('option');
+            optIndict.value = 'indictment';
+            optIndict.textContent = 'Indictment';
+            crownSelect.appendChild(optIndict);
+            const optNone = document.createElement('option');
+            optNone.value = '';
+            optNone.textContent = 'None';
+            optNone.selected = true;
+            crownSelect.appendChild(optNone);
+        }
     }
-    // Actually reload the page (GET with no params)
-    window.location.href = window.location.pathname;
+    ts.on('change', function(value) {
+        if (value) {
+            lastSelected = value;
+            updateCrownElection(sectionToMode[value]);
+        } else {
+            updateCrownElection('');
+        }
+    });
+    if (lastSelected) {
+        updateCrownElection(sectionToMode[lastSelected]);
+    }
+    ts.on('focus', function() {
+        if (ts.getValue()) {
+            clearedByFocus = true;
+            ts.clear();
+            updateCrownElection('');
+        }
+    });
+    ts.on('blur', function() {
+        setTimeout(function() {
+            if (!ts.getValue() && lastSelected && clearedByFocus) {
+                ts.setValue(lastSelected, true);
+                updateCrownElection(sectionToMode[lastSelected]);
+            }
+            clearedByFocus = false;
+        }, 100);
+    });
+});
+
+// --- Enhanced Search: submit all offences in queue ---
+document.getElementById('search-btn').onclick = function(e) {
+    e.preventDefault();
+    // Get all offences in the queue
+    apiQueueList().then(queue => {
+        if (!queue || queue.length === 0) {
+            alert('Please add at least one offence to the list before searching.');
+            return;
+        }
+        // Create a form and submit all queue offences as GET params
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.action = window.location.pathname;
+        // Add citizenship status
+        const citizen = document.getElementById('citizenship_status');
+        if (citizen) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'citizenship_status';
+            input.value = citizen.value;
+            form.appendChild(input);
+        }
+        // Add all offences in queue
+        queue.forEach(off => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'offences';
+            input.value = off.section;
+            form.appendChild(input);
+        });
+        // Add crown election if present
+        const crown = document.getElementById('crown_election');
+        if (crown && crown.value) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'crown_election';
+            input.value = crown.value;
+            form.appendChild(input);
+        }
+        document.body.appendChild(form);
+        form.submit();
+    });
+    return false;
+};
+
+// --- AJAX helpers with debug logging ---
+async function apiQueueList() {
+    try {
+        const res = await fetch('/offence-grid/api/queue/', { credentials: 'same-origin' });
+        const data = await res.json();
+        console.log('apiQueueList response:', data);
+        // DRF paginates: always return array of results
+        return Array.isArray(data) ? data : (data.results || []);
+    } catch (e) {
+        console.error('apiQueueList error:', e);
+        return [];
+    }
+}
+async function apiQueueAdd(offence) {
+    try {
+        const res = await fetch('/offence-grid/api/queue/', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(offence)
+        });
+        const data = await res.json();
+        console.log('apiQueueAdd response:', data);
+        return data;
+    } catch (e) {
+        console.error('apiQueueAdd error:', e);
+    }
+}
+async function apiQueueDelete(id) {
+    try {
+        const res = await fetch(`/offence-grid/api/queue/${id}/`, {
+            method: 'DELETE',
+            credentials: 'same-origin',
+        });
+        console.log('apiQueueDelete response:', res.status);
+    } catch (e) {
+        console.error('apiQueueDelete error:', e);
+    }
+}
+
+// --- Offence queue logic (API-backed) ---
+let offenceQueue = [];
+
+async function renderOffenceQueue() {
+    offenceQueue = await apiQueueList();
+    const listDiv = document.getElementById('offence-list-queue');
+    const emptyMsg = document.getElementById('offence-list-empty');
+    // Remove all old offence items except the empty message
+    listDiv.querySelectorAll('.offence-queue-item').forEach(e => e.remove());
+    if (!offenceQueue || offenceQueue.length === 0) {
+        emptyMsg.style.display = '';
+        console.log('Offence list is empty');
+    } else {
+        emptyMsg.style.display = 'none';
+        offenceQueue.forEach((off, idx) => {
+            const modeStr = off.mode ? ` — ${off.mode}` : '';
+            const item = document.createElement('div');
+            item.className = 'offence-queue-item flex items-center justify-between bg-white dark:bg-gray-800 monokai:bg-monokai-bg rounded px-3 py-1 shadow-sm';
+            item.innerHTML = `<span>${off.display} - ${off.offence_name}${modeStr}</span>` +
+                `<button type="button" class="ml-4 px-2 py-1 text-xs rounded bg-red-500 hover:bg-red-600 text-white" onclick="removeOffenceFromQueue(${off.id})">Delete</button>`;
+            listDiv.appendChild(item);
+        });
+        console.log('Rendered offenceQueue:', offenceQueue);
+    }
+}
+
+async function removeOffenceFromQueue(id) {
+    await apiQueueDelete(id);
+    renderOffenceQueue();
+}
+
+const addBtn = document.getElementById('add-offence-btn');
+addBtn.onclick = async function() {
+    const select = document.getElementById('offences');
+    const selected = select.options[select.selectedIndex];
+    if (!selected || !selected.value) {
+        console.warn('No offence selected');
+        return;
+    }
+    const mode = selected.getAttribute('data-mode');
+    let modeLabel = '';
+    let crownElection = '';
+    if (mode === 'indictable') {
+        modeLabel = 'Indictment';
+    } else if (mode === 'summary') {
+        modeLabel = 'Summary';
+    } else if (mode === 'hybrid') {
+        const crownSelect = document.getElementById('crown_election');
+        const crownValue = crownSelect ? crownSelect.value : '';
+        if (crownValue === 'summary') {
+            modeLabel = 'Summary';
+            crownElection = 'summary';
+        } else if (crownValue === 'indictment') {
+            modeLabel = 'Indictment';
+            crownElection = 'indictment';
+        } else {
+            modeLabel = 'No election';
+            crownElection = '';
+        }
+    } else {
+        modeLabel = mode ? mode : '';
+    }
+    const payload = {
+        section: selected.value,
+        display: selected.text.split(' - ')[0],
+        offence_name: selected.text.split(' - ').slice(1).join(' - '),
+        mode: modeLabel,
+        crown_election: crownElection
+    };
+    console.log('Adding offence:', payload);
+    await apiQueueAdd(payload);
+    renderOffenceQueue();
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    renderOffenceQueue();
+});
+
+// --- Clear queue on form reset ---
+async function clearOffences() {
+    const offences = await apiQueueList();
+    for (const off of offences) {
+        await apiQueueDelete(off.id);
+    }
+    // Also clear the Tom Select dropdown
+    if (window.ts) {
+        ts.clear();
+    } else {
+        const select = document.getElementById('offences');
+        if (select) select.selectedIndex = 0;
+    }
+    // Clear analysis results (remove results from DOM)
+    document.querySelectorAll('.mt-6').forEach(div => {
+        if (div.querySelector('h3') && div.querySelector('h3').innerText.includes('Analysis Results')) {
+            div.remove();
+        }
+    });
+    renderOffenceQueue();
 }
 </script>
 {% endblock %}

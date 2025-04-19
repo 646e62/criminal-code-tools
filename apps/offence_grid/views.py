@@ -424,9 +424,11 @@ def offence_grid(request):
     citizenship_status = request.GET.get('citizenship_status', None)
     if citizenship_status in [None, '', 'None']:
         citizenship_status = 'canadian'
-    results = {}
+    results = []
     if selected_offences:
-        for section in selected_offences:
+        # Also get crown election from GET params (may be one or many)
+        crown_elections = request.GET.getlist('crown_election')
+        for idx, section in enumerate(selected_offences):
             for offence_data in offences:
                 if offence_data[0] == section:
                     offence_list = list(offence_data)
@@ -441,6 +443,13 @@ def offence_grid(request):
                     summary['mode'] = mode.title()
                     summary['description'] = offence_data[2]
                     summary['statute_prefix'] = offence_data[7] if len(offence_data) > 7 else "CC"
+                    # Add crown election logic
+                    if mode == 'hybrid':
+                        # Try to get the corresponding crown election from the GET params (by index)
+                        crown_election = crown_elections[idx] if idx < len(crown_elections) and crown_elections[idx] else 'None'
+                        summary['crown_election'] = crown_election.title()
+                    else:
+                        summary['crown_election'] = 'N/A'
                     consequences = get_collateral_consequences(
                         section=section,
                         max_indictable=offence_data[3],
@@ -449,23 +458,38 @@ def offence_grid(request):
                         min_sc=offence_data[6],
                         citizenship_status=citizenship_status
                     )
-                    results[offence_data[1]] = {
+                    results.append({
+                        'display': offence_data[1],
+                        'description': offence_data[2],
                         'summary': summary,
                         **consequences
-                    }
+                    })
                     break
     show_irpa_footnote = False
     if citizenship_status == 'foreign' and results:
-        for result in results.values():
+        for result in results:
             for immigration_result in result.get('immigration', []):
                 if immigration_result['status']['notes'] != 'both' and immigration_result['status']['notes'] != 'foreign national':
                     show_irpa_footnote = True
                     break
             if show_irpa_footnote:
                 break
+    # Prepare offences for template with mode computed in Python, not the template
+    offences_with_mode = []
+    for tup in offences:
+        section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix = tup
+        if max_indictable and max_sc:
+            mode = 'hybrid'
+        elif max_indictable:
+            mode = 'indictable'
+        elif max_sc:
+            mode = 'summary'
+        else:
+            mode = ''
+        offences_with_mode.append((section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix, mode))
     return render(request, 'offence_grid/index.html', {
         'title': 'Offence Grid',
-        'offences': [(o[0], f"{o[1]} - {o[2]}") for o in offences],
+        'offences': offences_with_mode,
         'selected_offences': selected_offences,
         'citizenship_status': citizenship_status,
         'results': results,
