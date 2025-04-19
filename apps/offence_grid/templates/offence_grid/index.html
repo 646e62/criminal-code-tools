@@ -159,7 +159,7 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                 </div>
                 <!-- Group Search and Clear buttons side-by-side, below Add and Offence List -->
                 <div class="flex flex-row gap-3 mt-4">
-                    <button type="submit" id="search-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
+                    <button type="button" id="search-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
                         Search
                     </button>
                     <button type="button" onclick="clearOffences()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-700 dark:bg-gray-400 dark:hover:bg-gray-600 monokai:bg-monokai-gray monokai:hover:bg-monokai-darkGray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
@@ -560,16 +560,103 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// --- Offence queue logic ---
+// --- Enhanced Search: submit all offences in queue ---
+document.getElementById('search-btn').onclick = function(e) {
+    e.preventDefault();
+    // Get all offences in the queue
+    apiQueueList().then(queue => {
+        if (!queue || queue.length === 0) {
+            alert('Please add at least one offence to the list before searching.');
+            return;
+        }
+        // Create a form and submit all queue offences as GET params
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.action = window.location.pathname;
+        // Add citizenship status
+        const citizen = document.getElementById('citizenship_status');
+        if (citizen) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'citizenship_status';
+            input.value = citizen.value;
+            form.appendChild(input);
+        }
+        // Add all offences in queue
+        queue.forEach(off => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'offences';
+            input.value = off.section;
+            form.appendChild(input);
+        });
+        // Add crown election if present
+        const crown = document.getElementById('crown_election');
+        if (crown && crown.value) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'crown_election';
+            input.value = crown.value;
+            form.appendChild(input);
+        }
+        document.body.appendChild(form);
+        form.submit();
+    });
+    return false;
+};
+
+// --- AJAX helpers with debug logging ---
+async function apiQueueList() {
+    try {
+        const res = await fetch('/offence-grid/api/queue/', { credentials: 'same-origin' });
+        const data = await res.json();
+        console.log('apiQueueList response:', data);
+        // DRF paginates: always return array of results
+        return Array.isArray(data) ? data : (data.results || []);
+    } catch (e) {
+        console.error('apiQueueList error:', e);
+        return [];
+    }
+}
+async function apiQueueAdd(offence) {
+    try {
+        const res = await fetch('/offence-grid/api/queue/', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(offence)
+        });
+        const data = await res.json();
+        console.log('apiQueueAdd response:', data);
+        return data;
+    } catch (e) {
+        console.error('apiQueueAdd error:', e);
+    }
+}
+async function apiQueueDelete(id) {
+    try {
+        const res = await fetch(`/offence-grid/api/queue/${id}/`, {
+            method: 'DELETE',
+            credentials: 'same-origin',
+        });
+        console.log('apiQueueDelete response:', res.status);
+    } catch (e) {
+        console.error('apiQueueDelete error:', e);
+    }
+}
+
+// --- Offence queue logic (API-backed) ---
 let offenceQueue = [];
 
-function renderOffenceQueue() {
+async function renderOffenceQueue() {
+    offenceQueue = await apiQueueList();
     const listDiv = document.getElementById('offence-list-queue');
     const emptyMsg = document.getElementById('offence-list-empty');
     // Remove all old offence items except the empty message
     listDiv.querySelectorAll('.offence-queue-item').forEach(e => e.remove());
-    if (offenceQueue.length === 0) {
+    if (!offenceQueue || offenceQueue.length === 0) {
         emptyMsg.style.display = '';
+        console.log('Offence list is empty');
     } else {
         emptyMsg.style.display = 'none';
         offenceQueue.forEach((off, idx) => {
@@ -577,25 +664,29 @@ function renderOffenceQueue() {
             const item = document.createElement('div');
             item.className = 'offence-queue-item flex items-center justify-between bg-white dark:bg-gray-800 monokai:bg-monokai-bg rounded px-3 py-1 shadow-sm';
             item.innerHTML = `<span>${off.display} - ${off.offence_name}${modeStr}</span>` +
-                `<button type="button" class="ml-4 px-2 py-1 text-xs rounded bg-red-500 hover:bg-red-600 text-white" onclick="removeOffenceFromQueue(${idx})">Delete</button>`;
+                `<button type="button" class="ml-4 px-2 py-1 text-xs rounded bg-red-500 hover:bg-red-600 text-white" onclick="removeOffenceFromQueue(${off.id})">Delete</button>`;
             listDiv.appendChild(item);
         });
+        console.log('Rendered offenceQueue:', offenceQueue);
     }
 }
 
-function removeOffenceFromQueue(idx) {
-    offenceQueue.splice(idx, 1);
+async function removeOffenceFromQueue(id) {
+    await apiQueueDelete(id);
     renderOffenceQueue();
 }
 
-// Add offence to queue when Add button is pressed
 const addBtn = document.getElementById('add-offence-btn');
-addBtn.onclick = function() {
+addBtn.onclick = async function() {
     const select = document.getElementById('offences');
     const selected = select.options[select.selectedIndex];
-    if (!selected || !selected.value) return;
+    if (!selected || !selected.value) {
+        console.warn('No offence selected');
+        return;
+    }
     const mode = selected.getAttribute('data-mode');
     let modeLabel = '';
+    let crownElection = '';
     if (mode === 'indictable') {
         modeLabel = 'Indictment';
     } else if (mode === 'summary') {
@@ -605,118 +696,53 @@ addBtn.onclick = function() {
         const crownValue = crownSelect ? crownSelect.value : '';
         if (crownValue === 'summary') {
             modeLabel = 'Summary';
+            crownElection = 'summary';
         } else if (crownValue === 'indictment') {
             modeLabel = 'Indictment';
+            crownElection = 'indictment';
         } else {
             modeLabel = 'No election';
+            crownElection = '';
         }
     } else {
         modeLabel = mode ? mode : '';
     }
-    offenceQueue.push({
+    const payload = {
         section: selected.value,
         display: selected.text.split(' - ')[0],
         offence_name: selected.text.split(' - ').slice(1).join(' - '),
-        mode: modeLabel
-    });
-    updateQueueAndSave();
+        mode: modeLabel,
+        crown_election: crownElection
+    };
+    console.log('Adding offence:', payload);
+    await apiQueueAdd(payload);
+    renderOffenceQueue();
 };
 
-function updateQueueAndSave() {
-    saveOffenceQueue();
-    renderOffenceQueue();
-}
-
-// Persist queue in localStorage
-function saveOffenceQueue() {
-    localStorage.setItem('offenceQueue', JSON.stringify(offenceQueue));
-}
-function loadOffenceQueue() {
-    const data = localStorage.getItem('offenceQueue');
-    if (data) {
-        try {
-            offenceQueue = JSON.parse(data);
-        } catch(e) { offenceQueue = []; }
-    }
-}
-
-// Clear queue on form reset
-function clearOffences() {
-    // Clear queue and persist
-    offenceQueue = [];
-    saveOffenceQueue();
-    // Reload the page to reset all fields and results
-    window.location.href = '/offence-grid/';
-}
-
-// On page load, load and render queue
 document.addEventListener('DOMContentLoaded', function() {
-    loadOffenceQueue();
     renderOffenceQueue();
 });
 
-// Save queue on every change
-function updateQueueAndSave() {
-    saveOffenceQueue();
+// --- Clear queue on form reset ---
+async function clearOffences() {
+    const offences = await apiQueueList();
+    for (const off of offences) {
+        await apiQueueDelete(off.id);
+    }
+    // Also clear the Tom Select dropdown
+    if (window.ts) {
+        ts.clear();
+    } else {
+        const select = document.getElementById('offences');
+        if (select) select.selectedIndex = 0;
+    }
+    // Clear analysis results (remove results from DOM)
+    document.querySelectorAll('.mt-6').forEach(div => {
+        if (div.querySelector('h3') && div.querySelector('h3').innerText.includes('Analysis Results')) {
+            div.remove();
+        }
+    });
     renderOffenceQueue();
 }
-// Overwrite add/remove to also save
-addBtn.onclick = function() {
-    const select = document.getElementById('offences');
-    const selected = select.options[select.selectedIndex];
-    if (!selected || !selected.value) return;
-    const mode = selected.getAttribute('data-mode');
-    let modeLabel = '';
-    if (mode === 'indictable') {
-        modeLabel = 'Indictment';
-    } else if (mode === 'summary') {
-        modeLabel = 'Summary';
-    } else if (mode === 'hybrid') {
-        const crownSelect = document.getElementById('crown_election');
-        const crownValue = crownSelect ? crownSelect.value : '';
-        if (crownValue === 'summary') {
-            modeLabel = 'Summary';
-        } else if (crownValue === 'indictment') {
-            modeLabel = 'Indictment';
-        } else {
-            modeLabel = 'No election';
-        }
-    } else {
-        modeLabel = mode ? mode : '';
-    }
-    offenceQueue.push({
-        section: selected.value,
-        display: selected.text.split(' - ')[0],
-        offence_name: selected.text.split(' - ').slice(1).join(' - '),
-        mode: modeLabel
-    });
-    updateQueueAndSave();
-};
-window.removeOffenceFromQueue = function(idx) {
-    offenceQueue.splice(idx, 1);
-    updateQueueAndSave();
-};
-// Save queue before submitting form
-const searchBtn = document.getElementById('search-btn');
-searchBtn.form.addEventListener('submit', function(e) {
-    // Set all offence values in a hidden multi-select before submit
-    let hidden = document.getElementById('offence-queue-hidden');
-    if (!hidden) {
-        hidden = document.createElement('select');
-        hidden.id = 'offence-queue-hidden';
-        hidden.name = 'offences';
-        hidden.multiple = true;
-        hidden.style.display = 'none';
-        searchBtn.form.appendChild(hidden);
-    }
-    hidden.innerHTML = '';
-    offenceQueue.forEach(off => {
-        const opt = document.createElement('option');
-        opt.value = off.section;
-        opt.selected = true;
-        hidden.appendChild(opt);
-    });
-    saveOffenceQueue();
-});
 </script>
 {% endblock %}
