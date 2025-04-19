@@ -422,8 +422,8 @@ def offence_grid(request):
     offences = load_offences()
     selected_offences = request.GET.getlist('offences')
     citizenship_status = request.GET.get('citizenship_status', None)
-    if citizenship_status is not None:
-        pass
+    if citizenship_status in [None, '', 'None']:
+        citizenship_status = 'canadian'
     results = {}
     if selected_offences:
         for section in selected_offences:
