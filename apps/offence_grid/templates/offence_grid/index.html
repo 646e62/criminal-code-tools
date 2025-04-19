@@ -618,11 +618,11 @@ function loadOffenceQueue() {
 
 // Clear queue on form reset
 function clearOffences() {
+    // Clear queue and persist
     offenceQueue = [];
     saveOffenceQueue();
-    renderOffenceQueue();
-    document.getElementById('offences').selectedIndex = 0;
-    updateCrownElection('');
+    // Reload the page to reset all fields and results
+    window.location.href = '/offence-grid/';
 }
 
 // On page load, load and render queue
