@@ -13,11 +13,12 @@ from .utils import (
 )
 
 
-def check_inadmissibility(section, mode, indictable_maximum):
+def check_inadmissibility(section, mode, indictable_maximum, citizenship_status):
     """
     Checks to see whether the offence renders the defendant liable for IRPA
     consequences.
     """
+    print(f"[check_inadmissibility] Citizenship status received: {citizenship_status}")
     inadmissibilty_list = []
 
     # Determine whether this check is still necessary, given the changes in 
@@ -26,6 +27,14 @@ def check_inadmissibility(section, mode, indictable_maximum):
         indictable_maximum = int(indictable_maximum)
     except:
         indictable_maximum = 0
+
+    if citizenship_status == "canadian":
+        return [standard_output(
+            False,
+            None,
+            ["irpa34(1)"],
+            {"notes": "no admissibility consequences for citizens"}
+        )]
 
     if section in TERRORISM_OFFENCES:
         inadmissibilty_list.append(

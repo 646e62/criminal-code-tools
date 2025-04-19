@@ -143,7 +143,7 @@ def parse_maximum(max_value):
     
     return None
 
-def get_collateral_consequences(section, max_indictable, max_sc, min_indictable, min_sc):
+def get_collateral_consequences(section, max_indictable, max_sc, min_indictable, min_sc, citizenship_status=None):
     """Get collateral consequences for an offence."""
     consequences = {}
 
@@ -169,7 +169,8 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
     immigration_results = ca_collateral_consequences.check_inadmissibility(
         section=section,
         mode=mode,
-        indictable_maximum=max_years
+        indictable_maximum=max_years,
+        citizenship_status=citizenship_status
     )
     consequences['immigration'] = immigration_results
 
@@ -411,6 +412,9 @@ def offence_grid(request):
     """Landing page for the offence grid tool."""
     offences = load_offences()
     selected_offences = request.GET.getlist('offences')
+    citizenship_status = request.GET.get('citizenship_status', None)
+    if citizenship_status is not None:
+        print(f"[OFFENCE GRID] Citizenship status selected: {citizenship_status}")
     results = {}
     if selected_offences:
         for section in selected_offences:
@@ -433,7 +437,8 @@ def offence_grid(request):
                         max_indictable=offence_data[3],
                         max_sc=offence_data[4],
                         min_indictable=offence_data[5],
-                        min_sc=offence_data[6]
+                        min_sc=offence_data[6],
+                        citizenship_status=citizenship_status
                     )
                     results[offence_data[1]] = {
                         'summary': summary,
@@ -444,5 +449,6 @@ def offence_grid(request):
         'title': 'Offence Grid',
         'offences': [(o[0], f"{o[1]} - {o[2]}") for o in offences],
         'selected_offences': selected_offences,
+        'citizenship_status': citizenship_status,
         'results': results,
     })

@@ -318,14 +318,16 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                                 {% for immigration_result in result.immigration %}
                                                 <div class="text-sm">
                                                     <span class="font-medium">Immigration/Admissibility:</span>
-                                                    {% if immigration_result.notes == "serious criminality" and immigration_result.status.notes == "both" %}
+                                                    {% if immigration_result.status.notes == "serious criminality" and immigration_result.status.notes == "both" %}
                                                     <span class="text-red-600 dark:text-red-400">Permanent residents and foreign nationals</span>
-                                                    {% elif immigration_result.notes == "criminality" %}
+                                                    {% elif immigration_result.status.notes == "criminality" %}
                                                     <span class="text-red-600 dark:text-red-400">Foreign nationals</span>
-                                                    {% elif immigration_result.notes == "none" %}
+                                                    {% elif immigration_result.status.notes == "none" %}
                                                     <span class="text-green-600 dark:text-green-400">None</span>
+                                                    {% elif immigration_result.notes.notes|default_if_none:""|lower == "no admissibility consequences for citizens" %}
+                                                    <span class="text-gray-500">Not Applicable</span>
                                                     {% else %}
-                                                    <span class="text-red-600 dark:text-red-400">{{ immigration_result.notes|title }}</span>
+                                                    <span class="text-red-600 dark:text-red-400">{{ immigration_result.status.notes|title }}</span>
                                                     {% endif %}
                                                     {% if immigration_result.sections and immigration_result.footnote %}
                                                     <a href="#footnote-{{ immigration_result.footnote.anchor }}" class="footnote-ref" id="ref-{{ immigration_result.footnote.anchor }}">[{{ immigration_result.footnote.number }}]</a>
