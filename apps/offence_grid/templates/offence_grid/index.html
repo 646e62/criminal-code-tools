@@ -143,9 +143,6 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
             </form>
             {% if results %}
             <div class="mt-6">
-                <div class="bg-yellow-100 text-yellow-800 px-4 py-2 rounded mb-4">
-                    DEBUG: citizenship_status = "{{ citizenship_status }}"
-                </div>
                 <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 monokai:text-type">Analysis Results</h3>
                 <div class="mt-2 space-y-6">
                     {% for offence, result in results.items %}
@@ -298,32 +295,23 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                 <div>
                                     <h5 class="text-lg font-medium text-gray-700 dark:text-gray-300 monokai:text-variable">Collateral Consequences</h5>
                                     <div class="mt-4 space-y-2">
+                                        <!-- Immigration/Admissibility -->
                                         {% for immigration_result in result.immigration %}
                                         <div class="text-sm">
                                             <span class="font-medium">Immigration/Admissibility:</span>
-                                            {% if citizenship_status == 'pr' %}
-                                                {% if immigration_result.status == 'both' or immigration_result.status.notes == 'serious criminality' %}
+                                            {% if citizenship_status == 'canadian' %}
+                                                <span class="text-gray-500 dark:text-gray-400">Not Applicable</span>
+                                            {% elif citizenship_status == 'pr' %}
+                                                {% if immigration_result.status.notes == 'both' or immigration_result.status.notes == 'permanent resident' %}
                                                     <span class="text-red-600 dark:text-red-400">True</span>
                                                 {% else %}
                                                     <span class="text-green-600 dark:text-green-400">False</span>
                                                 {% endif %}
                                             {% elif citizenship_status == 'foreign' %}
-                                                {% if immigration_result.status == 'both' or immigration_result.status == 'foreign national' %}
+                                                {% if immigration_result.status.notes == 'both' or immigration_result.status.notes == 'foreign national' %}
                                                     <span class="text-red-600 dark:text-red-400">True</span>
                                                 {% else %}
-                                                    <span class="text-yellow-600 dark:text-yellow-400">Possible</span>
-                                                {% endif %}
-                                            {% else %}
-                                                {% if immigration_result.status == "both" %}
-                                                    <span class="text-red-600 dark:text-red-400">Permanent residents and foreign nationals</span>
-                                                {% elif immigration_result.status == "foreign national" %}
-                                                    <span class="text-red-600 dark:text-red-400">Foreign nationals</span>
-                                                {% elif immigration_result.status.notes == "none" %}
-                                                    <span class="text-green-600 dark:text-green-400">None</span>
-                                                {% elif immigration_result.notes.notes|default_if_none:""|lower == "no admissibility consequences for citizens" %}
-                                                    <span class="text-gray-500">Not Applicable</span>
-                                                {% else %}
-                                                    <span class="text-red-600 dark:text-red-400">{{ immigration_result.status.notes|title }}</span>
+                                                <span class="text-yellow-600 dark:text-yellow-400">Possible</span>
                                                 {% endif %}
                                             {% endif %}
                                             {% if immigration_result.footnote %}

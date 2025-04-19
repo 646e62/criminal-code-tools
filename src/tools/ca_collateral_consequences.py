@@ -33,7 +33,7 @@ def check_inadmissibility(section, mode, indictable_maximum, citizenship_status)
             False,
             None,
             ["irpa_34(1)"],
-            {"notes": "no admissibility consequences for citizens"}
+            {"no admissibility consequences for citizens"}
         )]
 
     if section in TERRORISM_OFFENCES:
