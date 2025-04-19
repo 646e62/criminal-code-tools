@@ -594,7 +594,6 @@ addBtn.onclick = function() {
     const select = document.getElementById('offences');
     const selected = select.options[select.selectedIndex];
     if (!selected || !selected.value) return;
-    if (offenceQueue.some(off => off.section === selected.value)) return;
     const mode = selected.getAttribute('data-mode');
     let modeLabel = '';
     if (mode === 'indictable') {
@@ -602,7 +601,6 @@ addBtn.onclick = function() {
     } else if (mode === 'summary') {
         modeLabel = 'Summary';
     } else if (mode === 'hybrid') {
-        // For hybrid, check the current value of the crown election dropdown
         const crownSelect = document.getElementById('crown_election');
         const crownValue = crownSelect ? crownSelect.value : '';
         if (crownValue === 'summary') {
@@ -667,7 +665,6 @@ addBtn.onclick = function() {
     const select = document.getElementById('offences');
     const selected = select.options[select.selectedIndex];
     if (!selected || !selected.value) return;
-    if (offenceQueue.some(off => off.section === selected.value)) return;
     const mode = selected.getAttribute('data-mode');
     let modeLabel = '';
     if (mode === 'indictable') {
@@ -675,7 +672,6 @@ addBtn.onclick = function() {
     } else if (mode === 'summary') {
         modeLabel = 'Summary';
     } else if (mode === 'hybrid') {
-        // For hybrid, check the current value of the crown election dropdown
         const crownSelect = document.getElementById('crown_election');
         const crownValue = crownSelect ? crownSelect.value : '';
         if (crownValue === 'summary') {
