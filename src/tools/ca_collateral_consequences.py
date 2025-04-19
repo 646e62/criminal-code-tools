@@ -13,11 +13,12 @@ from .utils import (
 )
 
 
-def check_inadmissibility(section, mode, indictable_maximum):
+def check_inadmissibility(section, mode, indictable_maximum, citizenship_status):
     """
     Checks to see whether the offence renders the defendant liable for IRPA
     consequences.
     """
+    # print(f"[check_inadmissibility] Citizenship status received: {citizenship_status}")
     inadmissibilty_list = []
 
     # Determine whether this check is still necessary, given the changes in 
@@ -27,22 +28,30 @@ def check_inadmissibility(section, mode, indictable_maximum):
     except:
         indictable_maximum = 0
 
+    if citizenship_status == "canadian":
+        return [standard_output(
+            False,
+            None,
+            ["irpa_34(1)"],
+            {"no admissibility consequences for citizens"}
+        )]
+
     if section in TERRORISM_OFFENCES:
         inadmissibilty_list.append(
             standard_output(
                 True,
-                "permanent resident",
-                ["irpa34(1)"],
+                "both",
+                ["irpa_34(1)"],
                 "security"
             )
         )
 
-    if section == "cc240.1":
+    if section == "cc_240.1":
         inadmissibilty_list.append(
             standard_output(
                 True,
-                "permanent resident",
-                ["irpa35(1)(c.1)"],
+                "both",
+                ["irpa_35(1)(c.1)"],
                 "human or international rights violations",
             )
         )
@@ -50,7 +59,7 @@ def check_inadmissibility(section, mode, indictable_maximum):
             standard_output(
                 True,
                 "foreign national",
-                ["irpa35(1)(c.1)"],
+                ["irpa_35(1)(c.1)"],
                 "human or international rights violations",
             )
         )
@@ -59,27 +68,41 @@ def check_inadmissibility(section, mode, indictable_maximum):
         inadmissibilty_list.append(
             standard_output(
                 True,
-                "permanent resident",
-                ["irpa36(1)"],
-                "serious criminality"
-            )
-        )
-        inadmissibilty_list.append(
-            standard_output(
-                True,
-                "foreign national",
-                ["irpa36(1)"],
+                "both",  # indicates both permanent residents and foreign nationals
+                ["irpa_36(1)"],
                 "serious criminality"
             )
         )
 
-    if mode == "hybrid" or mode == "indictable":
+    if mode == "indictable" or (mode == "hybrid" and indictable_maximum > 0):
+        # Only add criminality if we haven't already added serious criminality
+        if not any(result["notes"] == "serious criminality" for result in inadmissibilty_list):
+            inadmissibilty_list.append(
+                standard_output(
+                    True,
+                    "foreign national",
+                    ["irpa_36(2)"],
+                    "criminality"
+                )
+            )
+    elif mode == "summary":
         inadmissibilty_list.append(
             standard_output(
-                True,
-                "foreign national",
-                ["irpa36(2)"],
-                "criminality"
+                False,
+                None,
+                None,
+                None
+            )
+        )
+
+    # If no consequences were found, add a "none" result
+    if not inadmissibilty_list:
+        inadmissibilty_list.append(
+            standard_output(
+                False,
+                None,
+                [],
+                "none"
             )
         )
 

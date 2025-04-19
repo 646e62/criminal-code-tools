@@ -321,6 +321,18 @@ def report(offence_code: str) -> None:
         print(f"{statute_name} s. {section_number} — {offence_name.title()}")
         print("=" * 80 + "\n")
 
+        # Offence Summary
+        print("OFFENCE SUMMARY")
+        print("-" * 50)
+        print(f"Mode: {mode.title()}")
+        if mode in ["summary", "hybrid"]:
+            print(f"Summary Maximum: {format_quantum(offence['offence_data']['summary_maximum'])}")
+            print(f"Summary Minimum: {format_quantum(offence['offence_data']['summary_minimum'])}")
+        if mode in ["indictable", "hybrid"]:
+            print(f"Indictable Maximum: {format_quantum(offence['offence_data']['indictable_maximum'])}")
+            print(f"Indictable Minimum: {format_quantum(offence['offence_data']['indictable_minimum'])}")
+        print("\n")
+
         # Basic Information
         print("BASIC INFORMATION")
         print("-" * 50)

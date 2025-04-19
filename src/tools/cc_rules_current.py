@@ -3,7 +3,7 @@ Criminal Code of Canada rules for creating a sentencing grid. The rules are
 current to October 2, 2024.
 """
 
-from constants import (
+from .constants import (
     PRIMARY_DESIGNATED_DNA_OFFENCES,
     SECONDARY_DESIGNATED_DNA_OFFENCES,
     EXCLUDED_CSO_OFFENCES,
@@ -29,7 +29,7 @@ from constants import (
     VIOLENCE_USED_THREATENED_ATTEMPTED_OFFENCES,
 )
 
-from utils import (
+from .utils import (
     convert_quantum_to_days,
     standard_output,
 )
@@ -44,8 +44,8 @@ def check_offence_type(offence: List[str]) -> str:
 
     Args:
         offence (List[str]): A row from the CSV file containing offence data
-            [3] = indictable maximum
-            [5] = summary maximum
+            [3] = maximum_indictable
+            [4] = maximum_sc
 
     Returns:
         str: The type of offence - "summary", "indictable", or "hybrid"
@@ -56,49 +56,39 @@ def check_offence_type(offence: List[str]) -> str:
     """
     if not isinstance(offence, list):
         raise TypeError("offence must be a list")
-    if len(offence) < 6:
-        raise ValueError("offence list must have at least 6 elements")
+    if len(offence) < 5:
+        raise ValueError("offence list must have at least 5 elements")
 
-    if offence[3] == "":
-        return "summary"
-    elif offence[5] == "":
-        return "indictable"
-    else:
+    # Get the maximum values
+    max_indictable = offence[3]
+    max_sc = offence[4]
+
+    # If both maximums are present, it's hybrid
+    if max_indictable and max_sc:
         return "hybrid"
+    # If there's an indictable maximum only, it's indictable
+    elif max_indictable:
+        return "indictable"
+    # Otherwise (no indictable maximum or both empty), it's summary
+    else:
+        return "summary"
 
 
 # Procedure
-def check_prelim_available(
-    indictable_maximum: str,
-) -> Dict[str, Union[bool, None, List[str], str]]:
-    """
-    Check if the preliminary inquiry is available for a given offence.
-
-    Args:
-        indictable_maximum (str): The maximum sentence for indictable proceedings
-
-    Returns:
-        Dict: A dictionary containing:
-            - available (bool): Whether preliminary inquiry is available
-            - quantum (Optional[str]): The quantum of sentence, if applicable
-            - sections (List[str]): Relevant Criminal Code sections
-            - explanation (str): Explanation of the determination
-
-    Raises:
-        TypeError: If indictable_maximum is not a string
-    """
-    if not isinstance(indictable_maximum, str):
-        raise TypeError("indictable_maximum must be a string")
-
-    if indictable_maximum == "14y" or indictable_maximum == "255y":
+def check_prelim_available(indictable_maximum):
+    if not isinstance(indictable_maximum, dict):
+        return standard_output(False, None, ["cc_535"], "indictable_maximum not a dict")
+    jail = indictable_maximum.get('jail', {})
+    amount = jail.get('amount')
+    unit = jail.get('unit')
+    if (amount == 14 and unit == 'years') or (amount == 255 and unit == 'years'):
         prelim_available = standard_output(
-            True, None, ["cc535"], "maximum term of 14y or greater"
+            True, None, ["cc_535"], "maximum term of 14y or greater"
         )
         return prelim_available
-
     else:
         prelim_available = standard_output(
-            False, None, ["cc535"], "maximum of less than 14y"
+            False, None, ["cc_535"], "maximum of less than 14y"
         )
         return prelim_available
 
@@ -126,10 +116,10 @@ def check_section_469_offence(
     """
 
     if section in SECTION_469_OFFENCES:
-        return standard_output(True, None, ["cc469"], "listed offence")
+        return standard_output(True, None, ["cc_469"], "listed offence")
 
     else:
-        return standard_output(False, None, ["cc469"], "not a listed offence")
+        return standard_output(False, None, ["cc_469"], "not a listed offence")
 
 
 def check_absolute_jurisdiction_offence(
@@ -156,14 +146,14 @@ def check_absolute_jurisdiction_offence(
             standard_output(
                 True,
                 None,
-                ["cc553(a)(i)"],
+                ["cc_553(a)(i)"],
                 "theft (other than cattle theft)",
             )
         )
 
     if section in ABSOLUTE_JURISDICITON_OFFENCES_FALSE_PRETENCES:
         absolute_jurisdiction_list.append(
-            standard_output(True, None, ["cc553(a)(ii)"], "false pretences")
+            standard_output(True, None, ["cc_553(a)(ii)"], "false pretences")
         )
 
     if section in ABSOLUTE_JURISDICITON_OFFENCES_PPOBC:
@@ -171,19 +161,19 @@ def check_absolute_jurisdiction_offence(
             standard_output(
                 True,
                 None,
-                ["cc553(a)(iii)"],
+                ["cc_553(a)(iii)"],
                 "possession of property obtained by crime",
             )
         )
 
     if section in ABSOLUTE_JURISDICITON_OFFENCES_FRAUD:
         absolute_jurisdiction_list.append(
-            standard_output(True, None, ["cc553(a)(iv)"], "fraud")
+            standard_output(True, None, ["cc_553(a)(iv)"], "fraud")
         )
 
     if section in ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF:
         absolute_jurisdiction_list.append(
-            standard_output(True, None, ["cc553(a)(v)"], "mischief")
+            standard_output(True, None, ["cc_553(a)(v)"], "mischief")
         )
 
     if section in ABSOLUTE_JURISDICITON_OFFENCES_ATTEMPTS_CONSPIRACIES:
@@ -191,8 +181,8 @@ def check_absolute_jurisdiction_offence(
             standard_output(
                 True,
                 None,
-                "cc553(b)",
-                "attempt or conspiracies in relation to cc554(a) or (c)",
+                "cc_553(b)",
+                "attempt or conspiracies in relation to cc_554(a) or (c)",
             )
         )
 
@@ -201,7 +191,7 @@ def check_absolute_jurisdiction_offence(
             standard_output(
                 True,
                 None,
-                "cc553(c)",
+                "cc_553(c)",
                 "designated offences",
             )
         )
@@ -209,7 +199,7 @@ def check_absolute_jurisdiction_offence(
     if absolute_jurisdiction_list == []:
         absolute_jurisdiction_list.append(
             standard_output(
-                False, None, ["cc553"], "not an absolute jurisdiction offence"
+                False, None, ["cc_553"], "not an absolute jurisdiction offence"
             )
         )
 
@@ -230,7 +220,7 @@ def check_discharge_available(
 ) -> Dict[str, Union[bool, None, List[str], str]]:
     """
     Discharges are available when the following conditions obtain:
-    - The offence does not have a mandatory minimum of any kind
+    - The offence does not have a mandatory minimum of any kind (jail or fine)
     - The offence is not punishable by 14y or greater
 
     Args:
@@ -245,15 +235,18 @@ def check_discharge_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-    if summary_minimum["jail"]["amount"] or indictable_minimum["jail"]["amount"]:
-        return standard_output(False, None, ["cc730(1)"], "mandatory minimum sentence")
+    # Check if there's a mandatory minimum (jail or fine)
+    if (summary_minimum and (summary_minimum["jail"]["amount"] or summary_minimum["fine"]["amount"])) or \
+       (indictable_minimum and (indictable_minimum["jail"]["amount"] or indictable_minimum["fine"]["amount"])):
+        return standard_output(False, None, ["cc_730(1)"], "mandatory minimum sentence")
 
-    elif indictable_maximum["jail"]["amount"] >= 14:
+    # For summary offences, indictable_maximum will be None
+    if indictable_maximum and indictable_maximum["jail"]["amount"] and indictable_maximum["jail"]["amount"] >= 14:
         return standard_output(
-            False, None, ["cc730(1)"], "punishable by 14y or greater"
+            False, None, ["cc_730(1)"], "punishable by 14y or greater"
         )
 
-    return standard_output(True, None, ["cc730(1)"], "no mandatory minimum, punishable by less than 14y")
+    return standard_output(True, None, ["cc_730(1)"], "no mandatory minimum, punishable by less than 14y")
 
 
 def check_cso_availablity(
@@ -267,7 +260,7 @@ def check_cso_availablity(
     Check if the charge screening officer is available for a given offence. An offence
     qualifies for a CSO if the following conditions obtain:
 
-    - The offence does not have a mandatory minimum term of imprisonment
+    - The offence does not have a mandatory minimum of any kind (jail or fine)
     - The offence is not an enumerated offence
     - The offence is not:
       - A terrorism or criminal organization offence; AND
@@ -285,99 +278,55 @@ def check_cso_availablity(
         Dict: A dictionary containing:
             - available (bool): Whether CSO is available
             - quantum (Optional[str]): The quantum of sentence, if applicable
-            - sections (List[str]): Relevant Criminal Code sections
+            - sections (List[str]]: Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
+    indictable_max_years = 0
+    if indictable_maximum and indictable_maximum.get("jail", {}).get("amount"):
+        try:
+            indictable_max_years = int(indictable_maximum["jail"]["amount"])
+        except (ValueError, TypeError):
+            indictable_max_years = 0
 
-    # Convert None values to a comparable integer
-    # Confirm whether this is necessary since the v0.0.5 updates to the program
-    try:
-        indictable_maximum["jail"]["amount"] = int(indictable_maximum["jail"]["amount"])
-    except:
-        indictable_maximum["jail"]["amount"] = 0
+    # Check for any mandatory minimum (jail or fine)
+    if summary_minimum and (summary_minimum.get("jail", {}).get("amount") or summary_minimum.get("fine", {}).get("amount")):
+        return standard_output(
+            False, None, ["cc_742.1(b)"], "mandatory minimum sentence"
+        )
 
-    cso_available = {}
-
-    if summary_minimum["jail"]["amount"]:
-
-        if (
-            summary_minimum["jail"]["unit"] == "days"
-            or summary_minimum["jail"]["unit"] == "months"
-            or summary_minimum["jail"]["unit"] == "years"
-        ):
-            return standard_output(
-                False, None, ["cc742.1(b)"], "mandatory minimum term of imprisonment"
-            )
-
-        else:
-            return standard_output(True, None, ["cc742.1"], "no mandatory minimum")
-
-    elif indictable_minimum["jail"]["amount"]:
-
-        if (
-            indictable_minimum["jail"]["unit"] == "days"
-            or indictable_minimum["jail"]["unit"] == "months"
-            or indictable_minimum["jail"]["unit"] == "years"
-        ):
-            return standard_output(
-                False, None, ["cc742.1(b)"], "mandatory minimum term of imprisonment"
-            )
-
-        else:
-            return standard_output(True, None, ["cc742.1"], None)
+    elif indictable_minimum and (indictable_minimum.get("jail", {}).get("amount") or indictable_minimum.get("fine", {}).get("amount")):
+        return standard_output(
+            False, None, ["cc_742.1(b)"], "mandatory minimum sentence"
+        )
 
     elif section in EXCLUDED_CSO_OFFENCES:
-        return standard_output(
-            False, None, ["cc742.1(c)"], "enumerated excluded offence"
-        )
+        return standard_output(False, None, ["cc_742.1(c)"], "enumerated offence")
 
     elif (
         section in TERRORISM_OFFENCES
-        and int(indictable_maximum["jail"]["amount"]) >= 10
-        and mode == "indictable"
-    ):
-        return standard_output(
-            False, None, ["cc742.1(d)"], "serious indictable terrorism offence"
-        )
-
-    elif (
-        section in TERRORISM_OFFENCES
-        and int(indictable_maximum["jail"]["amount"]) >= 10
-        and mode == "hybrid"
-    ):
-        return standard_output(
-            True,
-            "summary conviction only",
-            ["cc742.1(d)"],
-            "serious indictable terrorism offence",
-        )
-
-    elif (
-        section in CRIMINAL_ORGANIZATION_OFFENCES
-        and int(indictable_maximum["jail"]["amount"]) >= 10
+        and indictable_max_years >= 10
         and mode == "indictable"
     ):
         return standard_output(
             False,
-            "summary conviction only",
-            ["cc742.1(d)"],
-            "serious indictable criminal organization offence",
+            None,
+            ["cc_742.1(d)"],
+            "terrorism or criminal organization offence, punishable by 10y or more, prosecuted by indictment",
         )
 
     elif (
         section in CRIMINAL_ORGANIZATION_OFFENCES
-        and int(indictable_maximum["jail"]["amount"]) >= 10
-        and mode == "hybrid"
+        and indictable_max_years >= 10
+        and mode == "indictable"
     ):
         return standard_output(
-            True,
-            "summary conviction only",
-            ["cc742.1(d)"],
-            "serious indictable criminal organization offence",
+            False,
+            None,
+            ["cc_742.1(d)"],
+            "terrorism or criminal organization offence, punishable by 10y or more, prosecuted by indictment",
         )
 
-    else:
-        return standard_output(True, None, ["cc742.1"], None)
+    return standard_output(True, None, ["cc_742.1"], "no mandatory minimum")
 
 
 def check_intermittent_available(
@@ -386,9 +335,8 @@ def check_intermittent_available(
 ) -> Dict[str, Union[bool, None, List[str], str]]:
     """
     Where facilities are available, the court may order that anyone sentenced
-    to 90 days or less serve their sentence intermittently. The only excluded
-    offences are those with a mandatory minimum term of imprisonment longer
-    than 90 days.
+    to 90 days or less serve their sentence intermittently. Intermittent sentences
+    are not available when there is any mandatory minimum penalty (jail or fine).
 
     Args:
         summary_minimum (Dict): The minimum sentence for summary proceedings
@@ -401,7 +349,14 @@ def check_intermittent_available(
             - sections (List[str]): Relevant Criminal Code sections
             - explanation (str): Explanation of the determination
     """
-    # Convert minimums to days for comparison
+    # First check if there's a mandatory minimum fine
+    if (summary_minimum and summary_minimum["fine"]["amount"]) or \
+       (indictable_minimum and indictable_minimum["fine"]["amount"]):
+        return standard_output(
+            False, None, ["cc_732"], "mandatory minimum fine"
+        )
+
+    # Convert jail minimums to days for comparison
     summary_days = 0
     indictable_days = 0
 
@@ -423,18 +378,18 @@ def check_intermittent_available(
 
     if summary_days == 0 and indictable_days == 0:
         return standard_output(
-            True, None, ["cc732(1)"], "no minimum term of imprisonment"
+            True, None, ["cc_732(1)"], "no mandatory minimum"
         )
     elif summary_days <= 90 and indictable_days <= 90:
         return standard_output(
-            True, None, ["cc732(1)"], "minimum does not exceed 90 days"
+            True, None, ["cc_732(1)"], "jail minimum does not exceed 90 days"
         )
     else:
         return standard_output(
             False,
             None,
-            ["cc732"],
-            "mandatory minimum term of imprisonment exceeds 90 days",
+            ["cc_732"],
+            "mandatory minimum jail term exceeds 90 days",
         )
 
 
@@ -461,14 +416,14 @@ def check_suspended_sentence_available(
     """
 
     if summary_minimum["jail"]["amount"] or summary_minimum["fine"]["amount"]:
-        return standard_output(False, None, ["cc731(1)"], "mandatory minimum sentence")
+        return standard_output(False, None, ["cc_731(1)"], "mandatory minimum sentence")
 
     elif indictable_minimum["jail"]["amount"] or indictable_minimum["fine"]["amount"]:
-        return standard_output(False, None, ["cc731(1)"], "mandatory minimum sentence")
+        return standard_output(False, None, ["cc_731(1)"], "mandatory minimum sentence")
 
     else:
         return standard_output(
-            True, None, ["cc731(1)"], "no mandatory minimum sentence"
+            True, None, ["cc_731(1)"], "no mandatory minimum sentence"
         )
 
 
@@ -506,7 +461,7 @@ def check_prison_and_probation(
                 "notes": None,
             },
         )
-        prison_and_probation_available["section"] = "cc732(1)"
+        prison_and_probation_available["section"] = "cc_732(1)"
         prison_and_probation_available["notes"] = "no minimum term of imprisonment"
 
         return prison_and_probation_available
@@ -518,7 +473,7 @@ def check_prison_and_probation(
                 "notes": None,
             },
         )
-        prison_and_probation_available["section"] = "cc732(1)(b)"
+        prison_and_probation_available["section"] = "cc_732(1)(b)"
         prison_and_probation_available["notes"] = None
 
         return prison_and_probation_available
@@ -531,7 +486,7 @@ def check_prison_and_probation(
                     "notes": None,
                 },
             )
-            prison_and_probation_available["section"] = "cc732(1)"
+            prison_and_probation_available["section"] = "cc_732(1)"
             prison_and_probation_available["notes"] = None
 
             return prison_and_probation_available
@@ -542,7 +497,7 @@ def check_prison_and_probation(
                     "notes": None,
                 },
             )
-            prison_and_probation_available["section"] = "cc732(1)"
+            prison_and_probation_available["section"] = "cc_732(1)"
             prison_and_probation_available["notes"] = (
                 "mandatory minimum term of imprisonment exceeds two years"
             )
@@ -557,7 +512,7 @@ def check_prison_and_probation(
                     "notes": None,
                 },
             )
-            prison_and_probation_available["section"] = "cc732(1)"
+            prison_and_probation_available["section"] = "cc_732(1)"
             prison_and_probation_available["notes"] = None
 
             return prison_and_probation_available
@@ -568,7 +523,7 @@ def check_prison_and_probation(
                     "notes": None,
                 },
             )
-            prison_and_probation_available["section"] = "cc732(1)"
+            prison_and_probation_available["section"] = "cc_732(1)"
             prison_and_probation_available["notes"] = (
                 "mandatory minimum term of imprisonment exceeds two years"
             )
@@ -608,7 +563,7 @@ def check_fine_alone(
                 "notes": None,
             },
         )
-        fine_alone_available["section"] = "cc734(1)"
+        fine_alone_available["section"] = "cc_734(1)"
         fine_alone_available["notes"] = "no mandatory minimum term of imprisonment"
 
         return fine_alone_available
@@ -620,7 +575,7 @@ def check_fine_alone(
                 "notes": None,
             },
         )
-        fine_alone_available["section"] = "cc734(1)"
+        fine_alone_available["section"] = "cc_734(1)"
         fine_alone_available["notes"] = "mandatory minimum term of imprisonment"
 
         return fine_alone_available
@@ -632,7 +587,7 @@ def check_fine_alone(
                 "notes": None,
             },
         )
-        fine_alone_available["section"] = "cc734(1)"
+        fine_alone_available["section"] = "cc_734(1)"
         fine_alone_available["notes"] = "mandatory minimum term of imprisonment"
 
         return fine_alone_available
@@ -672,17 +627,17 @@ def check_fine_and_probation(
 
     if indictable_days == 0:
         return standard_output(
-            True, None, ["cc732(1)"], "no minimum term of imprisonment"
+            True, None, ["cc_732(1)"], "no minimum term of imprisonment"
         )
 
     if indictable_days < 730:  # Less than 2 years
-        return standard_output(True, None, ["cc732(1)"], None)
+        return standard_output(True, None, ["cc_732(1)"], None)
 
     else:
         return standard_output(
             False,
             None,
-            ["cc732"],
+            ["cc_732"],
             "mandatory minimum term of imprisonment exceeds two years",
         )
 
@@ -715,6 +670,129 @@ def check_fine_probation_intermittent(
     return fine_probation_intermittent_available
 
 
+def check_jury_trial_available(section: str, indictable_maximum: Dict[str, Dict[str, Union[int, str]]]) -> Dict[str, Union[bool, None, List[str], str]]:
+    """
+    Determines if a jury trial is available for an offence based on the maximum indictable penalty and s. 469.
+    Rule 1: Jury trial is available if the offence is punishable by five years or more imprisonment.
+    Rule 2: If the offence appears in section 469, a jury trial is required.
+    Rule 3: If the offence is an absolute jurisdiction offence, jury trial is not available.
+
+    Args:
+        section (str): The section of the Criminal Code
+        indictable_maximum (Dict): The maximum sentence for indictable proceedings, expects a structure like:
+            {"jail": {"amount": int, "unit": str}}
+
+    Returns:
+        Dict: A dictionary containing:
+            - available (bool): Whether jury trial is available
+            - quantum (Optional[str]): The quantum of sentence, if applicable
+            - sections (List[str]): Relevant Criminal Code sections
+            - explanation (str): Explanation of the determination
+            - required (Optional[bool]): True if jury trial is required (for s. 469)
+    """
+    # Absolute jurisdiction check
+    from .constants import (
+        ABSOLUTE_JURISDICITON_OFFENCES_THEFT,
+        ABSOLUTE_JURISDICITON_OFFENCES_FALSE_PRETENCES,
+        ABSOLUTE_JURISDICITON_OFFENCES_PPOBC,
+        ABSOLUTE_JURISDICITON_OFFENCES_FRAUD,
+        ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF,
+        ABSOLUTE_JURISDICITON_OFFENCES_ATTEMPTS_CONSPIRACIES,
+        ABSOLUTE_JURISDICITON_OFFENCES_DESIGNATED_OFFENCES
+    )
+    absolute_lists = (
+        ABSOLUTE_JURISDICITON_OFFENCES_THEFT +
+        ABSOLUTE_JURISDICITON_OFFENCES_FALSE_PRETENCES +
+        ABSOLUTE_JURISDICITON_OFFENCES_PPOBC +
+        ABSOLUTE_JURISDICITON_OFFENCES_FRAUD +
+        ABSOLUTE_JURISDICTION_OFFENCES_MISCHIEF +
+        ABSOLUTE_JURISDICITON_OFFENCES_ATTEMPTS_CONSPIRACIES +
+        ABSOLUTE_JURISDICITON_OFFENCES_DESIGNATED_OFFENCES
+    )
+    if section in absolute_lists:
+        # Check for statutory conflict: absolute jurisdiction AND punishable by 5+ years
+        jail = None
+        amount = None
+        unit = None
+        if indictable_maximum and isinstance(indictable_maximum, dict):
+            jail = indictable_maximum.get("jail")
+            if jail and isinstance(jail, dict):
+                amount = jail.get("amount")
+                unit = jail.get("unit")
+        if unit == "years" and isinstance(amount, int) and amount >= 5:
+            # Indeterminate/conflict: both absolute jurisdiction and 5+ years
+            explanation = (
+                "Indeterminate: offence is listed as absolute jurisdiction (s. 553) but is punishable by five or more years imprisonment. "
+                "This is a statutory conflict. Jury trial availability is unclear."
+            )
+            footnote = (
+                "Jury trial not available: absolute jurisdiction offence (s. 553). "
+                "Jury trial available: offence punishable by five years or more imprisonment."
+            )
+            return {
+                **standard_output(
+                    None,
+                    "Indeterminate",
+                    ["cc_553", "cc_471", "cc_473"],
+                    explanation
+                ),
+                "jury_indeterminate": True,
+                "jury_conflict_footnote": footnote
+            }
+        # Normal absolute jurisdiction (no conflict)
+        return standard_output(
+            False,
+            None,
+            ["cc_553"],
+            "Jury trial not available: absolute jurisdiction offence (s. 553)."
+        )
+    # Check for s. 469 offences (jury trial required)
+    section_469_result = check_section_469_offence(section)
+    if section_469_result["status"]["available"]:
+        return {
+            **standard_output(
+                True,
+                "Required",
+                section_469_result.get("sections", ["cc_469"]),
+                "Jury trial required: offence is listed in s. 469."
+            ),
+            "jury_required": True  # for template color logic
+        }
+    # Normal eligibility check
+    if not indictable_maximum or not isinstance(indictable_maximum, dict):
+        return standard_output(
+            False,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial not available: no indictable maximum provided."
+        )
+    jail = indictable_maximum.get("jail")
+    if not jail or not isinstance(jail, dict):
+        return standard_output(
+            False,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial not available: no jail quantum provided."
+        )
+    amount = jail.get("amount")
+    unit = jail.get("unit")
+    # Only consider if unit is years and amount >= 5
+    if unit == "years" and isinstance(amount, int) and amount >= 5:
+        return standard_output(
+            True,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial available: offence punishable by five years or more imprisonment."
+        )
+    else:
+        return standard_output(
+            False,
+            None,
+            ["cc_471", "cc_473"],
+            "Jury trial not available: offence not punishable by five years or more imprisonment."
+        )
+
+
 # Ancillary orders
 def check_dna_designation(
     offence: List[str], mode: str, quantum: Dict[str, Dict[str, Union[int, str]]]
@@ -736,20 +814,22 @@ def check_dna_designation(
     """
 
     if offence[0] in PRIMARY_DESIGNATED_DNA_OFFENCES:
-        return standard_output(True, None, ["cc487.04"], "primary designated offence")
+        return standard_output(True, None, ["cc_487.04"], "primary designated offence")
 
     elif offence[0] in SECONDARY_DESIGNATED_DNA_OFFENCES:
-        return standard_output(True, None, ["cc487.04"], "secondary designated offence")
+        return standard_output(True, None, ["cc_487.04"], "secondary designated offence")
 
     elif (
-        (mode == "indictable" or mode == "hybrid")
-        and quantum["jail"]["unit"] == "years"
-        and int(quantum["jail"]["amount"]) >= 5
+        quantum is not None
+        and (mode == "indictable" or mode == "hybrid")
+        and quantum.get("jail", {}).get("unit") == "years"
+        and quantum.get("jail", {}).get("amount") is not None
+        and int(quantum.get("jail", {}).get("amount", 0)) >= 5
     ):
-        return standard_output(True, None, ["cc487.04"], "secondary designated offence")
+        return standard_output(True, None, ["cc_487.04"], "secondary designated offence")
 
     else:
-        return standard_output(False, None, ["cc487.04"], "not a designated offence")
+        return standard_output(False, None, ["cc_487.04"], "not a designated offence")
 
 
 def check_soira(
@@ -783,7 +863,7 @@ def check_soira(
         return [standard_output(
             False,
             None,
-            ["cc490.011"],
+            ["cc_490.011"],
             "not a designated offence"
         )]
 
@@ -796,7 +876,7 @@ def check_soira(
 
     # Determine the duration of the SOIRA order
     if mode == "summary":
-        soira_list[0]["sections"].append("cc490.011(2)(a)")
+        soira_list[0]["sections"].append("cc_490.011(2)(a)")
         soira_list[0]["duration"] = {
             "amount": 10,
             "unit": "years",
@@ -806,19 +886,19 @@ def check_soira(
         max_amount = int(indictable_maximum["jail"]["amount"])
         
         if max_amount in [2, 5]:
-            soira_list[0]["sections"].append("cc490.011(2)(a)")
+            soira_list[0]["sections"].append("cc_490.011(2)(a)")
             soira_list[0]["duration"] = {
                 "amount": 10,
                 "unit": "years",
             }
         elif max_amount in [10, 14]:
-            soira_list[0]["sections"].append("cc490.011(2)(b)")
+            soira_list[0]["sections"].append("cc_490.011(2)(b)")
             soira_list[0]["duration"] = {
                 "amount": 20,
                 "unit": "years",
             }
         elif max_amount > 14:
-            soira_list[0]["sections"].append("cc490.011(2)(c)")
+            soira_list[0]["sections"].append("cc_490.011(2)(c)")
             soira_list[0]["duration"] = {
                 "amount": "life",
                 "unit": None,
@@ -827,21 +907,21 @@ def check_soira(
     # Add specific designation type to notes
     if section in PRIMARY_SOIRA_OFFENCES_CURRENT:
         soira_list[0]["notes"] = "primary designated offence"
-        soira_list[0]["sections"].append("cc490.011[primary offence](a)")
+        soira_list[0]["sections"].append("cc_490.011[primary offence](a)")
     elif section in SECONDARY_SOIRA_OFFENCES:
         soira_list[0]["notes"] = "secondary designated offence"
-        soira_list[0]["sections"].append("cc490.011[secondary offence](a)")
+        soira_list[0]["sections"].append("cc_490.011[secondary offence](a)")
     elif section in SOIRA_OFFENCES_ATTEMPTS:
         soira_list[0]["notes"] = "attempted designated offence"
         soira_list[0]["sections"].extend([
-            "cc490.011[primary offence](f)",
-            "cc490.011[secondary offence](b)"
+            "cc_490.011[primary offence](f)",
+            "cc_490.011[secondary offence](b)"
         ])
     elif section in SOIRA_OFFENCES_CONSPIRACY:
         soira_list[0]["notes"] = "conspiracy to commit designated offence"
         soira_list[0]["sections"].extend([
-            "cc490.011[primary offence](f)",
-            "cc490.011[secondary offence](b)"
+            "cc_490.011[primary offence](f)",
+            "cc_490.011[secondary offence](b)"
         ])
 
     return soira_list
@@ -873,8 +953,8 @@ def check_proceeds_of_crime_forfeiture(
                 False,
                 None,
                 [
-                    "cc462.3[designated offence]",
-                    "cc462.37(1)",
+                    "cc_462.3[designated offence]",
+                    "cc_462.37(1)",
                 ],
                 "strictly summary conviction offence",
             )
@@ -887,7 +967,7 @@ def check_proceeds_of_crime_forfeiture(
             standard_output(
                 True,
                 None,
-                ["cc462.37(2.02)(a)"],
+                ["cc_462.37(2.02)(a)"],
                 "particular circumstances — criminal organization offence",
             )
         )
@@ -897,7 +977,7 @@ def check_proceeds_of_crime_forfeiture(
             standard_output(
                 True,
                 None,
-                ["cc462.37(2.02)(b)"],
+                ["cc_462.37(2.02)(b)"],
                 "particular circumstances — CDSA offence",
             )
         )
@@ -907,7 +987,7 @@ def check_proceeds_of_crime_forfeiture(
             standard_output(
                 True,
                 None,
-                ["cc462.37(2.02)(c)"],
+                ["cc_462.37(2.02)(c)"],
                 "particular circumstances — cannabis offence",
             )
         )
@@ -917,7 +997,7 @@ def check_proceeds_of_crime_forfeiture(
             standard_output(
                 True,
                 None,
-                ["cc462.37(2.02)(d)"],
+                ["cc_462.37(2.02)(d)"],
                 "particular circumstances — human trafficking offence",
             )
         )
@@ -928,8 +1008,8 @@ def check_proceeds_of_crime_forfeiture(
                 False,
                 None,
                 [
-                    "cc462.3[designated offence]",
-                    "cc462.37(1)",
+                    "cc_462.3[designated offence]",
+                    "cc_462.37(1)",
                 ],
                 "offence prosecutable by indictment",
             )
@@ -943,7 +1023,7 @@ def check_section_164_forfeiture_order(
 ) -> Dict[str, Union[bool, None, List[str], str]]:
     """
     Checks whether the offence is one of the enumerated offences for which a
-    cc164.2 forfeiture order is required.
+    cc_164.2 forfeiture order is required.
 
     Args:
         section (str): The section of the Criminal Code
@@ -957,7 +1037,7 @@ def check_section_164_forfeiture_order(
     """
 
     if section in SECTION_161_FORFEITURE_ORDER_OFFENCES:
-        return standard_output(True, None, ["cc164.2"], "enumerated offence")
+        return standard_output(True, None, ["cc_164.2"], "enumerated offence")
 
 
 def check_section_109_weapons_prohibition(
@@ -983,7 +1063,7 @@ def check_section_109_weapons_prohibition(
             - explanation (str): Explanation of the determination
     """
 
-    return standard_output(False, None, ["cc109"], "not a firearms offence")
+    return standard_output(False, None, ["cc_109"], "not a firearms offence")
 
 
 def check_section_515_mandatory_weapons_prohibition(section: str):
