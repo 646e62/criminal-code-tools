@@ -463,9 +463,22 @@ def offence_grid(request):
                     break
             if show_irpa_footnote:
                 break
+    # Prepare offences for template with mode computed in Python, not the template
+    offences_with_mode = []
+    for tup in offences:
+        section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix = tup
+        if max_indictable and max_sc:
+            mode = 'hybrid'
+        elif max_indictable:
+            mode = 'indictable'
+        elif max_sc:
+            mode = 'summary'
+        else:
+            mode = ''
+        offences_with_mode.append((section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix, mode))
     return render(request, 'offence_grid/index.html', {
         'title': 'Offence Grid',
-        'offences': [(o[0], f"{o[1]} - {o[2]}") for o in offences],
+        'offences': offences_with_mode,
         'selected_offences': selected_offences,
         'citizenship_status': citizenship_status,
         'results': results,

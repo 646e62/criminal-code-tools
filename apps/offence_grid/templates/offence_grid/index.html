@@ -128,12 +128,11 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                     <label for="offences" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type">Select Offence</label>
                     <select name="offences" id="offences" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 monokai:border-monokai-gray focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 monokai:bg-monokai-bg dark:text-gray-200 monokai:text-string">
                         <option value="" {% if not selected_offences %}selected{% endif %} disabled hidden>Select an offence...</option>
-                        {% for section, display in offences %}
-                        <option value="{{ section }}" {% if section in selected_offences %}selected{% endif %}>
-                            {{ display }}
-                        </option>
+                        {% for section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix, mode in offences %}
+                            <option value="{{ section }}" data-mode="{{ mode }}" {% if section in selected_offences %}selected{% endif %}>{{ display }}</option>
                         {% endfor %}
                     </select>
+                    <div id="offence-mode-message" class="mt-2 text-base font-semibold text-indigo-700 dark:text-indigo-300" style="display:none;"></div>
                     <button type="button" id="add-offence-btn" class="mt-3 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg" style="width: auto; min-width: 0;" title="Add Offence">
                         Add
                     </button>
@@ -472,22 +471,51 @@ document.addEventListener('DOMContentLoaded', function() {
     // Track last selected value
     let lastSelected = ts.getValue();
     let clearedByFocus = false;
+    // Map of section value to mode (from Django context)
+    const sectionToMode = {};
+    const selectEl = document.getElementById('offences');
+    for (const opt of selectEl.options) {
+        if (opt.value) {
+            sectionToMode[opt.value] = opt.getAttribute('data-mode');
+        }
+    }
+    function showModeMessage(section) {
+        const msgDiv = document.getElementById('offence-mode-message');
+        let mode = sectionToMode[section];
+        let msg = '';
+        if (mode === 'summary') msg = 'Summary Conviction Offence';
+        else if (mode === 'indictable') msg = 'Strictly Indictable Offence';
+        else if (mode === 'hybrid') msg = 'Hybrid Offence';
+        if (msg) {
+            msgDiv.textContent = msg;
+            msgDiv.style.display = '';
+        } else {
+            msgDiv.textContent = '';
+            msgDiv.style.display = 'none';
+        }
+    }
     ts.on('change', function(value) {
         if (value) {
             lastSelected = value;
+            showModeMessage(value);
+        } else {
+            document.getElementById('offence-mode-message').style.display = 'none';
         }
     });
+    // Initial state (if preselected)
+    if (lastSelected) showModeMessage(lastSelected);
     ts.on('focus', function() {
         if (ts.getValue()) {
             clearedByFocus = true;
             ts.clear();
+            document.getElementById('offence-mode-message').style.display = 'none';
         }
     });
     ts.on('blur', function() {
         setTimeout(function() {
-            // Only restore if the field was cleared by focus and user didn't select a new value
             if (!ts.getValue() && lastSelected && clearedByFocus) {
                 ts.setValue(lastSelected, true);
+                showModeMessage(lastSelected);
             }
             clearedByFocus = false;
         }, 100);
