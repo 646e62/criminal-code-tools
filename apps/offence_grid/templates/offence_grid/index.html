@@ -148,7 +148,6 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                         <label for="ipv_conviction_false" class="text-sm text-gray-700 dark:text-gray-300">False</label>
                     </div>
                 </div>
-
                 <!-- Offence Information heading -->
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 monokai:text-variable mt-8 mb-2">Offence Information</h2>
                 <!-- Select Offence label and select side-by-side, with wider select -->
@@ -161,7 +160,6 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                         {% endfor %}
                     </select>
                 </div>
-
                 <!-- Crown election label and select side-by-side -->
                 <div class="flex items-center gap-4 mb-6">
                     <label for="crown_election" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0">Crown election</label>
@@ -169,7 +167,16 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                         <!-- Options will be dynamically populated by JS -->
                     </select>
                 </div>
-
+                <!-- Intimate partner threat/violence offence (conditional) -->
+                <div id="ipv_offence_field" class="flex flex-col md:flex-row md:items-center gap-4 mb-6" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0 md:w-1/2">Intimate partner threat/violence offence</label>
+                    <div class="flex items-center gap-2 md:justify-end md:w-1/2">
+                        <input type="radio" id="ipv_offence_true" name="ipv_offence" value="true" {% if ipv_offence == 'true' %}checked{% endif %} class="accent-indigo-600">
+                        <label for="ipv_offence_true" class="text-sm text-gray-700 dark:text-gray-300">True</label>
+                        <input type="radio" id="ipv_offence_false" name="ipv_offence" value="false" {% if ipv_offence != 'true' %}checked{% endif %} class="accent-indigo-600">
+                        <label for="ipv_offence_false" class="text-sm text-gray-700 dark:text-gray-300">False</label>
+                    </div>
+                </div>
                 <button type="button" id="add-offence-btn" class="mt-3 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg" style="width: auto; min-width: 0;" title="Add Offence">
                     Add
                 </button>
@@ -184,7 +191,7 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                     <button type="button" id="search-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
                         Search
                     </button>
-                    <button type="button" onclick="clearOffences()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-700 dark:bg-gray-400 dark:hover:bg-gray-600 monokai:bg-monokai-gray monokai:hover:bg-monokai-darkGray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
+                    <button type="button" onclick="window.clearOffences()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-700 dark:bg-gray-400 dark:hover:bg-gray-600 monokai:bg-monokai-gray monokai:hover:bg-monokai-darkGray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
                         Clear
                     </button>
                 </div>
@@ -588,13 +595,29 @@ document.addEventListener('DOMContentLoaded', function() {
             clearedByFocus = false;
         }, 100);
     });
-});
 
-// --- Enhanced Search: submit all offences in queue ---
-document.getElementById('search-btn').onclick = function(e) {
-    e.preventDefault();
-    // Get all offences in the queue
-    apiQueueList().then(queue => {
+    // IPV toggle logic
+    function updateIPVOffenceField() {
+        const ipvConvictionTrue = document.getElementById('ipv_conviction_true');
+        const ipvOffenceField = document.getElementById('ipv_offence_field');
+        if (ipvConvictionTrue.checked) {
+            ipvOffenceField.style.display = '';
+        } else {
+            ipvOffenceField.style.display = 'none';
+            // Optionally reset the value to False
+            document.getElementById('ipv_offence_false').checked = true;
+        }
+    }
+    document.getElementById('ipv_conviction_true').addEventListener('change', updateIPVOffenceField);
+    document.getElementById('ipv_conviction_false').addEventListener('change', updateIPVOffenceField);
+    // On load
+    updateIPVOffenceField();
+
+    // --- Enhanced Search: submit all offences in queue ---
+    document.getElementById('search-btn').onclick = async function(e) {
+        e.preventDefault();
+        // Get all offences in the queue
+        const queue = await apiQueueList();
         if (!queue || queue.length === 0) {
             alert('Please add at least one offence to the list before searching.');
             return;
@@ -639,155 +662,161 @@ document.getElementById('search-btn').onclick = function(e) {
         }
         document.body.appendChild(form);
         form.submit();
-    });
-    return false;
-};
-
-// --- AJAX helpers with debug logging ---
-async function apiQueueList() {
-    try {
-        const res = await fetch('/offence-grid/api/queue/', { credentials: 'same-origin' });
-        const data = await res.json();
-        console.log('apiQueueList response:', data);
-        // DRF paginates: always return array of results
-        return Array.isArray(data) ? data : (data.results || []);
-    } catch (e) {
-        console.error('apiQueueList error:', e);
-        return [];
-    }
-}
-async function apiQueueAdd(offence) {
-    try {
-        const res = await fetch('/offence-grid/api/queue/', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(offence)
-        });
-        const data = await res.json();
-        console.log('apiQueueAdd response:', data);
-        return data;
-    } catch (e) {
-        console.error('apiQueueAdd error:', e);
-    }
-}
-async function apiQueueDelete(id) {
-    try {
-        const res = await fetch(`/offence-grid/api/queue/${id}/`, {
-            method: 'DELETE',
-            credentials: 'same-origin',
-        });
-        console.log('apiQueueDelete response:', res.status);
-    } catch (e) {
-        console.error('apiQueueDelete error:', e);
-    }
-}
-
-// --- Offence queue logic (API-backed) ---
-let offenceQueue = [];
-
-async function renderOffenceQueue() {
-    offenceQueue = await apiQueueList();
-    const listDiv = document.getElementById('offence-list-queue');
-    const emptyMsg = document.getElementById('offence-list-empty');
-    // Remove all old offence items except the empty message
-    listDiv.querySelectorAll('.offence-queue-item').forEach(e => e.remove());
-    if (!offenceQueue || offenceQueue.length === 0) {
-        emptyMsg.style.display = '';
-        console.log('Offence list is empty');
-    } else {
-        emptyMsg.style.display = 'none';
-        offenceQueue.forEach((off, idx) => {
-            const modeStr = off.mode ? ` — ${off.mode}` : '';
-            const item = document.createElement('div');
-            item.className = 'offence-queue-item flex items-center justify-between bg-white dark:bg-gray-800 monokai:bg-monokai-bg rounded px-3 py-1 shadow-sm';
-            item.innerHTML = `<span>${off.display} - ${off.offence_name}${modeStr}</span>` +
-                `<button type="button" class="ml-4 px-2 py-1 text-xs rounded bg-red-500 hover:bg-red-600 text-white" onclick="removeOffenceFromQueue(${off.id})">Delete</button>`;
-            listDiv.appendChild(item);
-        });
-        console.log('Rendered offenceQueue:', offenceQueue);
-    }
-}
-
-async function removeOffenceFromQueue(id) {
-    await apiQueueDelete(id);
-    renderOffenceQueue();
-}
-
-const addBtn = document.getElementById('add-offence-btn');
-addBtn.onclick = async function() {
-    const select = document.getElementById('offences');
-    const selected = select.options[select.selectedIndex];
-    if (!selected || !selected.value) {
-        console.warn('No offence selected');
-        return;
-    }
-    const mode = selected.getAttribute('data-mode');
-    let modeLabel = '';
-    let crownElection = '';
-    if (mode === 'indictable') {
-        modeLabel = 'Indictment';
-    } else if (mode === 'summary') {
-        modeLabel = 'Summary';
-    } else if (mode === 'hybrid') {
-        const crownSelect = document.getElementById('crown_election');
-        const crownValue = crownSelect ? crownSelect.value : '';
-        if (crownValue === 'summary') {
-            modeLabel = 'Summary';
-            crownElection = 'summary';
-        } else if (crownValue === 'indictment') {
-            modeLabel = 'Indictment';
-            crownElection = 'indictment';
-        } else {
-            modeLabel = 'No election';
-            crownElection = '';
-        }
-    } else {
-        modeLabel = mode ? mode : '';
-    }
-    const payload = {
-        section: selected.value,
-        display: selected.text.split(' - ')[0],
-        offence_name: selected.text.split(' - ').slice(1).join(' - '),
-        mode: modeLabel,
-        crown_election: crownElection
+        // After submitting, clear the queue so UI and backend remain in sync
+        setTimeout(async () => { await window.clearOffences(); }, 500);
     };
-    console.log('Adding offence:', payload);
-    await apiQueueAdd(payload);
-    renderOffenceQueue();
-};
 
-document.addEventListener('DOMContentLoaded', function() {
-    renderOffenceQueue();
-});
-
-// --- Clear queue on form reset ---
-function clearOrdinarilyResident() {
-    document.getElementById('ordinarily_resident_true').checked = true;
-    document.getElementById('ordinarily_resident_false').checked = false;
-}
-
-async function clearOffences() {
-    const offences = await apiQueueList();
-    for (const off of offences) {
-        await apiQueueDelete(off.id);
-    }
-    // Also clear the Tom Select dropdown
-    if (window.ts) {
-        ts.clear();
-    } else {
-        const select = document.getElementById('offences');
-        if (select) select.selectedIndex = 0;
-    }
-    // Reset 'Ordinarily resident' radio to True
-    clearOrdinarilyResident();
-    // Clear analysis results (remove results from DOM)
-    document.querySelectorAll('.mt-6').forEach(div => {
-        if (div.querySelector('h3') && div.querySelector('h3').innerText.includes('Analysis Results')) {
-            div.remove();
+    // --- AJAX helpers with debug logging ---
+    async function apiQueueList() {
+        try {
+            const res = await fetch('/offence-grid/api/queue/', { credentials: 'same-origin' });
+            const data = await res.json();
+            console.log('apiQueueList response:', data);
+            // DRF paginates: always return array of results
+            return Array.isArray(data) ? data : (data.results || []);
+        } catch (e) {
+            console.error('apiQueueList error:', e);
+            return [];
         }
+    }
+    async function apiQueueAdd(offence) {
+        try {
+            const res = await fetch('/offence-grid/api/queue/', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(offence)
+            });
+            const data = await res.json();
+            console.log('apiQueueAdd response:', data);
+            return data;
+        } catch (e) {
+            console.error('apiQueueAdd error:', e);
+        }
+    }
+    async function apiQueueDelete(id) {
+        try {
+            const res = await fetch(`/offence-grid/api/queue/${id}/`, {
+                method: 'DELETE',
+                credentials: 'same-origin',
+            });
+            console.log('apiQueueDelete response:', res.status);
+        } catch (e) {
+            console.error('apiQueueDelete error:', e);
+        }
+    }
+
+    // --- Offence queue logic (API-backed) ---
+    let offenceQueue = [];
+
+    async function renderOffenceQueue() {
+        offenceQueue = await apiQueueList();
+        const listDiv = document.getElementById('offence-list-queue');
+        const emptyMsg = document.getElementById('offence-list-empty');
+        // Remove all old offence items except the empty message
+        listDiv.querySelectorAll('.offence-queue-item').forEach(e => e.remove());
+        if (!offenceQueue || offenceQueue.length === 0) {
+            emptyMsg.style.display = '';
+            console.log('Offence list is empty');
+        } else {
+            emptyMsg.style.display = 'none';
+            offenceQueue.forEach((off, idx) => {
+                const modeStr = off.mode ? ` — ${off.mode}` : '';
+                const item = document.createElement('div');
+                item.className = 'offence-queue-item flex items-center justify-between bg-white dark:bg-gray-800 monokai:bg-monokai-bg rounded px-3 py-1 shadow-sm';
+                item.innerHTML = `<span>${off.display} - ${off.offence_name}${modeStr}</span>` +
+                    `<button type="button" class="ml-4 px-2 py-1 text-xs rounded bg-red-500 hover:bg-red-600 text-white" onclick="window.removeOffenceFromQueue(${off.id})">Delete</button>`;
+                listDiv.appendChild(item);
+            });
+            console.log('Rendered offenceQueue:', offenceQueue);
+        }
+    }
+
+    window.removeOffenceFromQueue = async function(id) {
+        await apiQueueDelete(id);
+        renderOffenceQueue();
+    };
+
+    window.clearOffences = async function() {
+        const offences = await apiQueueList();
+        for (const off of offences) {
+            await apiQueueDelete(off.id);
+        }
+        // Also clear the Tom Select dropdown
+        if (window.ts) {
+            ts.clear();
+        } else {
+            const select = document.getElementById('offences');
+            if (select) select.selectedIndex = 0;
+        }
+        // Reset 'Ordinarily resident' radio to True
+        if (document.getElementById('ordinarily_resident_true')) {
+            document.getElementById('ordinarily_resident_true').checked = true;
+        }
+        if (document.getElementById('ordinarily_resident_false')) {
+            document.getElementById('ordinarily_resident_false').checked = false;
+        }
+        // Clear analysis results (remove results from DOM)
+        document.querySelectorAll('.mt-6').forEach(div => {
+            if (div.querySelector('h3') && div.querySelector('h3').innerText.includes('Analysis Results')) {
+                div.remove();
+            }
+        });
+        await renderOffenceQueue();
+    };
+
+    const addBtn = document.getElementById('add-offence-btn');
+    addBtn.onclick = async function() {
+        const select = document.getElementById('offences');
+        const selected = select.options[select.selectedIndex];
+        if (!selected || !selected.value) {
+            console.warn('No offence selected');
+            return;
+        }
+        const mode = selected.getAttribute('data-mode');
+        let modeLabel = '';
+        let crownElection = '';
+        if (mode === 'indictable') {
+            modeLabel = 'Indictment';
+        } else if (mode === 'summary') {
+            modeLabel = 'Summary';
+        } else if (mode === 'hybrid') {
+            const crownSelect = document.getElementById('crown_election');
+            const crownValue = crownSelect ? crownSelect.value : '';
+            if (crownValue === 'summary') {
+                modeLabel = 'Summary';
+                crownElection = 'summary';
+            } else if (crownValue === 'indictment') {
+                modeLabel = 'Indictment';
+                crownElection = 'indictment';
+            } else {
+                modeLabel = 'No election';
+                crownElection = '';
+            }
+        } else {
+            modeLabel = mode ? mode : '';
+        }
+        const payload = {
+            section: selected.value,
+            display: selected.text.split(' - ')[0],
+            offence_name: selected.text.split(' - ').slice(1).join(' - '),
+            mode: modeLabel,
+            crown_election: crownElection
+        };
+        console.log('Adding offence:', payload);
+        await apiQueueAdd(payload);
+        renderOffenceQueue();
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderOffenceQueue();
     });
-    renderOffenceQueue();
-}
+
+    // --- Clear queue on form reset ---
+    function clearOrdinarilyResident() {
+        document.getElementById('ordinarily_resident_true').checked = true;
+        document.getElementById('ordinarily_resident_false').checked = false;
+    }
+});
 </script>
 {% endblock %}
