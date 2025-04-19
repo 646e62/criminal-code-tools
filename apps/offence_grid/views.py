@@ -265,10 +265,17 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
 
     # Immigration footnotes (attach to immigration_result)
     for imm_result in immigration_results:
+        # Attach a footnote for all results, not just those with 'sections'
         if imm_result.get('sections'):
+            footnote_text = f"Relevant sections: {', '.join(imm_result['sections'])}"
+        elif citizenship_status == 'foreign' and imm_result['status']['notes'] not in ['both', 'foreign national']:
+            footnote_text = "See IRPA § 36(2)(a): A foreign national is inadmissible on grounds of criminality for having been convicted in Canada of ... two offences under any Act of Parliament not arising out of a single occurrence."
+        else:
+            footnote_text = None
+        if footnote_text:
             footnote_obj = {
                 'label': 'immigration',
-                'text': f"Relevant sections: {', '.join(imm_result['sections'])}",
+                'text': footnote_text,
                 'anchor': f"imm-{len(footnotes)+1}",
                 'number': None
             }
