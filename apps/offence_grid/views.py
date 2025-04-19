@@ -267,26 +267,57 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
     irpa_text = 'See <a href="https://canlii.ca/t/7vwq#sec36" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800 visited:text-purple-600">IRPA § 36(2)(a)</a>: A foreign national is inadmissible on grounds of criminality for having been convicted in Canada of ... two offences under any Act of Parliament not arising out of a single occurrence.'
     irpa_anchor = "irpa-36-2-a"
     irpa_footnote = None
+    irpa_indict_text = 'See <a href="https://canlii.ca/t/7vwq#sec36" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800 visited:text-purple-600">IRPA § 36(2)(a)</a>: A foreign national is inadmissible on grounds of criminality for having been convicted in Canada of an offence under an Act of Parliament punishable by way of indictment.'
+    irpa_indict_anchor = "irpa-36-2-a-indict"
+    irpa_indict_footnote = None
+    irpa_serious_text = 'See <a href="https://canlii.ca/t/7vwq#sec36" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800 visited:text-purple-600">IRPA § 36(1)(a)</a>: A permanent resident or foreign national is inadmissible on grounds of serious criminality for having been convicted of an offence under an Act of Parliament punishable by a maximum term of imprisonment of at least 10 years.'
+    irpa_serious_anchor = "irpa-36-1-a"
+    irpa_serious_footnote = None
 
     for imm_result in immigration_results:
-        # Attach a footnote for all results
-        if imm_result.get('sections'):
-            footnote_text = f"Relevant sections: {', '.join(imm_result['sections'])}"
-            footnote_anchor = f"imm-section-{hash(footnote_text)}"
-            if footnote_anchor not in footnote_refs:
-                footnote_obj = {
-                    'label': 'imm-section',
-                    'text': footnote_text,
-                    'anchor': footnote_anchor,
+        # Priority 1: Serious criminality (irpa_36(1))
+        if (
+            imm_result.get('notes') == 'serious criminality'
+            and imm_result.get('sections') == ['irpa_36(1)']
+            and citizenship_status in ['foreign', 'pr']
+        ):
+            if not irpa_serious_footnote:
+                irpa_serious_footnote = {
+                    'label': 'irpa-serious',
+                    'text': irpa_serious_text,
+                    'anchor': irpa_serious_anchor,
                     'number': None
                 }
-                footnotes.append(footnote_obj)
-                footnote_refs[footnote_anchor] = footnote_obj
+                footnotes.append(irpa_serious_footnote)
+                footnote_refs[irpa_serious_anchor] = irpa_serious_footnote
             imm_result['footnote'] = {
-                'anchor': footnote_anchor,
-                'number': None  # Will be filled later
+                'anchor': irpa_serious_anchor,
+                'number': None
             }
-        elif citizenship_status == 'foreign' and imm_result['status']['notes'] not in ['both', 'foreign national']:
+        # Priority 2: Criminality (irpa_36(2)), foreign nationals only
+        elif (
+            citizenship_status == 'foreign'
+            and imm_result.get('notes') == 'criminality'
+            and imm_result.get('sections') == ['irpa_36(2)']
+        ):
+            if not irpa_indict_footnote:
+                irpa_indict_footnote = {
+                    'label': 'irpa-indict',
+                    'text': irpa_indict_text,
+                    'anchor': irpa_indict_anchor,
+                    'number': None
+                }
+                footnotes.append(irpa_indict_footnote)
+                footnote_refs[irpa_indict_anchor] = irpa_indict_footnote
+            imm_result['footnote'] = {
+                'anchor': irpa_indict_anchor,
+                'number': None
+            }
+        # Priority 3: Legacy summary case (foreign national, not both/foreign national)
+        elif (
+            citizenship_status == 'foreign'
+            and imm_result.get('notes') not in ['serious criminality', 'criminality', 'both', 'foreign national']
+        ):
             if not irpa_footnote:
                 irpa_footnote = {
                     'label': 'irpa',
@@ -298,9 +329,16 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
                 footnote_refs[irpa_anchor] = irpa_footnote
             imm_result['footnote'] = {
                 'anchor': irpa_anchor,
-                'number': None  # Will be filled later
+                'number': None
             }
-        elif citizenship_status == 'pr':
+        # Priority 4: No consequences for permanent residents (if not serious criminality)
+        elif (
+            citizenship_status == 'pr'
+            and not (
+                imm_result.get('notes') == 'serious criminality'
+                and imm_result.get('sections') == ['irpa_36(1)']
+            )
+        ):
             footnote_text = "No admissibility consequences for permanent residents under IRPA for this offence."
             footnote_anchor = f"imm-pr-{hash(footnote_text)}"
             if footnote_anchor not in footnote_refs:
@@ -314,7 +352,24 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
                 footnote_refs[footnote_anchor] = footnote_obj
             imm_result['footnote'] = {
                 'anchor': footnote_anchor,
-                'number': None  # Will be filled later
+                'number': None
+            }
+        # Fallback: generic relevant sections footnote
+        elif imm_result.get('sections'):
+            footnote_text = f"Relevant sections: {', '.join(imm_result['sections'])}"
+            footnote_anchor = f"imm-section-{hash(footnote_text)}"
+            if footnote_anchor not in footnote_refs:
+                footnote_obj = {
+                    'label': 'imm-section',
+                    'text': footnote_text,
+                    'anchor': footnote_anchor,
+                    'number': None
+                }
+                footnotes.append(footnote_obj)
+                footnote_refs[footnote_anchor] = footnote_obj
+            imm_result['footnote'] = {
+                'anchor': footnote_anchor,
+                'number': None
             }
         # else: no footnote
 
