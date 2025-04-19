@@ -32,35 +32,14 @@ def format_section(section):
     # Replace any prefix (like cc_, ycja_, cdsa_) and underscore with "§ "
     return re.sub(r'^[a-z]+_', '§ ', section)
 
-def clean_section_display(section):
-    """Remove any '#' and everything after from the section string."""
-    return section.split('#')[0]
-
 def load_offences():
-    """Load offences from all CSV files and tag with statute prefix, replacing code prefixes in section numbers."""
-    base_path = Path(__file__).resolve().parent.parent.parent / 'src/data/offence/'
-    sources = [
-        ("cc-offences-2024-09-16.csv", "Criminal Code ", None),
-        ("cannabis-offences-2024-09-16.csv", "Cannabis Act ", r"^cannabis_"),
-        ("cdsa-offences-2024-09-16.csv", "CDSA ", r"^cdsa_"),
-        ("ycja-offences-2024-09-16.csv", "YCJA ", r"^ycja_"),
-    ]
-    offences = []
-    for filename, prefix, code_prefix in sources:
-        csv_path = base_path / filename
-        if not csv_path.exists():
-            continue
-        df = pd.read_csv(csv_path, keep_default_na=False)
-        for _, row in df.iterrows():
-            section = row['section']
-            if code_prefix:
-                section = re.sub(code_prefix, '', section)
-            # Remove # and everything after for display
-            section_display = clean_section_display(section)
-            offences.append((row['section'], prefix + format_section(section_display), row['offence_name'],
-                             row['maximum_indictable'], row['maximum_sc'],
-                             row['minimum_indictable'], row['minimum_sc'], prefix.rstrip()))
-    return offences
+    """Load offences from the CSV file."""
+    csv_path = Path(__file__).resolve().parent.parent.parent / 'src/data/offence/cc-offences-2024-09-16.csv'
+    df = pd.read_csv(csv_path, keep_default_na=False)  # Treat empty strings as empty strings, not NaN
+    return [(row['section'], format_section(row['section']), row['offence_name'], 
+             row['maximum_indictable'], row['maximum_sc'],
+             row['minimum_indictable'], row['minimum_sc']) 
+            for _, row in df.iterrows()]
 
 def parse_minimum(min_value):
     """Parse minimum sentence value into a dictionary format."""
@@ -143,7 +122,7 @@ def parse_maximum(max_value):
     
     return None
 
-def get_collateral_consequences(section, max_indictable, max_sc, min_indictable, min_sc, citizenship_status=None):
+def get_collateral_consequences(section, max_indictable, max_sc, min_indictable, min_sc):
     """Get collateral consequences for an offence."""
     consequences = {}
 
@@ -169,8 +148,7 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
     immigration_results = ca_collateral_consequences.check_inadmissibility(
         section=section,
         mode=mode,
-        indictable_maximum=max_years,
-        citizenship_status=citizenship_status
+        indictable_maximum=max_years
     )
     consequences['immigration'] = immigration_results
 
@@ -264,133 +242,21 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
     footnote_refs = {}
 
     # Immigration footnotes (attach to immigration_result)
-    irpa_text = 'See <a href="https://canlii.ca/t/7vwq#sec36" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800 visited:text-purple-600">IRPA § 36(2)(a)</a>: A foreign national is inadmissible on grounds of criminality for having been convicted in Canada of ... two offences under any Act of Parliament not arising out of a single occurrence.'
-    irpa_anchor = "irpa-36-2-a"
-    irpa_footnote = None
-    irpa_indict_text = 'See <a href="https://canlii.ca/t/7vwq#sec36" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800 visited:text-purple-600">IRPA § 36(2)(a)</a>: A foreign national is inadmissible on grounds of criminality for having been convicted in Canada of an offence under an Act of Parliament punishable by way of indictment.'
-    irpa_indict_anchor = "irpa-36-2-a-indict"
-    irpa_indict_footnote = None
-    irpa_serious_text = 'See <a href="https://canlii.ca/t/7vwq#sec36" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800 visited:text-purple-600">IRPA § 36(1)(a)</a>: A permanent resident or foreign national is inadmissible on grounds of serious criminality for having been convicted of an offence under an Act of Parliament punishable by a maximum term of imprisonment of at least 10 years.'
-    irpa_serious_anchor = "irpa-36-1-a"
-    irpa_serious_footnote = None
-
     for imm_result in immigration_results:
-        # Priority 1: Serious criminality (irpa_36(1))
-        if (
-            imm_result.get('notes') == 'serious criminality'
-            and imm_result.get('sections') == ['irpa_36(1)']
-            and citizenship_status in ['foreign', 'pr']
-        ):
-            if not irpa_serious_footnote:
-                irpa_serious_footnote = {
-                    'label': 'irpa-serious',
-                    'text': irpa_serious_text,
-                    'anchor': irpa_serious_anchor,
-                    'number': None
-                }
-                footnotes.append(irpa_serious_footnote)
-                footnote_refs[irpa_serious_anchor] = irpa_serious_footnote
-            imm_result['footnote'] = {
-                'anchor': irpa_serious_anchor,
+        if imm_result.get('sections'):
+            footnote_obj = {
+                'label': 'immigration',
+                'text': f"Relevant sections: {', '.join(imm_result['sections'])}",
+                'anchor': f"imm-{len(footnotes)+1}",
                 'number': None
             }
-        # Priority 2: Criminality (irpa_36(2)), foreign nationals only
-        elif (
-            citizenship_status == 'foreign'
-            and imm_result.get('notes') == 'criminality'
-            and imm_result.get('sections') == ['irpa_36(2)']
-        ):
-            if not irpa_indict_footnote:
-                irpa_indict_footnote = {
-                    'label': 'irpa-indict',
-                    'text': irpa_indict_text,
-                    'anchor': irpa_indict_anchor,
-                    'number': None
-                }
-                footnotes.append(irpa_indict_footnote)
-                footnote_refs[irpa_indict_anchor] = irpa_indict_footnote
-            imm_result['footnote'] = {
-                'anchor': irpa_indict_anchor,
-                'number': None
-            }
-        # Priority 3: Legacy summary case (foreign national, not both/foreign national)
-        elif (
-            citizenship_status == 'foreign'
-            and imm_result.get('notes') not in ['serious criminality', 'criminality', 'both', 'foreign national']
-        ):
-            if not irpa_footnote:
-                irpa_footnote = {
-                    'label': 'irpa',
-                    'text': irpa_text,
-                    'anchor': irpa_anchor,
-                    'number': None
-                }
-                footnotes.append(irpa_footnote)
-                footnote_refs[irpa_anchor] = irpa_footnote
-            imm_result['footnote'] = {
-                'anchor': irpa_anchor,
-                'number': None
-            }
-        # Priority 4: No consequences for permanent residents (if not serious criminality)
-        elif (
-            citizenship_status == 'pr'
-            and not (
-                imm_result.get('notes') == 'serious criminality'
-                and imm_result.get('sections') == ['irpa_36(1)']
-            )
-        ):
-            footnote_text = "No admissibility consequences for permanent residents under IRPA for this offence."
-            footnote_anchor = f"imm-pr-{hash(footnote_text)}"
-            if footnote_anchor not in footnote_refs:
-                footnote_obj = {
-                    'label': 'imm-pr',
-                    'text': footnote_text,
-                    'anchor': footnote_anchor,
-                    'number': None
-                }
-                footnotes.append(footnote_obj)
-                footnote_refs[footnote_anchor] = footnote_obj
-            imm_result['footnote'] = {
-                'anchor': footnote_anchor,
-                'number': None
-            }
-        # Fallback: generic relevant sections footnote
-        elif imm_result.get('sections'):
-            footnote_text = f"Relevant sections: {', '.join(imm_result['sections'])}"
-            footnote_anchor = f"imm-section-{hash(footnote_text)}"
-            if footnote_anchor not in footnote_refs:
-                footnote_obj = {
-                    'label': 'imm-section',
-                    'text': footnote_text,
-                    'anchor': footnote_anchor,
-                    'number': None
-                }
-                footnotes.append(footnote_obj)
-                footnote_refs[footnote_anchor] = footnote_obj
-            imm_result['footnote'] = {
-                'anchor': footnote_anchor,
-                'number': None
-            }
-        # else: no footnote
+            imm_result['footnote'] = footnote_obj
+            footnotes.append(('immigration', footnote_obj, imm_result))
+    consequences['immigration'] = immigration_results
 
-    # Gather all other footnotes (procedure, sentencing, ancillary) as before
-    extra_footnotes = []
-    number = 1
-    # Procedure
-    if prelim_footnote_obj:
-        prelim_footnote_obj['number'] = number
-        extra_footnotes.append(prelim_footnote_obj)
-        number += 1
-    if jury_footnote_obj:
-        jury_footnote_obj['number'] = number
-        extra_footnotes.append(jury_footnote_obj)
-        number += 1
-    # Immigration (assign numbers now)
-    for f in footnotes:
-        f['number'] = number
-        number += 1
-    # Sentencing Options
+    # Sentencing Options footnotes
     so = consequences['sentencing_options']
+    so_footnotes = {}
     for key, label in [('discharge', 'dis'), ('cso', 'cso'), ('intermittent', 'int'), ('suspended', 'sus')]:
         note = so[key].get('notes')
         if note:
@@ -398,74 +264,99 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
                 'label': label,
                 'text': note,
                 'anchor': f"{label}-PLACEHOLDER",
-                'number': number
+                'number': None
             }
             so[key]['footnote'] = footnote_obj
-            extra_footnotes.append(footnote_obj)
-            number += 1
-    # Ancillary Orders
-    ancillary = consequences['ancillary_orders']
+            so_footnotes[key] = footnote_obj
+        else:
+            so[key]['footnote'] = None
+
+    # Ancillary Orders footnotes
+    ao = consequences['ancillary_orders']
+    ao_footnotes = {'dna': None, 'soira': [], 'weapons': None}
     # DNA
-    if ancillary['dna'].get('notes'):
+    if ao['dna'].get('notes'):
         footnote_obj = {
             'label': 'dna',
-            'text': ancillary['dna']['notes'] + (f" ({', '.join(ancillary['dna'].get('sections', []))})" if ancillary['dna'].get('sections') else ""),
-            'anchor': 'dna-footnote',
-            'number': number
+            'text': ao['dna']['notes'] + (f" ({', '.join(ao['dna'].get('sections', []))})" if ao['dna'].get('sections') else ""),
+            'anchor': f"dna-PLACEHOLDER",
+            'number': None
         }
-        ancillary['dna']['footnote'] = footnote_obj
-        extra_footnotes.append(footnote_obj)
-        number += 1
+        ao['dna']['footnote'] = footnote_obj
+        ao_footnotes['dna'] = footnote_obj
+    else:
+        ao['dna']['footnote'] = None
     # SOIRA (may be a list)
-    soira = ancillary['soira'][0] if isinstance(ancillary['soira'], list) and ancillary['soira'] else ancillary['soira']
-    if soira.get('notes'):
-        footnote_obj = {
-            'label': 'soira',
-            'text': soira['notes'] + (f" ({', '.join(soira.get('sections', []))})" if soira.get('sections') else ""),
-            'anchor': 'soira-footnote',
-            'number': number
-        }
-        soira['footnote'] = footnote_obj
-        extra_footnotes.append(footnote_obj)
-        number += 1
+    if isinstance(ao['soira'], list):
+        for idx, item in enumerate(ao['soira']):
+            if item.get('notes'):
+                footnote_obj = {
+                    'label': f'soira{idx+1}',
+                    'text': item['notes'] + (f" ({', '.join(item.get('sections', []))})" if item.get('sections') else ""),
+                    'anchor': f"soira-{idx+1}-PLACEHOLDER",
+                    'number': None
+                }
+                item['footnote'] = footnote_obj
+                ao_footnotes['soira'].append(footnote_obj)
+            else:
+                item['footnote'] = None
+    else:
+        if ao['soira'].get('notes'):
+            footnote_obj = {
+                'label': 'soira',
+                'text': ao['soira']['notes'] + (f" ({', '.join(ao['soira'].get('sections', []))})" if ao['soira'].get('sections') else ""),
+                'anchor': f"soira-PLACEHOLDER",
+                'number': None
+            }
+            ao['soira']['footnote'] = footnote_obj
+            ao_footnotes['soira'].append(footnote_obj)
+        else:
+            ao['soira']['footnote'] = None
     # Weapons
-    if ancillary['weapons'].get('notes'):
+    if ao['weapons'].get('notes'):
         footnote_obj = {
-            'label': 'weapons',
-            'text': ancillary['weapons']['notes'] + (f" ({', '.join(ancillary['weapons'].get('sections', []))})" if ancillary['weapons'].get('sections') else ""),
-            'anchor': 'weapons-footnote',
-            'number': number
+            'label': 'mwp',
+            'text': ao['weapons']['notes'] + (f" ({', '.join(ao['weapons'].get('sections', []))})" if ao['weapons'].get('sections') else ""),
+            'anchor': f"mwp-PLACEHOLDER",
+            'number': None
         }
-        ancillary['weapons']['footnote'] = footnote_obj
-        extra_footnotes.append(footnote_obj)
-        number += 1
+        ao['weapons']['footnote'] = footnote_obj
+        ao_footnotes['weapons'] = footnote_obj
+    else:
+        ao['weapons']['footnote'] = None
 
-    # Compose final footnote list: procedure, immigration, sentencing, ancillary
-    all_footnotes = extra_footnotes[:2] + footnotes + extra_footnotes[2:]
-    consequences['footnotes'] = all_footnotes
-
-    # Now update all footnote references with their assigned numbers
-    anchor_to_number = {f['anchor']: f['number'] for f in all_footnotes}
-    # Immigration
-    for imm_result in immigration_results:
-        if 'footnote' in imm_result and imm_result['footnote']['anchor'] in anchor_to_number:
-            imm_result['footnote']['number'] = anchor_to_number[imm_result['footnote']['anchor']]
-    # Procedure
+    # --- Order footnotes to match template appearance (Procedure first, then Immigration, etc.) ---
+    ordered_footnotes = []
+    # 1. Procedure (prelim)
     if prelim_footnote_obj:
-        consequences['procedure']['prelim_footnote']['number'] = anchor_to_number[prelim_footnote_obj['anchor']]
+        ordered_footnotes.append(prelim_footnote_obj)
+    # 2. Procedure (jury)
     if jury_footnote_obj:
-        consequences['procedure']['jury_footnote']['number'] = anchor_to_number[jury_footnote_obj['anchor']]
-    # Sentencing
-    for key, label in [('discharge', 'dis'), ('cso', 'cso'), ('intermittent', 'int'), ('suspended', 'sus')]:
-        if so[key].get('footnote'):
-            so[key]['footnote']['number'] = anchor_to_number[so[key]['footnote']['anchor']]
-    # Ancillary
-    if ancillary['dna'].get('footnote'):
-        ancillary['dna']['footnote']['number'] = anchor_to_number[ancillary['dna']['footnote']['anchor']]
-    if soira.get('footnote'):
-        soira['footnote']['number'] = anchor_to_number[soira['footnote']['anchor']]
-    if ancillary['weapons'].get('footnote'):
-        ancillary['weapons']['footnote']['number'] = anchor_to_number[ancillary['weapons']['footnote']['anchor']]
+        ordered_footnotes.append(jury_footnote_obj)
+    # 3. Immigration (may be multiple)
+    for imm_result in immigration_results:
+        if imm_result.get('footnote'):
+            ordered_footnotes.append(imm_result['footnote'])
+    # 4. Sentencing Options
+    for key in ['discharge', 'cso', 'intermittent', 'suspended']:
+        if so_footnotes.get(key):
+            ordered_footnotes.append(so_footnotes[key])
+    # 5. Ancillary Orders
+    if ao_footnotes['dna']:
+        ordered_footnotes.append(ao_footnotes['dna'])
+    for soira_footnote in ao_footnotes['soira']:
+        ordered_footnotes.append(soira_footnote)
+    if ao_footnotes['weapons']:
+        ordered_footnotes.append(ao_footnotes['weapons'])
+
+    # Assign numbers and anchors
+    for i, footnote in enumerate(ordered_footnotes):
+        footnote['number'] = i + 1
+        # Update anchor to match new number
+        base_anchor = footnote['anchor'].split('-')[0]
+        footnote['anchor'] = f"{base_anchor}-{i+1}"
+    consequences['footnotes'] = ordered_footnotes
+
     return consequences
 
 def get_offence_summary(section, max_indictable, max_sc, min_indictable, min_sc):
@@ -497,20 +388,25 @@ def get_offence_summary(section, max_indictable, max_sc, min_indictable, min_sc)
 
 def offence_grid(request):
     """Landing page for the offence grid tool."""
+    # Load all offences
     offences = load_offences()
+    
+    # Get selected offences from request
     selected_offences = request.GET.getlist('offences')
-    citizenship_status = request.GET.get('citizenship_status', None)
-    if citizenship_status in [None, '', 'None']:
-        citizenship_status = 'canadian'
-    results = []
+    
+    # Process selected offences
+    results = {}
     if selected_offences:
-        # Also get crown election from GET params (may be one or many)
-        crown_elections = request.GET.getlist('crown_election')
-        for idx, section in enumerate(selected_offences):
+        for section in selected_offences:
+            # Find the matching offence data
             for offence_data in offences:
                 if offence_data[0] == section:
+                    # Convert tuple to list for check_offence_type
                     offence_list = list(offence_data)
+                    # Determine mode using check_offence_type
                     mode = check_offence_type(offence_list)
+                    
+                    # Get offence summary
                     summary = get_offence_summary(
                         section=section,
                         max_indictable=offence_data[3],
@@ -518,67 +414,30 @@ def offence_grid(request):
                         min_indictable=offence_data[5],
                         min_sc=offence_data[6]
                     )
+                    
+                    # Add mode and description to summary
                     summary['mode'] = mode.title()
                     summary['description'] = offence_data[2]
-                    summary['statute_prefix'] = offence_data[7] if len(offence_data) > 7 else "CC"
-                    # Add crown election logic
-                    if mode == 'hybrid':
-                        # Try to get the corresponding crown election from the GET params (by index)
-                        crown_election = crown_elections[idx] if idx < len(crown_elections) and crown_elections[idx] else 'None'
-                        summary['crown_election'] = crown_election.title()
-                    else:
-                        summary['crown_election'] = 'N/A'
+                    
+                    # Get collateral consequences
                     consequences = get_collateral_consequences(
                         section=section,
                         max_indictable=offence_data[3],
                         max_sc=offence_data[4],
                         min_indictable=offence_data[5],
-                        min_sc=offence_data[6],
-                        citizenship_status=citizenship_status
+                        min_sc=offence_data[6]
                     )
-                    results.append({
-                        'display': offence_data[1],
-                        'description': offence_data[2],
+                    
+                    # Combine summary and consequences
+                    results[format_section(section)] = {
                         'summary': summary,
                         **consequences
-                    })
+                    }
                     break
-    show_irpa_footnote = False
-    if citizenship_status == 'foreign' and results:
-        for result in results:
-            for immigration_result in result.get('immigration', []):
-                if immigration_result['status']['notes'] != 'both' and immigration_result['status']['notes'] != 'foreign national':
-                    show_irpa_footnote = True
-                    break
-            if show_irpa_footnote:
-                break
-    # Prepare offences for template with mode computed in Python, not the template
-    offences_with_mode = []
-    for tup in offences:
-        section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix = tup
-        if max_indictable and max_sc:
-            mode = 'hybrid'
-        elif max_indictable:
-            mode = 'indictable'
-        elif max_sc:
-            mode = 'summary'
-        else:
-            mode = ''
-        offences_with_mode.append((section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix, mode))
-    # Get ordinarily resident status from the request (default True)
-    ordinarily_resident = request.GET.get('ordinarily_resident', 'true')
-
-    # Call reverse_onus bail logic
-    bail_reverse_onus = reverse_onus(ordinarily_resident)
-
-    context = {
+    
+    return render(request, 'offence_grid/index.html', {
         'title': 'Offence Grid',
-        'offences': offences_with_mode,
+        'offences': [(o[0], f"{o[1]} - {o[2]}") for o in offences],
         'selected_offences': selected_offences,
-        'citizenship_status': citizenship_status,
         'results': results,
-        'show_irpa_footnote': show_irpa_footnote,
-        'ordinarily_resident': ordinarily_resident,
-        'bail_reverse_onus': bail_reverse_onus
-    }
-    return render(request, 'offence_grid/index.html', context)
+    })
