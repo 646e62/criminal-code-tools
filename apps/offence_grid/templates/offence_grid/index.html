@@ -125,8 +125,9 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                     </select>
                 </div>
                 <div class="max-w-xl">
-                    <label for="offences" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type">Select Offences</label>
-                    <select name="offences" id="offences" multiple class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 monokai:border-monokai-gray focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 monokai:bg-monokai-bg dark:text-gray-200 monokai:text-string">
+                    <label for="offences" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type">Select Offence</label>
+                    <select name="offences" id="offences" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 monokai:border-monokai-gray focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 monokai:bg-monokai-bg dark:text-gray-200 monokai:text-string">
+                        <option value="" {% if not selected_offences %}selected{% endif %} disabled hidden>Select an offence...</option>
                         {% for section, display in offences %}
                         <option value="{{ section }}" {% if section in selected_offences %}selected{% endif %}>
                             {{ display }}
@@ -451,13 +452,43 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
 <!-- JavaScript: Initializes Tom Select for the offences dropdown and provides clear/reset logic. -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    new TomSelect('#offences', {
-        plugins: ['remove_button'],
+    var ts = new TomSelect('#offences', {
+        plugins: [], // No remove_button, no multiple, no tag creation
         persist: false,
         create: false,
-        maxItems: null,
+        maxItems: 1,
+        selectOnTab: true,
+        closeAfterSelect: true,
+        hideSelected: true,
+        render: {
+            option: function(data, escape) {
+                return `<div>${escape(data.text)}</div>`;
+            }
+        }
     });
-    window.tsOffences = TomSelect.instances['offences'];
+    // Track last selected value
+    let lastSelected = ts.getValue();
+    let clearedByFocus = false;
+    ts.on('change', function(value) {
+        if (value) {
+            lastSelected = value;
+        }
+    });
+    ts.on('focus', function() {
+        if (ts.getValue()) {
+            clearedByFocus = true;
+            ts.clear();
+        }
+    });
+    ts.on('blur', function() {
+        setTimeout(function() {
+            // Only restore if the field was cleared by focus and user didn't select a new value
+            if (!ts.getValue() && lastSelected && clearedByFocus) {
+                ts.setValue(lastSelected, true);
+            }
+            clearedByFocus = false;
+        }, 100);
+    });
 });
 function clearOffences() {
     // Clear Tom Select if available
