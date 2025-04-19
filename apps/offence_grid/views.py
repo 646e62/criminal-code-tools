@@ -32,14 +32,35 @@ def format_section(section):
     # Replace any prefix (like cc_, ycja_, cdsa_) and underscore with "§ "
     return re.sub(r'^[a-z]+_', '§ ', section)
 
+def clean_section_display(section):
+    """Remove any '#' and everything after from the section string."""
+    return section.split('#')[0]
+
 def load_offences():
-    """Load offences from the CSV file."""
-    csv_path = Path(__file__).resolve().parent.parent.parent / 'src/data/offence/cc-offences-2024-09-16.csv'
-    df = pd.read_csv(csv_path, keep_default_na=False)  # Treat empty strings as empty strings, not NaN
-    return [(row['section'], format_section(row['section']), row['offence_name'], 
-             row['maximum_indictable'], row['maximum_sc'],
-             row['minimum_indictable'], row['minimum_sc']) 
-            for _, row in df.iterrows()]
+    """Load offences from all CSV files and tag with statute prefix, replacing code prefixes in section numbers."""
+    base_path = Path(__file__).resolve().parent.parent.parent / 'src/data/offence/'
+    sources = [
+        ("cc-offences-2024-09-16.csv", "Criminal Code ", None),
+        ("cannabis-offences-2024-09-16.csv", "Cannabis Act ", r"^cannabis_"),
+        ("cdsa-offences-2024-09-16.csv", "CDSA ", r"^cdsa_"),
+        ("ycja-offences-2024-09-16.csv", "YCJA ", r"^ycja_"),
+    ]
+    offences = []
+    for filename, prefix, code_prefix in sources:
+        csv_path = base_path / filename
+        if not csv_path.exists():
+            continue
+        df = pd.read_csv(csv_path, keep_default_na=False)
+        for _, row in df.iterrows():
+            section = row['section']
+            if code_prefix:
+                section = re.sub(code_prefix, '', section)
+            # Remove # and everything after for display
+            section_display = clean_section_display(section)
+            offences.append((row['section'], prefix + format_section(section_display), row['offence_name'],
+                             row['maximum_indictable'], row['maximum_sc'],
+                             row['minimum_indictable'], row['minimum_sc'], prefix.rstrip()))
+    return offences
 
 def parse_minimum(min_value):
     """Parse minimum sentence value into a dictionary format."""
@@ -388,25 +409,15 @@ def get_offence_summary(section, max_indictable, max_sc, min_indictable, min_sc)
 
 def offence_grid(request):
     """Landing page for the offence grid tool."""
-    # Load all offences
     offences = load_offences()
-    
-    # Get selected offences from request
     selected_offences = request.GET.getlist('offences')
-    
-    # Process selected offences
     results = {}
     if selected_offences:
         for section in selected_offences:
-            # Find the matching offence data
             for offence_data in offences:
                 if offence_data[0] == section:
-                    # Convert tuple to list for check_offence_type
                     offence_list = list(offence_data)
-                    # Determine mode using check_offence_type
                     mode = check_offence_type(offence_list)
-                    
-                    # Get offence summary
                     summary = get_offence_summary(
                         section=section,
                         max_indictable=offence_data[3],
@@ -414,12 +425,9 @@ def offence_grid(request):
                         min_indictable=offence_data[5],
                         min_sc=offence_data[6]
                     )
-                    
-                    # Add mode and description to summary
                     summary['mode'] = mode.title()
                     summary['description'] = offence_data[2]
-                    
-                    # Get collateral consequences
+                    summary['statute_prefix'] = offence_data[7] if len(offence_data) > 7 else "CC"
                     consequences = get_collateral_consequences(
                         section=section,
                         max_indictable=offence_data[3],
@@ -427,14 +435,11 @@ def offence_grid(request):
                         min_indictable=offence_data[5],
                         min_sc=offence_data[6]
                     )
-                    
-                    # Combine summary and consequences
-                    results[format_section(section)] = {
+                    results[offence_data[1]] = {
                         'summary': summary,
                         **consequences
                     }
                     break
-    
     return render(request, 'offence_grid/index.html', {
         'title': 'Offence Grid',
         'offences': [(o[0], f"{o[1]} - {o[2]}") for o in offences],
