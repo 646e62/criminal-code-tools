@@ -424,9 +424,9 @@ def offence_grid(request):
     citizenship_status = request.GET.get('citizenship_status', None)
     if citizenship_status in [None, '', 'None']:
         citizenship_status = 'canadian'
-    results = {}
+    results = []
     if selected_offences:
-        for section in selected_offences:
+        for idx, section in enumerate(selected_offences):
             for offence_data in offences:
                 if offence_data[0] == section:
                     offence_list = list(offence_data)
@@ -449,14 +449,17 @@ def offence_grid(request):
                         min_sc=offence_data[6],
                         citizenship_status=citizenship_status
                     )
-                    results[offence_data[1]] = {
+                    # Instead of using a dict keyed by display, append each result
+                    results.append({
+                        'display': offence_data[1],
+                        'description': offence_data[2],
                         'summary': summary,
                         **consequences
-                    }
+                    })
                     break
     show_irpa_footnote = False
     if citizenship_status == 'foreign' and results:
-        for result in results.values():
+        for result in results:
             for immigration_result in result.get('immigration', []):
                 if immigration_result['status']['notes'] != 'both' and immigration_result['status']['notes'] != 'foreign national':
                     show_irpa_footnote = True
