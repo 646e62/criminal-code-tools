@@ -343,8 +343,8 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                                         <span class="text-red-600 dark:text-red-400">{{ immigration_result.status.notes|title }}</span>
                                                         {% endif %}
                                                     {% endif %}
-                                                    {% if citizenship_status != 'foreign' and immigration_result.sections and immigration_result.footnote %}
-                                                    <a href="#footnote-{{ immigration_result.footnote.anchor }}" class="footnote-ref" id="ref-{{ immigration_result.footnote.anchor }}">[{{ immigration_result.footnote.number }}]</a>
+                                                    {% if immigration_result.footnote %}
+                                                        <a href="#footnote-{{ immigration_result.footnote.anchor }}" class="footnote-ref" id="ref-{{ immigration_result.footnote.anchor }}">[{{ immigration_result.footnote.number }}]</a>
                                                     {% endif %}
                                                 </div>
                                                 {% endfor %}
