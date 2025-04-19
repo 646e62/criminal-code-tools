@@ -93,8 +93,17 @@ def check_prelim_available(indictable_maximum):
         return prelim_available
 
 
-def reverse_onus():
-    pass
+def reverse_onus(ordinarily_resident=None):
+    """
+    Returns standard_output indicating reverse onus if ordinarily_resident is False.
+    """
+    if ordinarily_resident == False or ordinarily_resident == 'false':
+        # Provide a footnote as a single-item list for template compatibility
+        return standard_output(True, ["Not ordinarily resident in Canada."], ["cc_515(6)(a)", "immigration"], "Not ordinarily resident in Canada: Reverse Onus applies.")
+    # Default: not reverse onus, no footnote, no reason
+    return standard_output(False, ["Crown onus"], ["cc_515(6)(a)"], "")
+
+    
 
 
 def check_section_469_offence(
