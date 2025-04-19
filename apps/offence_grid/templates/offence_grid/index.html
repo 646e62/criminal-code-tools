@@ -302,10 +302,12 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                         <div class="space-y-2">
                                             <div class="text-sm">
                                                 <span class="font-medium">Reverse Onus:</span>
-                                                {% if result.bail.reverse_onus.status.available %}
-                                                Yes [{{ result.bail.reverse_onus_footnote|add:1 }}]
+                                                {% if bail_reverse_onus.status.available %}
+                                                    <span class="text-red-600 dark:text-red-400">True</span>
+                                                    <span class="text-xs text-gray-500 ml-2">({{ bail_reverse_onus.reason }})</span>
                                                 {% else %}
-                                                No
+                                                    <span class="text-green-600 dark:text-green-400">False</span>
+                                                    <span class="text-xs text-gray-500 ml-2">({{ bail_reverse_onus.reason }})</span>
                                                 {% endif %}
                                             </div>
                                             <div class="text-sm">

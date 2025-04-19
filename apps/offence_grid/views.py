@@ -567,6 +567,10 @@ def offence_grid(request):
         offences_with_mode.append((section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix, mode))
     # Get ordinarily resident status from the request (default True)
     ordinarily_resident = request.GET.get('ordinarily_resident', 'true')
+
+    # Call reverse_onus bail logic
+    bail_reverse_onus = reverse_onus(ordinarily_resident)
+
     context = {
         'title': 'Offence Grid',
         'offences': offences_with_mode,
@@ -574,6 +578,7 @@ def offence_grid(request):
         'citizenship_status': citizenship_status,
         'results': results,
         'show_irpa_footnote': show_irpa_footnote,
-        'ordinarily_resident': ordinarily_resident
+        'ordinarily_resident': ordinarily_resident,
+        'bail_reverse_onus': bail_reverse_onus
     }
     return render(request, 'offence_grid/index.html', context)
