@@ -426,6 +426,8 @@ def offence_grid(request):
         citizenship_status = 'canadian'
     results = []
     if selected_offences:
+        # Also get crown election from GET params (may be one or many)
+        crown_elections = request.GET.getlist('crown_election')
         for idx, section in enumerate(selected_offences):
             for offence_data in offences:
                 if offence_data[0] == section:
@@ -441,6 +443,13 @@ def offence_grid(request):
                     summary['mode'] = mode.title()
                     summary['description'] = offence_data[2]
                     summary['statute_prefix'] = offence_data[7] if len(offence_data) > 7 else "CC"
+                    # Add crown election logic
+                    if mode == 'hybrid':
+                        # Try to get the corresponding crown election from the GET params (by index)
+                        crown_election = crown_elections[idx] if idx < len(crown_elections) and crown_elections[idx] else 'None'
+                        summary['crown_election'] = crown_election.title()
+                    else:
+                        summary['crown_election'] = 'N/A'
                     consequences = get_collateral_consequences(
                         section=section,
                         max_indictable=offence_data[3],
@@ -449,7 +458,6 @@ def offence_grid(request):
                         min_sc=offence_data[6],
                         citizenship_status=citizenship_status
                     )
-                    # Instead of using a dict keyed by display, append each result
                     results.append({
                         'display': offence_data[1],
                         'description': offence_data[2],
