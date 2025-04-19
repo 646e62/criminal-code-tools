@@ -130,9 +130,9 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                     <!-- Ordinarily resident in Canada -->
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0">Ordinarily resident in Canada</label>
                     <div class="flex items-center gap-2">
-                        <input type="radio" id="ordinarily_resident_true" name="ordinarily_resident" value="true" checked class="accent-indigo-600">
+                        <input type="radio" id="ordinarily_resident_true" name="ordinarily_resident" value="true" {% if ordinarily_resident != 'false' %}checked{% endif %} class="accent-indigo-600">
                         <label for="ordinarily_resident_true" class="text-sm text-gray-700 dark:text-gray-300">True</label>
-                        <input type="radio" id="ordinarily_resident_false" name="ordinarily_resident" value="false" class="accent-indigo-600">
+                        <input type="radio" id="ordinarily_resident_false" name="ordinarily_resident" value="false" {% if ordinarily_resident == 'false' %}checked{% endif %} class="accent-indigo-600">
                         <label for="ordinarily_resident_false" class="text-sm text-gray-700 dark:text-gray-300">False</label>
                     </div>
                 </div>
@@ -581,15 +581,23 @@ document.getElementById('search-btn').onclick = function(e) {
         form.method = 'GET';
         form.action = window.location.pathname;
         // Add citizenship status
-        const citizen = document.getElementById('citizenship_status');
-        if (citizen) {
+        const citizenship = document.getElementById('citizenship_status');
+        if (citizenship && citizenship.value) {
             const input = document.createElement('input');
             input.type = 'hidden';
             input.name = 'citizenship_status';
-            input.value = citizen.value;
+            input.value = citizenship.value;
             form.appendChild(input);
         }
-        // Add all offences in queue
+        // Add ordinarily resident
+        const ordinarilyResidentTrue = document.getElementById('ordinarily_resident_true');
+        const ordinarilyResidentFalse = document.getElementById('ordinarily_resident_false');
+        const ordInput = document.createElement('input');
+        ordInput.type = 'hidden';
+        ordInput.name = 'ordinarily_resident';
+        ordInput.value = ordinarilyResidentFalse.checked ? 'false' : 'true';
+        form.appendChild(ordInput);
+        // Add offences from queue
         queue.forEach(off => {
             const input = document.createElement('input');
             input.type = 'hidden';
@@ -731,6 +739,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // --- Clear queue on form reset ---
+function clearOrdinarilyResident() {
+    document.getElementById('ordinarily_resident_true').checked = true;
+    document.getElementById('ordinarily_resident_false').checked = false;
+}
+
 async function clearOffences() {
     const offences = await apiQueueList();
     for (const off of offences) {
@@ -743,6 +756,8 @@ async function clearOffences() {
         const select = document.getElementById('offences');
         if (select) select.selectedIndex = 0;
     }
+    // Reset 'Ordinarily resident' radio to True
+    clearOrdinarilyResident();
     // Clear analysis results (remove results from DOM)
     document.querySelectorAll('.mt-6').forEach(div => {
         if (div.querySelector('h3') && div.querySelector('h3').innerText.includes('Analysis Results')) {

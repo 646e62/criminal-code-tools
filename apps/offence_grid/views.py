@@ -565,11 +565,15 @@ def offence_grid(request):
         else:
             mode = ''
         offences_with_mode.append((section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix, mode))
-    return render(request, 'offence_grid/index.html', {
+    # Get ordinarily resident status from the request (default True)
+    ordinarily_resident = request.GET.get('ordinarily_resident', 'true')
+    context = {
         'title': 'Offence Grid',
         'offences': offences_with_mode,
         'selected_offences': selected_offences,
         'citizenship_status': citizenship_status,
         'results': results,
         'show_irpa_footnote': show_irpa_footnote,
-    })
+        'ordinarily_resident': ordinarily_resident
+    }
+    return render(request, 'offence_grid/index.html', context)
