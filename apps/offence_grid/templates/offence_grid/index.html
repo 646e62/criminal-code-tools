@@ -304,10 +304,11 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                                 <span class="font-medium">Reverse Onus:</span>
                                                 {% if bail_reverse_onus.status.available %}
                                                     <span class="text-red-600 dark:text-red-400">True</span>
-                                                    <span class="text-xs text-gray-500 ml-2">({{ bail_reverse_onus.reason }})</span>
+                                                    {% if bail_reverse_onus.footnotes and bail_reverse_onus.footnotes|length > 0 %}
+                                                        <sup><a href="#footnote-reverse-onus" class="footnote-ref" id="ref-reverse-onus" style="text-decoration:underline; color:inherit;">[1]</a></sup>
+                                                    {% endif %}
                                                 {% else %}
                                                     <span class="text-green-600 dark:text-green-400">False</span>
-                                                    <span class="text-xs text-gray-500 ml-2">({{ bail_reverse_onus.reason }})</span>
                                                 {% endif %}
                                             </div>
                                             <div class="text-sm">
@@ -464,6 +465,14 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                 </div>
                             </div>
                         </div>
+                        {% if bail_reverse_onus.footnotes and bail_reverse_onus.footnotes|length > 0 %}
+                        <div class="footnotes mt-2">
+                            <div class="footnote-item" id="footnote-reverse-onus">
+                                [1] {{ bail_reverse_onus.footnotes.0 }}
+                                <a href="#ref-reverse-onus" class="footnote-backref">↩</a>
+                            </div>
+                        </div>
+                        {% endif %}
                         {% if result.footnotes %}
                         <div class="footnotes mt-8 md:col-span-2 border-t pt-4">
                             {% for footnote in result.footnotes %}
