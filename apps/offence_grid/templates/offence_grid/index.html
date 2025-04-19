@@ -573,9 +573,10 @@ function renderOffenceQueue() {
     } else {
         emptyMsg.style.display = 'none';
         offenceQueue.forEach((off, idx) => {
+            const modeStr = off.mode ? ` — ${off.mode}` : '';
             const item = document.createElement('div');
             item.className = 'offence-queue-item flex items-center justify-between bg-white dark:bg-gray-800 monokai:bg-monokai-bg rounded px-3 py-1 shadow-sm';
-            item.innerHTML = `<span>${off.display} - ${off.offence_name}</span>` +
+            item.innerHTML = `<span>${off.display} - ${off.offence_name}${modeStr}</span>` +
                 `<button type="button" class="ml-4 px-2 py-1 text-xs rounded bg-red-500 hover:bg-red-600 text-white" onclick="removeOffenceFromQueue(${idx})">Delete</button>`;
             listDiv.appendChild(item);
         });
@@ -593,15 +594,40 @@ addBtn.onclick = function() {
     const select = document.getElementById('offences');
     const selected = select.options[select.selectedIndex];
     if (!selected || !selected.value) return;
-    // Prevent duplicates
     if (offenceQueue.some(off => off.section === selected.value)) return;
+    const mode = selected.getAttribute('data-mode');
+    let modeLabel = '';
+    if (mode === 'indictable') {
+        modeLabel = 'Indictment';
+    } else if (mode === 'summary') {
+        modeLabel = 'Summary';
+    } else if (mode === 'hybrid') {
+        // For hybrid, check the current value of the crown election dropdown
+        const crownSelect = document.getElementById('crown_election');
+        const crownValue = crownSelect ? crownSelect.value : '';
+        if (crownValue === 'summary') {
+            modeLabel = 'Summary';
+        } else if (crownValue === 'indictment') {
+            modeLabel = 'Indictment';
+        } else {
+            modeLabel = 'No election';
+        }
+    } else {
+        modeLabel = mode ? mode : '';
+    }
     offenceQueue.push({
         section: selected.value,
         display: selected.text.split(' - ')[0],
-        offence_name: selected.text.split(' - ').slice(1).join(' - ')
+        offence_name: selected.text.split(' - ').slice(1).join(' - '),
+        mode: modeLabel
     });
-    renderOffenceQueue();
+    updateQueueAndSave();
 };
+
+function updateQueueAndSave() {
+    saveOffenceQueue();
+    renderOffenceQueue();
+}
 
 // Persist queue in localStorage
 function saveOffenceQueue() {
@@ -642,10 +668,31 @@ addBtn.onclick = function() {
     const selected = select.options[select.selectedIndex];
     if (!selected || !selected.value) return;
     if (offenceQueue.some(off => off.section === selected.value)) return;
+    const mode = selected.getAttribute('data-mode');
+    let modeLabel = '';
+    if (mode === 'indictable') {
+        modeLabel = 'Indictment';
+    } else if (mode === 'summary') {
+        modeLabel = 'Summary';
+    } else if (mode === 'hybrid') {
+        // For hybrid, check the current value of the crown election dropdown
+        const crownSelect = document.getElementById('crown_election');
+        const crownValue = crownSelect ? crownSelect.value : '';
+        if (crownValue === 'summary') {
+            modeLabel = 'Summary';
+        } else if (crownValue === 'indictment') {
+            modeLabel = 'Indictment';
+        } else {
+            modeLabel = 'No election';
+        }
+    } else {
+        modeLabel = mode ? mode : '';
+    }
     offenceQueue.push({
         section: selected.value,
         display: selected.text.split(' - ')[0],
-        offence_name: selected.text.split(' - ').slice(1).join(' - ')
+        offence_name: selected.text.split(' - ').slice(1).join(' - '),
+        mode: modeLabel
     });
     updateQueueAndSave();
 };
