@@ -264,7 +264,7 @@ def get_collateral_consequences(section, max_indictable, max_sc, min_indictable,
     footnote_refs = {}
 
     # Immigration footnotes (attach to immigration_result)
-    irpa_text = "See IRPA § 36(2)(a): A foreign national is inadmissible on grounds of criminality for having been convicted in Canada of ... two offences under any Act of Parliament not arising out of a single occurrence."
+    irpa_text = 'See <a href="https://canlii.ca/t/7vwq#sec36" target="_blank" rel="noopener noreferrer" class="text-blue-600 underline hover:text-blue-800 visited:text-purple-600">IRPA § 36(2)(a)</a>: A foreign national is inadmissible on grounds of criminality for having been convicted in Canada of ... two offences under any Act of Parliament not arising out of a single occurrence.'
     irpa_anchor = "irpa-36-2-a"
     irpa_footnote = None
 

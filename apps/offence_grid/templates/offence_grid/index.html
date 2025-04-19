@@ -456,7 +456,7 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                         <div class="footnotes mt-8 md:col-span-2 border-t pt-4">
                             {% for footnote in result.footnotes %}
                             <div class="footnote-item" id="footnote-{{ footnote.anchor }}">
-                                [{{ footnote.number }}] {{ footnote.text }}
+                                [{{ footnote.number }}] {{ footnote.text|safe }}
                                 <a href="#ref-{{ footnote.anchor }}" class="footnote-backref">↩</a>
                             </div>
                             {% endfor %}
