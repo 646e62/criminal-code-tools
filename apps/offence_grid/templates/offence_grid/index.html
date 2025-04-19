@@ -129,7 +129,7 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                     <select name="offences" id="offences" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 monokai:border-monokai-gray focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 monokai:bg-monokai-bg dark:text-gray-200 monokai:text-string">
                         <option value="" {% if not selected_offences %}selected{% endif %} disabled hidden>Select an offence...</option>
                         {% for section, display, offence_name, max_indictable, max_sc, min_indictable, min_sc, prefix, mode in offences %}
-                            <option value="{{ section }}" data-mode="{{ mode }}" {% if section in selected_offences %}selected{% endif %}>{{ display }}</option>
+                            <option value="{{ section }}" data-mode="{{ mode }}" {% if section in selected_offences %}selected{% endif %}>{{ display }} - {{ offence_name }}</option>
                         {% endfor %}
                     </select>
                     <div id="offence-mode-message" class="mt-2 text-base font-semibold text-indigo-700 dark:text-indigo-300" style="display:none;"></div>
