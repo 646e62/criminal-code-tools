@@ -270,11 +270,11 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                                 {% endif %}
                                             </div>
                                             <div class="text-sm">
-                                                <span class="font-medium">Section 469:</span>
+                                                <span class="font-medium">Superior court bail:</span>
                                                 {% if result.bail.section_469.status.available %}
-                                                Yes [{{ result.bail.section_469_footnote|add:1 }}]
+                                                <span class="text-red-600 dark:text-red-400">True</span>
                                                 {% else %}
-                                                No
+                                                <span class="text-green-600 dark:text-green-400">False</span>
                                                 {% endif %}
                                             </div>
                                             <div class="text-sm">
