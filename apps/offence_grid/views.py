@@ -32,6 +32,10 @@ def format_section(section):
     # Replace any prefix (like cc_, ycja_, cdsa_) and underscore with "§ "
     return re.sub(r'^[a-z]+_', '§ ', section)
 
+def clean_section_display(section):
+    """Remove any '#' and everything after from the section string."""
+    return section.split('#')[0]
+
 def load_offences():
     """Load offences from all CSV files and tag with statute prefix, replacing code prefixes in section numbers."""
     base_path = Path(__file__).resolve().parent.parent.parent / 'src/data/offence/'
@@ -51,7 +55,9 @@ def load_offences():
             section = row['section']
             if code_prefix:
                 section = re.sub(code_prefix, '', section)
-            offences.append((row['section'], prefix + format_section(section), row['offence_name'],
+            # Remove # and everything after for display
+            section_display = clean_section_display(section)
+            offences.append((row['section'], prefix + format_section(section_display), row['offence_name'],
                              row['maximum_indictable'], row['maximum_sc'],
                              row['minimum_indictable'], row['minimum_sc'], prefix.rstrip()))
     return offences
