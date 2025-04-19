@@ -147,9 +147,9 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                             <div class="flex flex-col md:flex-row md:items-center gap-4">
                                 <label for="citizenship_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Citizenship status</label>
                                 <select id="citizenship_status" name="citizenship_status" class="mt-1 block w-full md:w-64 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-800 dark:text-gray-100">
-                                    <option value="canadian">Canadian Citizen</option>
-                                    <option value="pr">Permanent Resident</option>
-                                    <option value="foreign">Foreign National</option>
+                                    <option value="canadian" {% if citizenship_status == 'canadian' or not citizenship_status %}selected{% endif %}>Canadian Citizen</option>
+                                    <option value="pr" {% if citizenship_status == 'pr' %}selected{% endif %}>Permanent Resident</option>
+                                    <option value="foreign" {% if citizenship_status == 'foreign' %}selected{% endif %}>Foreign National</option>
                                 </select>
                             </div>
                         </div>
@@ -467,18 +467,9 @@ document.addEventListener('DOMContentLoaded', function() {
         persist: false,
         create: false,
         maxItems: null,
-        onInitialize: function() {
-            window.tsOffences = this;
-        },
-        onItemAdd: function() {
-            // Clear the search input after adding an item
-            if (this.control_input) {
-                this.control_input.value = '';
-            }
-        }
     });
+    window.tsOffences = TomSelect.instances['offences'];
 });
-
 function clearOffences() {
     // Clear Tom Select if available
     if (window.tsOffences) {
@@ -487,9 +478,14 @@ function clearOffences() {
     // Also clear native select for robustness
     const select = document.getElementById('offences');
     if (select) {
-        for (let i = 0; i < select.options.length; i++) {
+        for (let i = 0; i <select.options.length; i++) {
             select.options[i].selected = false;
         }
+    }
+    // Reset citizenship dropdown to default (Canadian Citizen)
+    const citizenshipSelect = document.getElementById('citizenship_status');
+    if (citizenshipSelect) {
+        citizenshipSelect.value = 'canadian';
     }
     // Actually reload the page (GET with no params)
     window.location.href = window.location.pathname;
