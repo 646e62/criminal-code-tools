@@ -132,7 +132,13 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                             <option value="{{ section }}" data-mode="{{ mode }}" {% if section in selected_offences %}selected{% endif %}>{{ display }} - {{ offence_name }}</option>
                         {% endfor %}
                     </select>
-                    <div id="offence-mode-message" class="mt-2 text-base font-semibold text-indigo-700 dark:text-indigo-300" style="display:none;"></div>
+
+                    <!-- Crown election subheading and dropdown -->
+                    <label for="crown_election" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mt-6">Crown election</label>
+                    <select name="crown_election" id="crown_election" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 monokai:border-monokai-gray focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 monokai:bg-monokai-bg dark:text-gray-200 monokai:text-string">
+                        <!-- Options will be dynamically populated by JS -->
+                    </select>
+
                     <button type="button" id="add-offence-btn" class="mt-3 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg" style="width: auto; min-width: 0;" title="Add Offence">
                         Add
                     </button>
@@ -479,43 +485,58 @@ document.addEventListener('DOMContentLoaded', function() {
             sectionToMode[opt.value] = opt.getAttribute('data-mode');
         }
     }
-    function showModeMessage(section) {
-        const msgDiv = document.getElementById('offence-mode-message');
-        let mode = sectionToMode[section];
-        let msg = '';
-        if (mode === 'summary') msg = 'Summary Conviction Offence';
-        else if (mode === 'indictable') msg = 'Strictly Indictable Offence';
-        else if (mode === 'hybrid') msg = 'Hybrid Offence';
-        if (msg) {
-            msgDiv.textContent = msg;
-            msgDiv.style.display = '';
-        } else {
-            msgDiv.textContent = '';
-            msgDiv.style.display = 'none';
+    function updateCrownElection(mode) {
+        const crownSelect = document.getElementById('crown_election');
+        crownSelect.innerHTML = '';
+        if (mode === 'indictable') {
+            const opt = document.createElement('option');
+            opt.value = 'indictment';
+            opt.textContent = 'Indictment';
+            crownSelect.appendChild(opt);
+        } else if (mode === 'summary') {
+            const opt = document.createElement('option');
+            opt.value = 'summary';
+            opt.textContent = 'Summary';
+            crownSelect.appendChild(opt);
+        } else if (mode === 'hybrid') {
+            const optSummary = document.createElement('option');
+            optSummary.value = 'summary';
+            optSummary.textContent = 'Summary';
+            crownSelect.appendChild(optSummary);
+            const optIndict = document.createElement('option');
+            optIndict.value = 'indictment';
+            optIndict.textContent = 'Indictment';
+            crownSelect.appendChild(optIndict);
+            const optNone = document.createElement('option');
+            optNone.value = '';
+            optNone.textContent = 'None';
+            optNone.selected = true;
+            crownSelect.appendChild(optNone);
         }
     }
     ts.on('change', function(value) {
         if (value) {
             lastSelected = value;
-            showModeMessage(value);
+            updateCrownElection(sectionToMode[value]);
         } else {
-            document.getElementById('offence-mode-message').style.display = 'none';
+            updateCrownElection('');
         }
     });
-    // Initial state (if preselected)
-    if (lastSelected) showModeMessage(lastSelected);
+    if (lastSelected) {
+        updateCrownElection(sectionToMode[lastSelected]);
+    }
     ts.on('focus', function() {
         if (ts.getValue()) {
             clearedByFocus = true;
             ts.clear();
-            document.getElementById('offence-mode-message').style.display = 'none';
+            updateCrownElection('');
         }
     });
     ts.on('blur', function() {
         setTimeout(function() {
             if (!ts.getValue() && lastSelected && clearedByFocus) {
                 ts.setValue(lastSelected, true);
-                showModeMessage(lastSelected);
+                updateCrownElection(sectionToMode[lastSelected]);
             }
             clearedByFocus = false;
         }, 100);
