@@ -18,7 +18,7 @@ def check_inadmissibility(section, mode, indictable_maximum, citizenship_status)
     Checks to see whether the offence renders the defendant liable for IRPA
     consequences.
     """
-    print(f"[check_inadmissibility] Citizenship status received: {citizenship_status}")
+    # print(f"[check_inadmissibility] Citizenship status received: {citizenship_status}")
     inadmissibilty_list = []
 
     # Determine whether this check is still necessary, given the changes in 
