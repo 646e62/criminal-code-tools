@@ -40,7 +40,7 @@ def load_offences():
     """Load offences from all CSV files and tag with statute prefix, replacing code prefixes in section numbers."""
     base_path = Path(__file__).resolve().parent.parent.parent / 'src/data/offence/'
     sources = [
-        ("cc-offences-2024-09-16.csv", "CC ", None),
+        ("cc-offences-2024-09-16.csv", "Criminal Code ", None),
         ("cannabis-offences-2024-09-16.csv", "Cannabis Act ", r"^cannabis_"),
         ("cdsa-offences-2024-09-16.csv", "CDSA ", r"^cdsa_"),
         ("ycja-offences-2024-09-16.csv", "YCJA ", r"^ycja_"),
