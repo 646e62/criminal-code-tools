@@ -99,9 +99,9 @@ def reverse_onus(ordinarily_resident=None):
     """
     if ordinarily_resident == False or ordinarily_resident == 'false':
         # Provide a footnote as a single-item list for template compatibility
-        return standard_output(True, ["Not ordinarily resident in Canada: Reverse Onus applies."], ["cc_515(6)(a)", "immigration"], "Not ordinarily resident in Canada: Reverse Onus applies.")
+        return standard_output(True, ["Not ordinarily resident in Canada."], ["cc_515(6)(a)", "immigration"], "Not ordinarily resident in Canada: Reverse Onus applies.")
     # Default: not reverse onus, no footnote, no reason
-    return standard_output(False, [], ["cc_515(6)(a)"], "")
+    return standard_output(False, ["Crown onus"], ["cc_515(6)(a)"], "")
 
 
 def check_section_469_offence(
