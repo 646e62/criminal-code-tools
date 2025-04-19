@@ -103,6 +103,8 @@ def reverse_onus(ordinarily_resident=None):
     # Default: not reverse onus, no footnote, no reason
     return standard_output(False, ["Crown onus"], ["cc_515(6)(a)"], "")
 
+    
+
 
 def check_section_469_offence(
     section: str,

@@ -119,21 +119,33 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                 <!-- Defendant Information heading -->
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 monokai:text-variable mt-8 mb-2">Defendant Information</h2>
                 <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-                    <label for="citizenship_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0">Citizenship status</label>
-                    <select id="citizenship_status" name="citizenship_status" class="mt-0.5 block w-full md:w-72 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-normal text-gray-900 dark:text-gray-100 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all">
-                        <option value="" {% if not citizenship_status or citizenship_status == 'canadian' %}selected{% endif %}>Canadian Citizen</option>
-                        <option value="pr" {% if citizenship_status == 'pr' %}selected{% endif %}>Permanent Resident</option>
-                        <option value="foreign" {% if citizenship_status == 'foreign' %}selected{% endif %}>Foreign National</option>
-                    </select>
+                    <label for="citizenship_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0 md:w-1/2">Citizenship status</label>
+                    <div class="md:w-1/2 md:justify-end md:flex">
+                        <select id="citizenship_status" name="citizenship_status" class="mt-0.5 block w-full md:w-72 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm font-normal text-gray-900 dark:text-gray-100 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all">
+                            <option value="" {% if not citizenship_status or citizenship_status == 'canadian' %}selected{% endif %}>Canadian Citizen</option>
+                            <option value="pr" {% if citizenship_status == 'pr' %}selected{% endif %}>Permanent Resident</option>
+                            <option value="foreign" {% if citizenship_status == 'foreign' %}selected{% endif %}>Foreign National</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
                     <!-- Ordinarily resident in Canada -->
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0">Ordinarily resident in Canada</label>
-                    <div class="flex items-center gap-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0 md:w-1/2">Ordinarily resident in Canada</label>
+                    <div class="flex items-center gap-2 md:justify-end md:w-1/2">
                         <input type="radio" id="ordinarily_resident_true" name="ordinarily_resident" value="true" {% if ordinarily_resident != 'false' %}checked{% endif %} class="accent-indigo-600">
                         <label for="ordinarily_resident_true" class="text-sm text-gray-700 dark:text-gray-300">True</label>
                         <input type="radio" id="ordinarily_resident_false" name="ordinarily_resident" value="false" {% if ordinarily_resident == 'false' %}checked{% endif %} class="accent-indigo-600">
                         <label for="ordinarily_resident_false" class="text-sm text-gray-700 dark:text-gray-300">False</label>
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                    <!-- Previous intimate partner violence convictions/discharges -->
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0 md:w-1/2">Previous intimate partner violence convictions/discharges</label>
+                    <div class="flex items-center gap-2 md:justify-end md:w-1/2">
+                        <input type="radio" id="ipv_conviction_true" name="ipv_conviction" value="true" {% if ipv_conviction == 'true' %}checked{% endif %} class="accent-indigo-600">
+                        <label for="ipv_conviction_true" class="text-sm text-gray-700 dark:text-gray-300">True</label>
+                        <input type="radio" id="ipv_conviction_false" name="ipv_conviction" value="false" {% if ipv_conviction != 'true' %}checked{% endif %} class="accent-indigo-600">
+                        <label for="ipv_conviction_false" class="text-sm text-gray-700 dark:text-gray-300">False</label>
                     </div>
                 </div>
 
