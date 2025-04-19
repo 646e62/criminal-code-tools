@@ -151,14 +151,15 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                 <button type="button" id="add-offence-btn" class="mt-3 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg" style="width: auto; min-width: 0;" title="Add Offence">
                     Add
                 </button>
-                <!-- Offence List heading and placeholder, now below Add but above Search/Clear -->
+                <!-- Offence List heading and dynamic queue display -->
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 monokai:text-variable mt-8 mb-2">Offence List</h2>
-                <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 monokai:bg-monokai-darkGray rounded-md text-gray-500 dark:text-gray-300 text-sm">
-                    The offence list is currently empty.
+                <div id="offence-list-queue" class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 monokai:bg-monokai-darkGray rounded-md text-gray-700 dark:text-gray-200 text-sm min-h-[3rem] flex flex-col gap-2">
+                    <!-- List will be populated by JS -->
+                    <span id="offence-list-empty" class="text-gray-500 dark:text-gray-300">The offence list is currently empty.</span>
                 </div>
                 <!-- Group Search and Clear buttons side-by-side, below Add and Offence List -->
                 <div class="flex flex-row gap-3 mt-4">
-                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
+                    <button type="submit" id="search-btn" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 monokai:bg-monokai-pink monokai:hover:bg-monokai-purple focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
                         Search
                     </button>
                     <button type="button" onclick="clearOffences()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-500 hover:bg-gray-700 dark:bg-gray-400 dark:hover:bg-gray-600 monokai:bg-monokai-gray monokai:hover:bg-monokai-darkGray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 monokai:focus:ring-offset-monokai-bg">
@@ -558,25 +559,121 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     });
 });
-function clearOffences() {
-    // Clear Tom Select if available
-    if (window.tsOffences) {
-        window.tsOffences.clear();
+
+// --- Offence queue logic ---
+let offenceQueue = [];
+
+function renderOffenceQueue() {
+    const listDiv = document.getElementById('offence-list-queue');
+    const emptyMsg = document.getElementById('offence-list-empty');
+    // Remove all old offence items except the empty message
+    listDiv.querySelectorAll('.offence-queue-item').forEach(e => e.remove());
+    if (offenceQueue.length === 0) {
+        emptyMsg.style.display = '';
+    } else {
+        emptyMsg.style.display = 'none';
+        offenceQueue.forEach((off, idx) => {
+            const item = document.createElement('div');
+            item.className = 'offence-queue-item flex items-center justify-between bg-white dark:bg-gray-800 monokai:bg-monokai-bg rounded px-3 py-1 shadow-sm';
+            item.innerHTML = `<span>${off.display} - ${off.offence_name}</span>` +
+                `<button type="button" class="ml-4 px-2 py-1 text-xs rounded bg-red-500 hover:bg-red-600 text-white" onclick="removeOffenceFromQueue(${idx})">Delete</button>`;
+            listDiv.appendChild(item);
+        });
     }
-    // Also clear native select for robustness
-    const select = document.getElementById('offences');
-    if (select) {
-        for (let i = 0; i <select.options.length; i++) {
-            select.options[i].selected = false;
-        }
-    }
-    // Reset citizenship dropdown to default (Canadian Citizen)
-    const citizenshipSelect = document.getElementById('citizenship_status');
-    if (citizenshipSelect) {
-        citizenshipSelect.value = '';
-    }
-    // Actually reload the page (GET with no params)
-    window.location.href = window.location.pathname;
 }
+
+function removeOffenceFromQueue(idx) {
+    offenceQueue.splice(idx, 1);
+    renderOffenceQueue();
+}
+
+// Add offence to queue when Add button is pressed
+const addBtn = document.getElementById('add-offence-btn');
+addBtn.onclick = function() {
+    const select = document.getElementById('offences');
+    const selected = select.options[select.selectedIndex];
+    if (!selected || !selected.value) return;
+    // Prevent duplicates
+    if (offenceQueue.some(off => off.section === selected.value)) return;
+    offenceQueue.push({
+        section: selected.value,
+        display: selected.text.split(' - ')[0],
+        offence_name: selected.text.split(' - ').slice(1).join(' - ')
+    });
+    renderOffenceQueue();
+};
+
+// Persist queue in localStorage
+function saveOffenceQueue() {
+    localStorage.setItem('offenceQueue', JSON.stringify(offenceQueue));
+}
+function loadOffenceQueue() {
+    const data = localStorage.getItem('offenceQueue');
+    if (data) {
+        try {
+            offenceQueue = JSON.parse(data);
+        } catch(e) { offenceQueue = []; }
+    }
+}
+
+// Clear queue on form reset
+function clearOffences() {
+    offenceQueue = [];
+    saveOffenceQueue();
+    renderOffenceQueue();
+    document.getElementById('offences').selectedIndex = 0;
+    updateCrownElection('');
+}
+
+// On page load, load and render queue
+document.addEventListener('DOMContentLoaded', function() {
+    loadOffenceQueue();
+    renderOffenceQueue();
+});
+
+// Save queue on every change
+function updateQueueAndSave() {
+    saveOffenceQueue();
+    renderOffenceQueue();
+}
+// Overwrite add/remove to also save
+addBtn.onclick = function() {
+    const select = document.getElementById('offences');
+    const selected = select.options[select.selectedIndex];
+    if (!selected || !selected.value) return;
+    if (offenceQueue.some(off => off.section === selected.value)) return;
+    offenceQueue.push({
+        section: selected.value,
+        display: selected.text.split(' - ')[0],
+        offence_name: selected.text.split(' - ').slice(1).join(' - ')
+    });
+    updateQueueAndSave();
+};
+window.removeOffenceFromQueue = function(idx) {
+    offenceQueue.splice(idx, 1);
+    updateQueueAndSave();
+};
+// Save queue before submitting form
+const searchBtn = document.getElementById('search-btn');
+searchBtn.form.addEventListener('submit', function(e) {
+    // Set all offence values in a hidden multi-select before submit
+    let hidden = document.getElementById('offence-queue-hidden');
+    if (!hidden) {
+        hidden = document.createElement('select');
+        hidden.id = 'offence-queue-hidden';
+        hidden.name = 'offences';
+        hidden.multiple = true;
+        hidden.style.display = 'none';
+        searchBtn.form.appendChild(hidden);
+    }
+    hidden.innerHTML = '';
+    offenceQueue.forEach(off => {
+        const opt = document.createElement('option');
+        opt.value = off.section;
+        opt.selected = true;
+        hidden.appendChild(opt);
+    });
+    saveOffenceQueue();
+});
 </script>
 {% endblock %}
