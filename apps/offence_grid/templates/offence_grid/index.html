@@ -324,6 +324,12 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                                         {% else %}
                                                             <span class="text-green-600 dark:text-green-400">False</span>
                                                         {% endif %}
+                                                    {% elif citizenship_status == 'foreign' %}
+                                                        {% if immigration_result.status.notes == 'both' or immigration_result.status.notes == 'foreign national' %}
+                                                            <span class="text-red-600 dark:text-red-400">True</span>
+                                                        {% else %}
+                                                            <span class="text-yellow-600 dark:text-yellow-400">Possible</span>
+                                                        {% endif %}
                                                     {% else %}
                                                         {% if immigration_result.status.notes == "serious criminality" and immigration_result.status.notes == "both" %}
                                                         <span class="text-red-600 dark:text-red-400">Permanent residents and foreign nationals</span>
@@ -337,7 +343,7 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                                                         <span class="text-red-600 dark:text-red-400">{{ immigration_result.status.notes|title }}</span>
                                                         {% endif %}
                                                     {% endif %}
-                                                    {% if immigration_result.sections and immigration_result.footnote %}
+                                                    {% if citizenship_status != 'foreign' and immigration_result.sections and immigration_result.footnote %}
                                                     <a href="#footnote-{{ immigration_result.footnote.anchor }}" class="footnote-ref" id="ref-{{ immigration_result.footnote.anchor }}">[{{ immigration_result.footnote.number }}]</a>
                                                     {% endif %}
                                                 </div>
@@ -466,6 +472,12 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
         </div>
     </div>
 </div>
+
+{% if show_irpa_footnote %}
+    <div class="text-xs text-gray-500 mt-1" id="footnote-irpa36-2-a">
+        <span class="font-semibold">IRPA § 36(2)(a):</span> A foreign national is inadmissible on grounds of criminality for having been convicted in Canada of ... two offences under any Act of Parliament not arising out of a single occurrence
+    </div>
+{% endif %}
 
 <!-- JavaScript: Initializes Tom Select for the offences dropdown and provides clear/reset logic. -->
 <script>

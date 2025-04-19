@@ -445,10 +445,20 @@ def offence_grid(request):
                         **consequences
                     }
                     break
+    show_irpa_footnote = False
+    if citizenship_status == 'foreign' and results:
+        for result in results.values():
+            for immigration_result in result.get('immigration', []):
+                if immigration_result['status']['notes'] != 'both' and immigration_result['status']['notes'] != 'foreign national':
+                    show_irpa_footnote = True
+                    break
+            if show_irpa_footnote:
+                break
     return render(request, 'offence_grid/index.html', {
         'title': 'Offence Grid',
         'offences': [(o[0], f"{o[1]} - {o[2]}") for o in offences],
         'selected_offences': selected_offences,
         'citizenship_status': citizenship_status,
         'results': results,
+        'show_irpa_footnote': show_irpa_footnote,
     })
