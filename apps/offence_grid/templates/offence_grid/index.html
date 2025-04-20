@@ -148,6 +148,36 @@ Tom Select is a lightweight, flexible JavaScript library for enhancing <select> 
                         <label for="ipv_false" class="text-sm text-gray-700 dark:text-gray-300">False</label>
                     </div>
                 </div>
+                <!-- Prior violent weapon conviction field -->
+                <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0 md:w-1/2">Prior violent weapon conviction</label>
+                    <div class="flex items-center gap-2 md:justify-end md:w-1/2">
+                        <input type="radio" id="prior_weapon_true" name="prior_weapon" value="true" class="accent-indigo-600">
+                        <label for="prior_weapon_true" class="text-sm text-gray-700 dark:text-gray-300">True</label>
+                        <input type="radio" id="prior_weapon_false" name="prior_weapon" value="false" checked class="accent-indigo-600">
+                        <label for="prior_weapon_false" class="text-sm text-gray-700 dark:text-gray-300">False</label>
+                    </div>
+                </div>
+                <!-- Conviction within the last 5 years? (conditionally shown) -->
+                <div id="conviction-5yr-row" class="flex flex-col md:flex-row md:items-center gap-4 mb-6 md:ml-8 ml-4" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0 md:w-1/2">Conviction within the last 5 years?</label>
+                    <div class="flex items-center gap-2 md:justify-end md:w-1/2">
+                        <input type="radio" id="conviction_5yr_true" name="conviction_5yr" value="true" class="accent-indigo-600">
+                        <label for="conviction_5yr_true" class="text-sm text-gray-700 dark:text-gray-300">True</label>
+                        <input type="radio" id="conviction_5yr_false" name="conviction_5yr" value="false" checked class="accent-indigo-600">
+                        <label for="conviction_5yr_false" class="text-sm text-gray-700 dark:text-gray-300">False</label>
+                    </div>
+                </div>
+                <!-- Offence punishable by >= 10 years? (conditionally shown, indented) -->
+                <div id="punishable-10yr-row" class="flex flex-col md:flex-row md:items-center gap-4 mb-6 md:ml-8 ml-4" style="display: none;">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 monokai:text-type mb-0 md:w-1/2">Offence punishable by &gt;= 10 years?</label>
+                    <div class="flex items-center gap-2 md:justify-end md:w-1/2">
+                        <input type="radio" id="punishable_10yr_true" name="punishable_10yr" value="true" class="accent-indigo-600">
+                        <label for="punishable_10yr_true" class="text-sm text-gray-700 dark:text-gray-300">True</label>
+                        <input type="radio" id="punishable_10yr_false" name="punishable_10yr" value="false" checked class="accent-indigo-600">
+                        <label for="punishable_10yr_false" class="text-sm text-gray-700 dark:text-gray-300">False</label>
+                    </div>
+                </div>
 
                 <!-- Offence Information heading -->
                 <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200 monokai:text-variable mt-8 mb-2">Offence Information</h2>
@@ -794,5 +824,48 @@ function updateIpvOffenceVisibility() {
 ipvRadios.forEach(radio => radio.addEventListener('change', updateIpvOffenceVisibility));
 // Initialize on page load
 updateIpvOffenceVisibility();
+
+// Prior weapon conviction conditional logic
+const priorWeaponRadios = document.getElementsByName('prior_weapon');
+const conviction5yrRow = document.getElementById('conviction-5yr-row');
+function updateConviction5yrVisibility() {
+    if ([...priorWeaponRadios].find(r => r.checked && r.value === 'true')) {
+        conviction5yrRow.style.display = '';
+    } else {
+        conviction5yrRow.style.display = 'none';
+        // Reset radio to default (False) when hiding
+        if (document.getElementById('conviction_5yr_false')) {
+            document.getElementById('conviction_5yr_false').checked = true;
+        }
+        // Hide and reset the 10yr row as well
+        if (document.getElementById('punishable-10yr-row')) {
+            document.getElementById('punishable-10yr-row').style.display = 'none';
+            if (document.getElementById('punishable_10yr_false')) {
+                document.getElementById('punishable_10yr_false').checked = true;
+            }
+        }
+    }
+}
+priorWeaponRadios.forEach(radio => radio.addEventListener('change', updateConviction5yrVisibility));
+// Initialize on page load
+updateConviction5yrVisibility();
+
+// Conviction within 5 years conditional logic
+const conviction5yrRadios = document.getElementsByName('conviction_5yr');
+const punishable10yrRow = document.getElementById('punishable-10yr-row');
+function updatePunishable10yrVisibility() {
+    if ([...conviction5yrRadios].find(r => r.checked && r.value === 'true')) {
+        punishable10yrRow.style.display = '';
+    } else {
+        punishable10yrRow.style.display = 'none';
+        // Reset radio to default (False) when hiding
+        if (document.getElementById('punishable_10yr_false')) {
+            document.getElementById('punishable_10yr_false').checked = true;
+        }
+    }
+}
+conviction5yrRadios.forEach(radio => radio.addEventListener('change', updatePunishable10yrVisibility));
+// Initialize on page load
+updatePunishable10yrVisibility();
 </script>
 {% endblock %}
