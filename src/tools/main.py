@@ -1,5 +1,5 @@
 import csv
-from cc_rules_current import (
+from .cc_rules_current import (
     check_offence_type,
     check_prelim_available,
     check_section_469_offence,
@@ -17,25 +17,25 @@ from cc_rules_current import (
     check_fine_and_probation,
 )
 
-from ca_collateral_consequences import (
+from .ca_collateral_consequences import (
     check_inadmissibility,
 )
 
-from utils import (
+from .utils import (
     parse_quantum,
 )
 
-from map import (
+from .map import (
     CC_DISAMBIGUATION,
     CC_GRADUATED_OFFENCES
 )
 
-from constants import(
+from .constants import(
     STATUTE_CODES
 )
 
 # Constants
-CSV_FILE_PATH = "data/cc-offences-2024-09-16.csv"
+CSV_FILE_PATH = "src/data/offence/cc-offences-2024-09-16.csv"
 VALID_MODES = ["summary", "indictable"]
 
 # Global variables
